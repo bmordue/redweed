@@ -61,4 +61,11 @@ EOF
     echo "  Media dir:  $MEDIA_DIR"
     echo "  Jena tools: Available in PATH"
   '';
+
+backup-script = pkgs.writeShellScriptBin "backup" ''
+  BACKUP_DIR="$PROJECT_ROOT/backups/$(date +%Y%m%d-%H%M%S)"
+  mkdir -p "$BACKUP_DIR"
+  cp -r "$DATA_DIR" "$MEDIA_DIR" "$BACKUP_DIR/"
+  echo "Backup created: $BACKUP_DIR"
+'';
 }
