@@ -50,7 +50,7 @@
            
            :seed {:main-opts ["-m" "heat-ray.seed"]}
            
-           :server {:main-opts ["-m" "heat-ray.server"]}
+           :server {:main-opts ["-m" "redeemed.server"]} ; Corrected to redeemed.server
            
            :repl {:main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
            
