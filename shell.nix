@@ -1,38 +1,17 @@
 # shell.nix
 { pkgs ? import <nixpkgs> {} }:
 
-let
-  jenaVersion = "4.10.0";
-  jenaUrl = "https://archive.apache.org/dist/jena/binaries/apache-jena-${jenaVersion}.tar.gz";
-  
-  jena = pkgs.stdenv.mkDerivation {
-    pname = "apache-jena";
-    version = jenaVersion;
-    
-    src = pkgs.fetchurl {
-      url = jenaUrl;
-      sha256 = "1qs7rfm133cip6vyrn6max4lwsfsni1przia739glnbnj63h4s8v";
-    };
-    
-    installPhase = ''
-      mkdir -p $out
-      cp -r * $out/
-      chmod +x $out/bin/*
-    '';
-  };
-
 in pkgs.mkShellNoCC {
-  buildInputs = [
-    pkgs.clojure
+  buildInputs = with pkgs; [
+    clojure
     pkgs.openjdk17-headless
-    pkgs.gemini-cli
+    gemini-cli
   ];
   
   shellHook = ''
     export PROJECT_ROOT=$(pwd)
     export DATA_DIR=$PROJECT_ROOT/data
     export MEDIA_DIR=$PROJECT_ROOT/media
-    export JENA_HOME=${jena}
     export PATH=$JENA_HOME/bin:$PATH
     
     # Create isolated directories

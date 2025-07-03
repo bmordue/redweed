@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/bmordue/redweed/branch/main/graph/badge.svg)](https://codecov.io/gh/bmordue/redweed)
+
 **Key Dependencies:**
 - **Jena stack** - Core RDF functionality, TDB2 storage, SPARQL
 - **Ring/Compojure** - Web server for your API
