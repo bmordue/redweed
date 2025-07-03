@@ -13,24 +13,23 @@
     (try
       (.begin dataset)
       (let [model (.getDefaultModel dataset)
-            query (QueryFactory/create query-string)
-            qexec (QueryExecutionFactory/create query model)
-            results (.execSelect qexec)
-            result-list (atom [])]
-        (while (.hasNext results)
-          (let [soln (.nextSolution results)
-                vars (.varNames soln)
-                row (reduce (fn [acc var]
-                              (let [node (.get soln var)]
-                                (assoc acc (keyword var)
-                                       (cond
-                                         (.isResource node) (.getURI node)
-                                         (.isLiteral node) (.getLexicalForm node)
-                                         :else (.toString node)))))
-                            {} vars)]
-            (swap! result-list conj row)))
-        (.close qexec)
-        @result-list)
+            query (QueryFactory/create query-string)]
+        (with-open [qexec (QueryExecutionFactory/create query model)]
+          (let [results (.execSelect qexec)
+                result-list (atom [])]
+            (while (.hasNext results)
+              (let [soln (.nextSolution results)
+                    vars (.varNames soln)
+                    row (reduce (fn [acc var]
+                                  (let [node (.get soln var)]
+                                    (assoc acc (keyword var)
+                                           (cond
+                                             (.isResource node) (.getURI node)
+                                             (.isLiteral node) (.getLexicalForm node)
+                                             :else (.toString node)))))
+                                {} vars)]
+                (swap! result-list conj row)))
+            @result-list)))
       (catch Exception e
         (log/error e "Error executing SPARQL query")
         [])
