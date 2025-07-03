@@ -19,7 +19,14 @@ jobs:
         nix_path: nixpkgs=channel:nixos-unstable
 
     - name: Run tests
-      run: nix-shell --run "cd rwclj && clj -M:test"
+      run: nix-shell --run "cd rwclj && clj -X:test"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: rwclj/target/junit.xml
+        if-no-files-found: error # 'warn' or 'ignore' are also available
 
     - name: Generate coverage report
       run: nix-shell --run "cd rwclj && clj -M:coverage"
