@@ -23,4 +23,4 @@ clj -M:test
 clj -M:uberjar
 ```
 
-The configuration supports both development (with extra tooling) and production (minimal dependencies in uberjar). You can extend this as your Heat-Ray system grows!
+The configuration supports both development (with extra tooling) and production (minimal dependencies in uberjar).
