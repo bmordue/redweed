@@ -3,8 +3,8 @@
 
 pkgs.mkShellNoCC {
   buildInputs = with pkgs; [
+    jdk21_headless
     clojure
-    pkgs.jdk24_headless
     gemini-cli
   ];
   
