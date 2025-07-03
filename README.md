@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/OWNER/REPO/branch/main/graph/badge.svg?token=CODECOV_TOKEN_IF_NEEDED)](https://codecov.io/gh/OWNER/REPO)
+
 **Key Dependencies:**
 - **Jena stack** - Core RDF functionality, TDB2 storage, SPARQL
 - **Ring/Compojure** - Web server for your API

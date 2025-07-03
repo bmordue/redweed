@@ -19,7 +19,18 @@ jobs:
         nix_path: nixpkgs=channel:nixos-unstable
 
     - name: Run tests
-      run: nix-shell --run "clj -M:test"
+      run: nix-shell --run "cd rwclj && clj -M:test"
+
+    - name: Generate coverage report
+      run: nix-shell --run "cd rwclj && clj -M:coverage"
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }} # Optional: if you have a private repo or need to specify
+        files: ./rwclj/target/coverage/codecov.json # Path to the coverage report
+        working-directory: ./rwclj # Specifies the directory where clojure files are, also where codecov.json is created relative to.
+        fail_ci_if_error: true
 
     - name: Build uberjar (optional)
-      run: nix-shell --run "clj -M:uberjar"
+      run: nix-shell --run "cd rwclj && clj -M:uberjar"
