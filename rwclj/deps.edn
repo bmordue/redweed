@@ -39,9 +39,14 @@
            :test {:extra-paths ["test"]
                  :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
                               io.github.cognitect-labs/test-runner 
-                              {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+                              {:git/tag "v0.5.1" :git/sha "dfb30dd"}
+                              org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-text {:mvn/version "4.10.0"}}
                  :main-opts ["-m" "cognitect.test-runner"]
-                 :exec-fn cognitect.test-runner.api/test}                  
+                 :exec-fn cognitect.test-runner.api/test}
 
            :jena-deps {:extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
