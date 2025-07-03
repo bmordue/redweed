@@ -4,7 +4,7 @@
 pkgs.mkShellNoCC {
   buildInputs = with pkgs; [
     clojure
-    pkgs.openjdk17-headless
+    pkgs.openjdk19_headless
     gemini-cli
   ];
   
