@@ -1,11 +1,11 @@
 (ns rwclj.server-integration-test
   (:require
-   [clj-http.lite :as http]
+   [clj-http.client :as http]
    [clojure.java.io :as io]
    [clojure.string :as str]
    [clojure.test :refer [deftest is testing use-fixtures]]
    [jsonista.core :as json]
-   [redweed.server :as server]
+   [rwclj.server :as server]
    [rwclj.db :as db])
   (:import
    [org.apache.jena.tdb2 TDB2Factory]))

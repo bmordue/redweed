@@ -1,10 +1,10 @@
-(ns redweed.api.vcard
+(ns rwclj.vcard
   (:require [clojure.string :as str]
             [clojure.java.io :as io]
             [ring.util.response :as response]
             [jsonista.core :as json]
             [clojure.tools.logging :as log]
-            [my-clojure-project.db :as db]) ; Added db require
+            [rwclj.db :as db]) ; Added db require
   (:import [org.apache.jena.rdf.model Model ModelFactory ResourceFactory] ; Added Model
            [org.apache.jena.vocabulary RDF RDFS]
            [org.apache.jena.datatypes.xsd XSDDatatype]
