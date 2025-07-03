@@ -11,7 +11,7 @@ let
     
     src = pkgs.fetchurl {
       url = jenaUrl;
-      sha256 = "sha256-PLACEHOLDER"; # Run nix-prefetch-url to get actual hash
+      sha256 = "1qs7rfm133cip6vyrn6max4lwsfsni1przia739glnbnj63h4s8v";
     };
     
     installPhase = ''
@@ -26,6 +26,7 @@ in pkgs.mkShell {
     clojure
     openjdk17
     jena
+    gemini-cli
   ];
   
   shellHook = ''
