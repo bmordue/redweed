@@ -1,6 +1,6 @@
-(ns my-clojure-project.core-test
+(ns rwclj.core-test
   (:require [clojure.test :refer :all]
-            [my-clojure-project.core :refer :all]))
+            [rwclj.core :refer :all]))
 
 (deftest a-test
   (testing "Dummy test that passes."

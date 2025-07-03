@@ -1,4 +1,4 @@
-(ns my-clojure-project.core
+(ns rwclj.core
   (:gen-class))
 
 (defn -main
