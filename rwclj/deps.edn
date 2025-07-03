@@ -3,13 +3,6 @@
  :deps {;; Core Clojure
         org.clojure/clojure {:mvn/version "1.11.1"}
         
-        ;; Apache Jena RDF stack
-        org.apache.jena/jena-core {:mvn/version "4.10.0"}
-        org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
-        org.apache.jena/jena-arq {:mvn/version "4.10.0"}
-        org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
-        org.apache.jena/jena-text {:mvn/version "4.10.0"}
-        
         ;; Web server and routing
         ring/ring-core {:mvn/version "1.10.0"}
         ring/ring-jetty-adapter {:mvn/version "1.10.0"}
@@ -47,10 +40,21 @@
                   :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}}
                   :main-opts ["-m" "cognitect.test-runner"]
                   :exec-fn cognitect.test-runner.api/test}
+
+           :jena-deps {:extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-text {:mvn/version "4.10.0"}}}
            
            :seed {:main-opts ["-m" "heat-ray.seed"]}
            
-           :server {:main-opts ["-m" "redeemed.server"]} ; Corrected to redeemed.server
+           :server {:main-opts ["-m" "redeemed.server"] ; Corrected to redeemed.server
+                    :extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-text {:mvn/version "4.10.0"}}}
            
            :repl {:main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
            
@@ -61,6 +65,8 @@
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-text {:mvn/version "4.10.0"}
                                     ring/ring-core {:mvn/version "1.10.0"}
                                     ring/ring-jetty-adapter {:mvn/version "1.10.0"}
                                     ring/ring-json {:mvn/version "0.5.1"}
