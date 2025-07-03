@@ -21,12 +21,11 @@ let
     '';
   };
 
-in pkgs.mkShell {
-  buildInputs = with pkgs; [
-    clojure
-    openjdk17
-    jena
-    gemini-cli
+in pkgs.mkShellNoCC {
+  buildInputs = [
+    pkgs.clojure
+    pkgs.openjdk17-headless
+    pkgs.gemini-cli
   ];
   
   shellHook = ''
