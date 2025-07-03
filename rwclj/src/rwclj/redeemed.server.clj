@@ -29,15 +29,14 @@
   }
   ORDER BY ?name")
 
-(defn get-contact-by-name-query [escaped-name]
-  (str "
+(def get-contact-by-name-query "
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
   PREFIX event: <http://purl.org/NET/c4dm/event.owl#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
   SELECT ?person ?name ?givenName ?familyName ?event ?eventLabel ?eventTime WHERE {
     ?person a foaf:Person .
-    ?person foaf:name \"" escaped-name "\" .
+    ?person foaf:name ?fullName .
     OPTIONAL { ?person foaf:givenName ?givenName }
     OPTIONAL { ?person foaf:familyName ?familyName }
     OPTIONAL {
@@ -45,7 +44,7 @@
       ?event rdfs:label ?eventLabel .
       OPTIONAL { ?event event:time ?eventTime }
     }
-  }"))
+  }")
 
 (defn list-events-in-range-query [start-date end-date]
   (str "
@@ -99,18 +98,24 @@
   (response {:contacts (db/execute-sparql-select list-contacts-query)}))
 
 (defn get-contact-by-name [full-name]
-  (let [escaped-name (str/replace full-name "\"" "\\\"")
-        query (get-contact-by-name-query escaped-name)
-        results (db/execute-sparql-select query)]
+  (let [results (db/execute-sparql-select get-contact-by-name-query {:fullName full-name})]
     (if (empty? results)
       (status (response {:error "Contact not found"}) 404)
       (response {:contact (first results)
                  :events (map #(select-keys % [:event :eventLabel :eventTime]) results)}))))
 
+(defn valid-date? [date-str]
+  (try
+    (LocalDate/parse date-str)
+    true
+    (catch Exception _ false)))
+
 (defn list-events-in-range [start-date end-date]
-  (let [query (list-events-in-range-query start-date end-date)]
-    (response {:events (db/execute-sparql-select query)
-               :date-range {:start start-date :end end-date}})))
+  (if (and (valid-date? start-date) (valid-date? end-date))
+    (let [query (list-events-in-range-query start-date end-date)]
+      (response {:events (db/execute-sparql-select query)
+                 :date-range {:start start-date :end end-date}}))
+    (status (response {:error "Invalid date format. Please use YYYY-MM-DD."}) 400)))
 
 (defn list-places []
   (response {:places (db/execute-sparql-select list-places-query)}))
@@ -152,13 +157,18 @@
   (route/not-found
    (status (response {:error "Not found"}) 404))) ; Added status to 404
 
+(defn wrap-vcard-body [handler]
+  (fn [request]
+    (if (str/starts-with? (get-in request [:headers "content-type"] "") "application/json")
+      ((wrap-json-body {:keywords? true}) handler request)
+      (handler request))))
+
 (def app
   (-> app-routes
-      wrap-keyword-params ; Added from redeemed.server
-      wrap-params         ; Added from redeemed.server
-      wrap-json-body      ; Added from redeemed.server (order matters)
-      wrap-json-response
-      wrap-json-params)) ; Added from redweed.server
+      wrap-keyword-params
+      wrap-params
+      wrap-vcard-body
+      wrap-json-response))
 
 (defn start-server!
   ([] (start-server! 8080))
