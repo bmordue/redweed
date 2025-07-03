@@ -1,4 +1,4 @@
-(ns my-clojure-project.db
+(ns rwclj.db
   (:require [clojure.tools.logging :as log])
   (:import [org.apache.jena.tdb2 TDB2Factory]
            [org.apache.jena.query QueryFactory QueryExecutionFactory]
