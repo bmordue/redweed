@@ -168,13 +168,17 @@
 
 (defn parse-port [args]
   (let [port-str (first args)]
-    (if port-str
-      (try
-        (Integer/parseInt port-str)
-        (catch NumberFormatException _
-          (log/warn "Invalid port specified:" port-str ". Falling back to default port 8080.")
-          8080))
-      8080)))
+    (try
+      (let [port (Integer/parseInt port-str)]
+        (if (<= 1 port 65535)
+          port
+          (do
+            (log/warn "Port" port "is out of the valid range (1-65535). Falling back to default port 8080.")
+            8080)))
+      (catch NumberFormatException _
+        (when port-str
+          (log/warn "Invalid port specified:" port-str ". Falling back to default port 8080."))
+        8080))))
 
 (defn -main [& args]
   (let [port (parse-port args)]
