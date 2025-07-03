@@ -166,10 +166,18 @@
    (log/info "Starting Redeemed server on port" port) ; Updated server name
    (run-jetty app {:port port :join? false}))) ; run-jetty from redeemed.server
 
+(defn parse-port [args]
+  (let [port-str (first args)]
+    (if port-str
+      (try
+        (Integer/parseInt port-str)
+        (catch NumberFormatException _
+          (log/warn "Invalid port specified:" port-str ". Falling back to default port 8080.")
+          8080))
+      8080)))
+
 (defn -main [& args]
-  (let [port (if (first args)
-               (Integer/parseInt (first args))
-               8080)]
+  (let [port (parse-port args)]
     (start-server! port)
     (log/info "Redeemed server running on port" port))) ; Updated server name
 
