@@ -4,7 +4,8 @@ This document provides a quick overview of the `redweed` project, intended to he
 
 ## Project Summary
 
-`redweed` is a Clojure application that interacts with a Redweed database. It appears to be an RDF-based system, using Apache Jena for RDF handling and providing a web API via Ring and Compojure. The project is set up with a Nix environment for reproducible builds.
+`redweed` is a Clojure application that interacts with a Redweed database. It is an RDF-based system, using Apache Jena for RDF handling and providing a web API via Ring and Compojure. The project is set up with a Nix environment for reproducible builds and to easily setup development and runtime environments.
+Issues are tracked at https://github.com/bmordue/redweed/issues .
 
 ## Key Files
 
