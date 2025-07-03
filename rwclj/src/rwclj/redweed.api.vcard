@@ -3,11 +3,12 @@
             [clojure.java.io :as io]
             [ring.util.response :as response]
             [jsonista.core :as json]
-            [clojure.tools.logging :as log])
-  (:import [org.apache.jena.rdf.model ModelFactory ResourceFactory]
+            [clojure.tools.logging :as log]
+            [my-clojure-project.db :as db]) ; Added db require
+  (:import [org.apache.jena.rdf.model Model ModelFactory ResourceFactory] ; Added Model
            [org.apache.jena.vocabulary RDF RDFS]
            [org.apache.jena.datatypes.xsd XSDDatatype]
-           [org.apache.jena.tdb2 TDB2Factory]
+           ; [org.apache.jena.tdb2 TDB2Factory] Removed, using db namespace
            [java.util UUID]))
 
 ;; Namespace definitions
@@ -107,23 +108,23 @@
     
     person-uri))
 
-(defn store-vcard-rdf! [person-uri model]
-  "Store the RDF model to TDB2"
-  (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")
-        dataset (TDB2Factory/connectDataset dataset-path)
-        target-model (.getDefaultModel dataset)]
+;; (defn store-vcard-rdf! [person-uri model] ; Function moved to db.clj
+;;   "Store the RDF model to TDB2"
+;;   (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")
+;;         dataset (TDB2Factory/connectDataset dataset-path)
+;;         target-model (.getDefaultModel dataset)]
     
-    (.begin dataset)
-    (try
-      (.add target-model model)
-      (.commit dataset)
-      (log/info "Successfully stored vCard RDF for person:" person-uri)
-      (catch Exception e
-        (.abort dataset)
-        (log/error "Failed to store vCard RDF:" (.getMessage e))
-        (throw e))
-      (finally
-        (.close dataset)))))
+;;     (.begin dataset)
+;;     (try
+;;       (.add target-model model)
+;;       (.commit dataset)
+;;       (log/info "Successfully stored vCard RDF for person:" person-uri)
+;;       (catch Exception e
+;;         (.abort dataset)
+;;         (log/error "Failed to store vCard RDF:" (.getMessage e))
+;;         (throw e))
+;;       (finally
+;;         (.close dataset)))))
 
 (defn validate-vcard [vcard-text]
   "Basic vCard validation"
@@ -148,7 +149,8 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
               
-              (store-vcard-rdf! person-uri model)
+              (db/store-rdf-model! model) ; Use db namespace
+              (log/info "Successfully stored vCard RDF for person:" person-uri) ; Added logging here
               
               (-> (response/response 
                    (json/write-value-as-string
@@ -175,7 +177,8 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
               
-              (store-vcard-rdf! person-uri model)
+              (db/store-rdf-model! model) ; Use db namespace
+              (log/info "Successfully stored vCard RDF for person:" person-uri) ; Added logging here
               
               (-> (response/response 
                    (json/write-value-as-string
@@ -228,7 +231,8 @@ END:VCARD")
         model (ModelFactory/createDefaultModel)]
     
     (vcard->rdf vcard-data person-uri model)
-    (store-vcard-rdf! person-uri model)
+    (db/store-rdf-model! model) ; Use db namespace
+    (log/info "Test vCard imported for person:" person-uri) ; Use logging
     
     (println "Test vCard imported:")
     (println "Person URI:" person-uri)
