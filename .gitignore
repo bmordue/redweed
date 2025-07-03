@@ -1,2 +1,4 @@
 .home
 data/
+.clj-kondo
+.lsp
