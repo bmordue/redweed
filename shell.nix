@@ -1,7 +1,7 @@
 # shell.nix
 { pkgs ? import <nixpkgs> {} }:
 
-in pkgs.mkShellNoCC {
+pkgs.mkShellNoCC {
   buildInputs = with pkgs; [
     clojure
     pkgs.openjdk17-headless
