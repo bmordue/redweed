@@ -1,0 +1,25 @@
+name: Clojure CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v20
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+
+    - name: Run tests
+      run: nix-shell --run "clj -M:test"
+
+    - name: Build uberjar (optional)
+      run: nix-shell --run "clj -M:uberjar"
