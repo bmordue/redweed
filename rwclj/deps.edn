@@ -60,6 +60,13 @@
            
            :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.4"}}
                    :ns-default build}
+
+           :coverage {:extra-deps {cloverage/cloverage {:mvn/version "1.2.4"}}
+                      :main-opts ["-m" "cloverage.coverage"
+                                  ;; Specify source and test paths relative to the rwclj directory
+                                  "-p" "src"
+                                  "-s" "test"
+                                  "--codecov"]} ; Generate Codecov JSON report
            
            :uberjar {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
