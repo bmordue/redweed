@@ -1,5 +1,5 @@
-(ns rwclj.redweed.api.vcard-test
-  (:require [clojure.test :refer :all]
+(ns rwclj.vcard-test
+  (:require [clojure.test :refer [deftest is testing]]
             [rwclj.redweed.api.vcard :as vcard-api]
             [rwclj.db :as db] ; For mocking if needed by handler tests later
             [clojure.string :as str])

@@ -1,11 +1,14 @@
-(ns rwclj.redweed.server-integration-test
-  (:require [clojure.test :refer :all]
-            [redweed.server :as server]
-            [rwclj.db :as db]
-            [clj-http.lite :as http]
-            [jsonista.core :as json]
-            [clojure.java.io :as io])
-  (:import [org.apache.jena.tdb2 TDB2Factory]))
+(ns rwclj.server-integration-test
+  (:require
+   [clj-http.lite :as http]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [clojure.test :refer [deftest is testing use-fixtures]]
+   [jsonista.core :as json]
+   [redweed.server :as server]
+   [rwclj.db :as db])
+  (:import
+   [org.apache.jena.tdb2 TDB2Factory]))
 
 (def test-port 9876) ; Use a different port for testing
 (def base-url (str "http://localhost:" test-port))

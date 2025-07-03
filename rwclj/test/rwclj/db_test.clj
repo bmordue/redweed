@@ -1,5 +1,5 @@
 (ns rwclj.db-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing use-fixtures]]
             [rwclj.db :as db] ; Corrected namespace
             [clojure.java.io :as io])
   (:import [org.apache.jena.tdb2 TDB2Factory] ; Added TDB2Factory
