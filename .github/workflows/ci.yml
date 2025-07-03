@@ -23,10 +23,11 @@ jobs:
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: test-results
         path: rwclj/target/junit.xml
-        if-no-files-found: error # 'warn' or 'ignore' are also available
+        if-no-files-found: warn # 'warn' or 'ignore' are also available
 
     - name: Generate coverage report
       run: nix-shell --run "cd rwclj && clj -M:coverage"
