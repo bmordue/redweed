@@ -1,10 +1,10 @@
 # shell.nix
 { pkgs ? import <nixpkgs> {} }:
 
-pkgs.mkShell {
+in pkgs.mkShellNoCC {
   buildInputs = with pkgs; [
     clojure
-    openjdk17
+    pkgs.openjdk17-headless
     gemini-cli
   ];
   
