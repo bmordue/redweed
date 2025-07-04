@@ -187,7 +187,7 @@
       (catch NumberFormatException _
         (when port-str
           (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
-        8080))))
+        8080)))))
 
 (defn -main [& args]
   (let [port (parse-port args)]
