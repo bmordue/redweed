@@ -62,7 +62,7 @@
            
            :seed {:main-opts ["-m" "rwclj.seed"]}
            
-           :server {:main-opts ["-m" "redeemed.server"]
+           :server {:main-opts ["-m" "rwclj.server"]
                     :extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-arq {:mvn/version "4.10.0"}

@@ -2,9 +2,9 @@
   (:require [clojure.tools.logging :as log])
   (:import [org.apache.jena.tdb2 TDB2Factory]
            [org.apache.jena.query QueryFactory QueryExecutionFactory]
-           [org.apache.jena.rdf.model Model RDFNode]))
+           [org.apache.jena.rdf.model Model]))
 
-(def ^:dynamic *dataset* nil)
+;; (def ^:dynamic *dataset* nil)
 
 (defn get-dataset []
   (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")]
