@@ -8,33 +8,33 @@
    [rwclj.server :as server]
    [rwclj.db :as db]))
 
-(def test-port 9876) ; Use a different port for testing
-(def base-url (str "http://localhost:" test-port))
-(def test-db-dir-str "target/test-jena-integration-db")
+;; (def test-port 9876) ; Use a different port for testing
+;; (def base-url (str "http://localhost:" test-port))
+;; (def test-db-dir-str "target/test-jena-integration-db")
 
-(defn- ensure-empty-dir! [dir-str]
-  (let [dir-file (io/file dir-str)]
-    (when (.exists dir-file)
-      (doseq [f (reverse (file-seq dir-file))]
-        (io/delete-file f)))
-    (.mkdirs dir-file)))
+;; (defn- ensure-empty-dir! [dir-str]
+;;   (let [dir-file (io/file dir-str)]
+;;     (when (.exists dir-file)
+;;       (doseq [f (reverse (file-seq dir-file))]
+;;         (io/delete-file f)))
+;;     (.mkdirs dir-file)))
 
-(defonce test-server (atom nil))
+;; (defonce test-server (atom nil))
 
-(defn server-fixture [f]
-  (ensure-empty-dir! test-db-dir-str)
-  (let [dataset (db/get-dataset)]
-    (try
-      (reset! test-server (server/start-server! test-port))
-      (f) ; Run the tests
-    (finally
-      (when @test-server
-        (.stop @test-server) ; Assuming Jetty server object has a stop method
-        (reset! test-server nil))
-      (ensure-empty-dir! test-db-dir-str)
-      (.close dataset))))) ; Restore original
+;; (defn server-fixture [f]
+;;   (ensure-empty-dir! test-db-dir-str)
+;;   (let [dataset (db/get-dataset)]
+;;     (try
+;;       (reset! test-server (server/start-server! test-port))
+;;       (f) ; Run the tests
+;;     (finally
+;;       (when @test-server
+;;         (.stop @test-server) ; Assuming Jetty server object has a stop method
+;;         (reset! test-server nil))
+;;       (ensure-empty-dir! test-db-dir-str)
+;;       (.close dataset))))) ; Restore original
 
-(use-fixtures :once server-fixture) ; :once because server start/stop is expensive
+;; (use-fixtures :once server-fixture) ; :once because server start/stop is expensive
 
 (deftest ^:kaocha/skip health-check-test
   (testing "Health check endpoint"
