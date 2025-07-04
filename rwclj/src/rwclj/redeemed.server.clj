@@ -10,7 +10,9 @@
             [clojure.tools.logging :as log]
             [clojure.string :as str]
             [redweed.api.vcard :as vcard] ; Moved from duplicate
-            [my-clojure-project.db :as db]) ; Moved from duplicate and added db require
+            [my-clojure-project.db :as db] ; Moved from duplicate and added db require
+            [ring.swagger.ui :as swagger-ui]
+            [ring.swagger.core :as swagger])
   (:import [org.apache.jena.rdf.model ModelFactory] ; Kept ModelFactory for vcard import if needed directly
            [java.time LocalDate]
            [java.time.format DateTimeFormatter])
@@ -119,34 +121,44 @@
 (defroutes app-routes
   ;; Health check
   (GET "/health" []
-    (response/response {:status "ok" :service "redeemed"})) ; Updated service name
+    {:summary "Health check endpoint"
+     :responses {200 {:body {:status string? :service string?}}}
+     :handler (fn [_] (response/response {:status "ok" :service "redeemed"}))}) ; Updated service name
 
   ;; vCard import endpoint
   (POST "/api/vcard/import" request
-    (vcard/import-vcard-handler request))
+    {:summary "Import vCard data to RDF store"
+     :consumes ["text/vcard" "application/json"]
+     :parameters {:body {:vcard string?}}
+     :responses {200 {:body {:message string?}}
+                 400 {:body {:error string?}}}
+     :handler vcard/import-vcard-handler})
 
   ;; API documentation
-  (GET "/api" []
-    (response/response
-     {:endpoints
-      [{:path "/contacts" :method "GET" :description "List all contacts"}
-       {:path "/contacts/:name" :method "GET" :description "Get contact by name"}
-       {:path "/events" :method "GET" :description "List events in date range (requires start_date and end_date params)"}
-       {:path "/places" :method "GET" :description "List all places"}
-       {:method "POST"
-        :path "/api/vcard/import"
-        :description "Import vCard data to RDF store"
-        :content-types ["text/vcard" "application/json"]
-        :example-json {:vcard "BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\n..."}}
-       {:method "GET"
-        :path "/health"
-        :description "Health check endpoint"}]}))
+  (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
+  (GET "/swagger.json" []
+    (response (swagger/swagger-json #'app-routes)))
 
   ;; Existing redeemed.server routes (assuming they will be added here)
-  (GET "/contacts" [] (list-contacts))
-  (GET "/contacts/:name" [name] (get-contact-by-name name))
-  (GET "/events" [start_date end_date] (list-events-in-range start_date end_date))
-  (GET "/places" [] (list-places))
+  (GET "/contacts" []
+    {:summary "List all contacts"
+     :responses {200 {:body {:contacts list?}}}
+     :handler (fn [_] (list-contacts))})
+  (GET "/contacts/:name" [name]
+    {:summary "Get contact by name"
+     :parameters {:path {:name string?}}
+     :responses {200 {:body {:contact map? :events list?}}
+                 404 {:body {:error string?}}}
+     :handler (fn [_] (get-contact-by-name name))})
+  (GET "/events" [start_date end_date]
+    {:summary "List events in date range"
+     :parameters {:query {:start_date string? :end_date string?}}
+     :responses {200 {:body {:events list? :date-range map?}}}
+     :handler (fn [_] (list-events-in-range start_date end_date))})
+  (GET "/places" []
+    {:summary "List all places"
+     :responses {200 {:body {:places list?}}}
+     :handler (fn [_] (list-places))})
 
   ;; 404 handler
   (route/not-found
@@ -154,6 +166,9 @@
 
 (def app
   (-> app-routes
+      (swagger/wrap-swagger {:info {:title "Redeemed API"
+                                    :version "1.0.0"
+                                    :description "API for the Redeemed application"}})
       wrap-keyword-params ; Added from redeemed.server
       wrap-params         ; Added from redeemed.server
       wrap-json-body      ; Added from redeemed.server (order matters)

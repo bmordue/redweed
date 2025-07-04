@@ -3,13 +3,6 @@
  :deps {;; Core Clojure
         org.clojure/clojure {:mvn/version "1.11.1"}
         
-        ;; Apache Jena RDF stack
-        org.apache.jena/jena-core {:mvn/version "4.10.0"}
-        org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
-        org.apache.jena/jena-arq {:mvn/version "4.10.0"}
-        org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
-        org.apache.jena/jena-text {:mvn/version "4.10.0"}
-        
         ;; Web server and routing
         ring/ring-core {:mvn/version "1.10.0"}
         ring/ring-jetty-adapter {:mvn/version "1.10.0"}
@@ -30,7 +23,11 @@
         aero/aero {:mvn/version "1.1.6"}
         
         ;; Spec for validation
-        org.clojure/spec.alpha {:mvn/version "0.3.218"}}
+        org.clojure/spec.alpha {:mvn/version "0.3.218"}
+
+        ;; Swagger for API documentation
+        metosin/ring-swagger {:mvn/version "0.26.2"}
+        metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
 
  :aliases {:dev {:extra-paths ["dev" "test"]
                  :extra-deps {;; REPL and development
@@ -44,23 +41,42 @@
                               hawk/hawk {:mvn/version "0.2.11"}}}
            
            :test {:extra-paths ["test"]
-                  :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}}
-                  :main-opts ["-m" "cognitect.test-runner"]
-                  :exec-fn cognitect.test-runner.api/test}
+                 :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
+                              lambdaisland/kaocha {:mvn/version "1.87.1366"}
+                              lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
+                              org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-text {:mvn/version "4.10.0"}
+                              org.apache.jena/jena-iri {:mvn/version "4.10.0"}}
+                 :main-opts ["-m" "kaocha.runner"]
+                 :exec-fn kaocha.runner/exec-fn}
+
+           :jena-deps {:extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-text {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-iri {:mvn/version "4.10.0"}}}
            
-           :seed {:main-opts ["-m" "heat-ray.seed"]}
+           :seed {:main-opts ["-m" "rwclj.seed"]}
            
-           :server {:main-opts ["-m" "redeemed.server"]} ; Corrected to redeemed.server
-           
-           :repl {:main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
-           
-           :build {:deps {io.github.clojure/tools.build {:mvn/version "0.9.4"}}
-                   :ns-default build}
-           
+           :server {:main-opts ["-m" "redeemed.server"]
+                    :extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-text {:mvn/version "4.10.0"}
+                                 org.apache.jena/jena-iri {:mvn/version "4.10.0"}}}
+
            :uberjar {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-arq {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-text {:mvn/version "4.10.0"}
+                                    org.apache.jena/jena-iri {:mvn/version "4.10.0"}
                                     ring/ring-core {:mvn/version "1.10.0"}
                                     ring/ring-jetty-adapter {:mvn/version "1.10.0"}
                                     ring/ring-json {:mvn/version "0.5.1"}
@@ -70,4 +86,4 @@
                                     ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
                                     aero/aero {:mvn/version "1.1.6"}
                                     org.clojure/spec.alpha {:mvn/version "0.3.218"}}
-                     :exec-fn heat-ray.main/main}}}
+                     :exec-fn rwclj.core/main}}}
