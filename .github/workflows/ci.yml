@@ -82,8 +82,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Replace with your SonarQube server URL
         with:
           args: >
-            -Dsonar.projectKey=your_project_key # Replace with your project key
-            -Dsonar.organization=your_organization_key # Replace with your organization key
+            -Dsonar.projectKey=bmordue_redweed
+            -Dsonar.organization=bmordue-github
             -Dsonar.sources=rwclj/src
             -Dsonar.tests=rwclj/test
             -Dsonar.junit.reportPaths=rwclj/target/junit.xml
