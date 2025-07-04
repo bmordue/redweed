@@ -16,7 +16,7 @@
           (.getString object)
           (.toString object)))))) ; Handle non-literals too, though mostly expecting literals here
 
-(deftest ^:kaocha/skip parse-vcard-line-test
+(deftest parse-vcard-line-test
   (testing "Parsing individual vCard lines"
     (is (= ["FN" "John Doe"] (vcard/parse-vcard-line "FN:John Doe")))
     (is (= ["N" "Doe;John;;;"] (vcard/parse-vcard-line "N:Doe;John;;;")))
