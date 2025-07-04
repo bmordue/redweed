@@ -172,7 +172,7 @@
       wrap-keyword-params ; Added from redeemed.server
       wrap-params         ; Added from redeemed.server
       wrap-json-body      ; Added from redeemed.server (order matters)
-      wrap-json-response)) ; Added from redweed.server
+      wrap-json-response))
 
 (defn start-server!
   ([] (start-server! 8080))
@@ -180,12 +180,24 @@
    (log/info "Starting Redeemed server on port" port) ; Updated server name
    (run-jetty app {:port port :join? false}))) ; run-jetty from redeemed.server
 
+(defn parse-port [args]
+  (let [port-str (first args)]
+    (try
+      (let [port (Integer/parseInt port-str)]
+        (if (<= 1 port 65535)
+          port
+          (do
+            (log/warn str "Port" port "is out of the valid range (1-65535). Falling back to default port 8080.")
+            8080)))
+      (catch NumberFormatException _
+        (when port-str
+          (log/warn str "Invalid port specified:" port-str ". Falling back to default port 8080."))
+        8080))))
+
 (defn -main [& args]
-  (let [port (if (first args)
-               (Integer/parseInt (first args))
-               8080)]
+  (let [port (parse-port args)]
     (start-server! port)
-    (log/info "Redeemed server running on port" port))) ; Updated server name
+    (log/info str "Redeemed server running on port " port))) ; Updated server name
 
 ;; For REPL development
 (comment
