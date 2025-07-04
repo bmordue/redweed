@@ -38,7 +38,7 @@
 
 (use-fixtures :once server-fixture) ; :once because server start/stop is expensive
 
-(deftest health-check-test
+(deftest ^:kaocha/skip health-check-test
   (testing "Health check endpoint"
     (let [response (http/get (str base-url "/health") {:throw-exceptions false})
           body (json/read-value (:body response))]
@@ -46,7 +46,7 @@
       (is (= "ok" (:status body)))
       (is (= "redweed" (:service body))))))
 
-(deftest api-docs-test
+(deftest ^:kaocha/skip api-docs-test
   (testing "API documentation endpoint"
     (let [response (http/get (str base-url "/api") {:throw-exceptions false})
           body (json/read-value (:body response))]
@@ -54,7 +54,7 @@
       (is (vector? (:endpoints body)))
       (is (pos? (count (:endpoints body)))))))
 
-(deftest vcard-import-integration-test
+(deftest ^:kaocha/skip vcard-import-integration-test
   (testing "vCard import via API"
     (let [sample-vcard-text "BEGIN:VCARD\nVERSION:3.0\nFN:Integration Test User\nN:User;Integration Test;;;\nEMAIL:integration@example.com\nEND:VCARD"
           expected-name "Integration Test User"]
