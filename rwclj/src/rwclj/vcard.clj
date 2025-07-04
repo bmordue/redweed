@@ -45,7 +45,7 @@
     [(str/upper-case (second match)) (str/trim (nth match 2))]))
 
 (defn parse-vcard
-  "Parse a single vCard line into property and value"
+  "Parse vCard text into a map of properties"
   [vcard-text]
   (let [lines (str/split-lines vcard-text)
         ;; Filter out BEGIN and END lines before parsing
@@ -135,8 +135,8 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
 
-              (db/store-rdf-model! (db/get-dataset) model) ; Use db namespace
-              (log/info "Successfully stored vCard RDF for person:" person-uri) ; Added logging here
+              (db/store-rdf-model! db/get-dataset model)
+              (log/info "Successfully stored vCard RDF for person:" person-uri)
 
               (-> (response/response
                    (json/write-value-as-string
@@ -163,8 +163,8 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
 
-              (db/store-rdf-model! (db/get-dataset) model) ; Use db namespace
-              (log/info "Successfully stored vCard RDF for person:" person-uri) ; Added logging here
+              (db/store-rdf-model! db/get-dataset model)
+              (log/info "Successfully stored vCard RDF for person:" person-uri)
 
               (-> (response/response
                    (json/write-value-as-string
@@ -218,7 +218,7 @@ END:VCARD")
         model (ModelFactory/createDefaultModel)]
     
     (vcard->rdf vcard-data person-uri model)
-    (db/store-rdf-model! (db/get-dataset) model)
+    (db/store-rdf-model! db/get-dataset model)
     (log/info "Test vCard imported for person:" person-uri)
     
     (println "Test vCard imported:")

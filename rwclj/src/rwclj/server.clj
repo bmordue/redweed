@@ -182,17 +182,17 @@
         (if (<= 1 port 65535)
           port
           (do
-            (log/warn str "Port" port "is out of the valid range (1-65535). Falling back to default port 8080.")
+            (log/warn (str "Port" port "is out of the valid range (1-65535). Falling back to default port 8080."))
             8080)))
       (catch NumberFormatException _
         (when port-str
-          (log/warn str "Invalid port specified:" port-str ". Falling back to default port 8080."))
+          (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
         8080))))
 
 (defn -main [& args]
   (let [port (parse-port args)]
     (start-server! port)
-    (log/info str "Redweed server running on port " port))) ; Updated server name
+    (log/info (str "Redweed server running on port " port))))
 
 ;; For REPL development
 (comment
