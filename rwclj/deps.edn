@@ -23,7 +23,11 @@
         aero/aero {:mvn/version "1.1.6"}
         
         ;; Spec for validation
-        org.clojure/spec.alpha {:mvn/version "0.3.218"}}
+        org.clojure/spec.alpha {:mvn/version "0.3.218"}
+
+        ;; Swagger for API documentation
+        metosin/ring-swagger {:mvn/version "0.26.2"}
+        metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
 
  :aliases {:dev {:extra-paths ["dev" "test"]
                  :extra-deps {;; REPL and development
