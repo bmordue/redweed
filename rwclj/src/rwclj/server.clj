@@ -1,10 +1,10 @@
-(ns redweed.server
+(ns rwclj.server
   (:require [ring.adapter.jetty :as jetty]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
             [ring.util.response :as response]
-            [redweed.api.vcard :as vcard]
+            [rwclj.vcard :as vcard]
             [clojure.tools.logging :as log])
   (:gen-class))
 
@@ -56,32 +56,32 @@
 (comment
   (def server (start-server! 8080))
   (.stop server))
-</antArtifact>**API Usage Examples:**
+;; </antArtifact>**API Usage Examples:**
 
-**Raw vCard:**
-```bash
-curl -X POST http://localhost:8080/api/vcard/import \
-  -H "Content-Type: text/vcard" \
-  --data-binary @contact.vcf
-```
+;; **Raw vCard:**
+;; ```bash
+;; curl -X POST http://localhost:8080/api/vcard/import \
+;;   -H "Content-Type: text/vcard" \
+;;   --data-binary @contact.vcf
+;; ```
 
-**JSON with vCard:**
-```bash
-curl -X POST http://localhost:8080/api/vcard/import \
-  -H "Content-Type: application/json" \
-  -d '{"vcard": "BEGIN:VCARD\nVERSION:3.0\nFN:Jane Smith\nN:Smith;Jane;;;\nEMAIL:jane@example.com\nEND:VCARD"}'
-```
+;; **JSON with vCard:**
+;; ```bash
+;; curl -X POST http://localhost:8080/api/vcard/import \
+;;   -H "Content-Type: application/json" \
+;;   -d '{"vcard": "BEGIN:VCARD\nVERSION:3.0\nFN:Jane Smith\nN:Smith;Jane;;;\nEMAIL:jane@example.com\nEND:VCARD"}'
+;; ```
 
-**Features:**
-- Parses vCard 3.0/4.0 format 
-- Maps to FOAF and vCard ontologies
-- Generates semantic URIs
-- Stores in your TDB2 database
-- Returns person URI for linking
+;; **Features:**
+;; - Parses vCard 3.0/4.0 format 
+;; - Maps to FOAF and vCard ontologies
+;; - Generates semantic URIs
+;; - Stores in your TDB2 database
+;; - Returns person URI for linking
 
-**Start the server:**
-```bash
-clj -M:server
-```
+;; **Start the server:**
+;; ```bash
+;; clj -M:server
+;; ```
 
-The API automatically converts vCard properties to RDF triples using established ontologies, making the contact data semantically queryable alongside your existing hiking data!
+;; The API automatically converts vCard properties to RDF triples using established ontologies, making the contact data semantically queryable alongside your existing hiking data!

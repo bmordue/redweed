@@ -33,7 +33,8 @@ The project uses aliases defined in `rwclj/deps.edn` for common tasks.
 
 *   **Seed the database**: `clj -M:seed`
 *   **Start the API server**: `clj -M:server`
-*   **Run tests**: `clj -M:test`
+*   **Run tests**: `./bin/kaocha`
+*   **Run tests and stop at the first failing test**: `./bin/kaocha --fail-fast`
 *   **Start a development REPL**: `clj -M:repl`
 *   **Build an uberjar**: `clj -M:uberjar`
 
