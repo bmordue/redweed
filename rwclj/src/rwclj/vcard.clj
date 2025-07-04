@@ -51,7 +51,10 @@
 (defn parse-vcard [vcard-text]
   "Parse vCard text into a map of properties"
   (let [lines (str/split-lines vcard-text)
-        properties (keep parse-vcard-line lines)]
+        ;; Filter out BEGIN and END lines before parsing
+        data-lines (filter #(and (not (str/starts-with? % "BEGIN:"))
+                                 (not (str/starts-with? % "END:"))) lines)
+        properties (keep parse-vcard-line data-lines)]
     (reduce (fn [acc [prop value]]
               (update acc prop (fnil conj []) value))
             {} properties)))
