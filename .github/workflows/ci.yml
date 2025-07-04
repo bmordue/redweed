@@ -29,6 +29,12 @@ jobs:
         path: rwclj/target/junit.xml
         if-no-files-found: warn # 'warn' or 'ignore' are also available
 
+    - name: Publish Test Report
+      uses: mikepenz/action-junit-report@v5
+      if: always()
+      with:
+        report_paths: 'rwclj/target/junit.xml'
+
     - name: Generate coverage report
       run: nix-shell --run "cd rwclj && clj -M:coverage"
 
