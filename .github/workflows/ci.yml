@@ -79,7 +79,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Replace with your SonarQube server URL
+          # SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Replace with your SonarQube server URL
         with:
           args: >
             -Dsonar.projectKey=bmordue_redweed
