@@ -131,9 +131,9 @@
      :handler (fn [request] (vcard/import-vcard-handler request))})
 
   ;; API documentation
-  (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
-  (GET "/swagger.json" []
-    (response (swagger/swagger-json #'app-routes)))
+  ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
+  ;; (GET "/swagger.json" []
+  ;;   (response (swagger/swagger-json #'app-routes)))
 
   (GET "/contacts" []
     {:summary "List all contacts"
@@ -187,7 +187,7 @@
       (catch NumberFormatException _
         (when port-str
           (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
-        8080))))
+        8080)))))
 
 (defn -main [& args]
   (let [port (parse-port args)]

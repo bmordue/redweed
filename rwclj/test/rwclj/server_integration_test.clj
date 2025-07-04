@@ -6,9 +6,7 @@
    [clojure.test :refer [deftest is testing use-fixtures]]
    [jsonista.core :as json]
    [rwclj.server :as server]
-   [rwclj.db :as db])
-  (:import
-   [org.apache.jena.tdb2 TDB2Factory]))
+   [rwclj.db :as db]))
 
 (def test-port 9876) ; Use a different port for testing
 (def base-url (str "http://localhost:" test-port))
@@ -73,8 +71,9 @@
           ;; Verify data in DB
           (let [person-uri (:person-uri response-body)
                 query-results (db/execute-sparql-select
-                                (str "PREFIX foaf: <http://xmlns.com/foaf/0.1/> "
-                                     "SELECT ?name WHERE { <" person-uri "> foaf:name ?name . }"))]
+                               (db/get-dataset)
+                               (str "PREFIX foaf: <http://xmlns.com/foaf/0.1/> "
+                                    "SELECT ?name WHERE { <" person-uri "> foaf:name ?name . }"))]
             (is (= 1 (count query-results)))
             (is (= expected-name (-> query-results first :name))))))
 
@@ -98,8 +97,9 @@
           ;; Verify data in DB
           (let [person-uri (:person-uri response-body)
                 query-results (db/execute-sparql-select
-                                (str "PREFIX foaf: <http://xmlns.com/foaf/0.1/> "
-                                     "SELECT ?name WHERE { <" person-uri "> foaf:name ?name . }"))]
+                               (db/get-dataset)
+                               (str "PREFIX foaf: <http://xmlns.com/foaf/0.1/> "
+                                    "SELECT ?name WHERE { <" person-uri "> foaf:name ?name . }"))]
             (is (= 1 (count query-results)))
             (is (= expected-name (-> query-results first :name))))))
 
