@@ -48,3 +48,45 @@ jobs:
 
 #    - name: Build uberjar (optional)
 #      run: nix-shell --run "cd rwclj && clj -M:uberjar"
+
+  sonarqube:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin' # Optional 'temurin' or 'zulu'
+      - name: Cache SonarQube packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/deps.edn') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # Replace with your SonarQube server URL
+        with:
+          args: >
+            -Dsonar.projectKey=your_project_key # Replace with your project key
+            -Dsonar.organization=your_organization_key # Replace with your organization key
+            -Dsonar.sources=rwclj/src
+            -Dsonar.tests=rwclj/test
+            -Dsonar.junit.reportPaths=rwclj/target/junit.xml
+            -Dsonar.java.binaries=rwclj/target/classes # Adjust if necessary
+            -Dsonar.clojure.file.suffixes=.clj,.cljs,.cljc # Assuming a Clojure plugin might use this
+            -Dsonar.sourceEncoding=UTF-8
