@@ -137,7 +137,7 @@
   ;; API documentation
   (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
   (GET "/swagger.json" []
-    (response (swagger/swagger-json app-routes)))
+    (response (swagger/swagger-json #'app-routes)))
 
   ;; Existing redeemed.server routes (assuming they will be added here)
   (GET "/contacts" []
@@ -149,13 +149,12 @@
      :parameters {:path {:name string?}}
      :responses {200 {:body {:contact map? :events list?}}
                  404 {:body {:error string?}}}
-     :handler (fn [request] (get-contact-by-name (get-in request [:params :name])))})
+     :handler (fn [_] (get-contact-by-name name))})
   (GET "/events" [start_date end_date]
     {:summary "List events in date range"
      :parameters {:query {:start_date string? :end_date string?}}
      :responses {200 {:body {:events list? :date-range map?}}}
-     :handler (fn [request] (list-events-in-range (get-in request [:query-params "start_date"])
-                                                 (get-in request [:query-params "end_date"])))})
+     :handler (fn [_] (list-events-in-range start_date end_date))})
   (GET "/places" []
     {:summary "List all places"
      :responses {200 {:body {:places list?}}}
@@ -173,8 +172,7 @@
       wrap-keyword-params ; Added from redeemed.server
       wrap-params         ; Added from redeemed.server
       wrap-json-body      ; Added from redeemed.server (order matters)
-      wrap-json-response
-      wrap-json-params)) ; Added from redweed.server
+      wrap-json-response)) ; Added from redweed.server
 
 (defn start-server!
   ([] (start-server! 8080))
