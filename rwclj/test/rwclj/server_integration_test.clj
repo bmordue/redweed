@@ -25,20 +25,16 @@
 
 (defn server-fixture [f]
   (ensure-empty-dir! test-db-dir-str)
-  (let [original-get-dataset db/get-dataset] ; Store original for restoration
-    (with-redefs [db/get-dataset (fn []
-                                   ;; This ensures all calls to get-dataset during the test
-                                   ;; point to our isolated test database.
-                                   (TDB2Factory/connectDataset test-db-dir-str))]
-      (try
-        (reset! test-server (server/start-server! test-port))
-        (f) ; Run the tests
-      (finally
-        (when @test-server
-          (.stop @test-server) ; Assuming Jetty server object has a stop method
-          (reset! test-server nil))
-        (ensure-empty-dir! test-db-dir-str) ; Clean up db
-        (alter-var-root #'db/get-dataset (constantly original-get-dataset))))))) ; Restore original
+  (let [dataset (db/get-dataset)]
+    (try
+      (reset! test-server (server/start-server! test-port))
+      (f) ; Run the tests
+    (finally
+      (when @test-server
+        (.stop @test-server) ; Assuming Jetty server object has a stop method
+        (reset! test-server nil))
+      (ensure-empty-dir! test-db-dir-str)
+      (.close dataset))))) ; Restore original
 
 (use-fixtures :once server-fixture) ; :once because server start/stop is expensive
 
