@@ -40,7 +40,7 @@
                               ;; File watching
                               hawk/hawk {:mvn/version "0.2.11"}}}
            
-           :test {:extra-paths ["test"]
+           :test {:extra-paths ["test" "src"]
                  :extra-deps {org.clojure/test.check {:mvn/version "1.1.1"}
                               lambdaisland/kaocha {:mvn/version "1.87.1366"}
                               lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
@@ -49,7 +49,9 @@
                               org.apache.jena/jena-arq {:mvn/version "4.10.0"}
                               org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
                               org.apache.jena/jena-text {:mvn/version "4.10.0"}
-                              org.apache.jena/jena-iri {:mvn/version "4.10.0"}}
+                              org.apache.jena/jena-iri {:mvn/version "4.10.0"}
+                              metosin/ring-swagger {:mvn/version "0.26.2"}
+                              metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
                  :main-opts ["-m" "kaocha.runner"]
                  :exec-fn kaocha.runner/exec-fn}
 
@@ -62,13 +64,14 @@
            
            :seed {:main-opts ["-m" "rwclj.seed"]}
            
-           :server {:main-opts ["-m" "redeemed.server"]
+           :server {:main-opts ["-m" "rwclj.server"]
                     :extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-arq {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
                                  org.apache.jena/jena-text {:mvn/version "4.10.0"}
-                                 org.apache.jena/jena-iri {:mvn/version "4.10.0"}}}
+                                 org.apache.jena/jena-iri {:mvn/version "4.10.0"}
+                                 metosin/ring-swagger-ui {:mvn/version "4.15.5"}}}
 
            :uberjar {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
