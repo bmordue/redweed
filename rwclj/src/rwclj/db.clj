@@ -4,7 +4,7 @@
            [org.apache.jena.query QueryFactory QueryExecutionFactory]
            [org.apache.jena.rdf.model Model]))
 
-;; (def ^:dynamic *dataset* nil)
+(def ^:dynamic *dataset* nil)
 
 (defn get-dataset []
   (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")]
@@ -12,7 +12,6 @@
 
 (defn execute-sparql-select [dataset query-string]
   (try
-    (.begin dataset)
     (let [model (.getDefaultModel dataset)
           query (QueryFactory/create query-string)
           qexec (QueryExecutionFactory/create query model)
@@ -34,23 +33,12 @@
       @result-list)
     (catch Exception e
       (log/error e "Error executing SPARQL query")
-      [])
-    (finally
-      (.end dataset))))
+      [])))
 
 (defn store-rdf-model! [dataset ^Model model]
-  (try
-    (.begin dataset)
-    (let [target-model (.getDefaultModel dataset)]
-      (.add target-model model)
-      (.commit dataset)
-      (log/info "Successfully stored RDF model"))
-    (catch Exception e
-      (.abort dataset)
-      (log/error "Failed to store RDF model:" (.getMessage e))
-      (throw e))
-    (finally
-      (.end dataset))))
+  (let [target-model (.getDefaultModel dataset)]
+    (.add target-model model)
+    (log/info "Successfully stored RDF model")))
 
 
 
