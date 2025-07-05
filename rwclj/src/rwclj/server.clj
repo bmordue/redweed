@@ -9,9 +9,7 @@
             [clojure.tools.logging :as log]
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
-            [rwclj.db :as db]
-            [ring.swagger.ui :as swagger-ui]
-            [ring.swagger.core :as swagger]) 
+            [rwclj.db :as db])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -161,9 +159,9 @@
 
 (def app
   (-> app-routes
-      (swagger/wrap-swagger {:info {:title "Redweed API"
-                                    :version "1.0.0"
-                                    :description "API for the Redweed application"}})
+      ;; (swagger/wrap-swagger {:info {:title "Redweed API"
+      ;;                              :version "1.0.0"
+      ;;                              :description "API for the Redweed application"}})
       wrap-keyword-params
       wrap-params
       wrap-json-body

@@ -18,21 +18,17 @@
 
 (defn db-fixture [f]
   (ensure-empty-dir! test-db-dir-str)
-  ;; Redefine db/get-dataset to use a temporary TDB2 dataset for these tests
-  (with-redefs [db/get-dataset (fn [] (TDB2Factory/connectDataset test-db-dir-str))]
-    (f))
+  (binding [db/*dataset* (TDB2Factory/connectDataset test-db-dir-str)]
+    (f)
+    (.close db/*dataset*))
   (ensure-empty-dir! test-db-dir-str)) ; Clean up after
 
 (use-fixtures :each db-fixture)
 
 (deftest get-dataset-test
   (testing "Dataset retrieval"
-    (let [dataset (db/get-dataset)] ; This will use the redefined version
-      (is (instance? Dataset dataset) "Should return a Dataset object")
-      (is (.isInTransaction dataset) "Dataset should be in a transaction if get-dataset starts one, or check if it's usable")
-      ;; The original db/get-dataset just connects, transaction is handled by other functions
-      ;; So we just check if we got a dataset.
-      (.close dataset))))
+    (is (instance? Dataset db/*dataset*) "Should return a Dataset object")
+    (is (not (.isClosed db/*dataset*)) "Dataset should be open")))
 
 (deftest store-and-retrieve-model-test
   (testing "Storing and retrieving an RDF model"
@@ -45,9 +41,10 @@
           object (ResourceFactory/createResource object-uri)]
       (.add model subject predicate object)
 
-      (db/store-rdf-model! model)
+      (db/store-rdf-model! db/*dataset* model)
 
       (let [retrieved-data (db/execute-sparql-select
+                             db/*dataset*
                              (str "SELECT ?s ?p ?o WHERE { <" subject-uri "> <" predicate-uri "> ?o }"))
             expected-result {:s subject-uri :p predicate-uri :o object-uri}]
         (is (= 1 (count retrieved-data)) "Should retrieve one triple")
@@ -63,17 +60,17 @@
       (.add model person2 RDF/type (ResourceFactory/createResource "http://xmlns.com/foaf/0.1/Person"))
       (.add model person2 (ResourceFactory/createProperty "http://xmlns.com/foaf/0.1/name") "Bob")
 
-      (db/store-rdf-model! model)
+      (db/store-rdf-model! db/*dataset* model)
 
-      (let [all-persons (db/execute-sparql-select "SELECT ?person ?name WHERE { ?person a <http://xmlns.com/foaf/0.1/Person> ; <http://xmlns.com/foaf/0.1/name> ?name . }")
-            alice (db/execute-sparql-select "SELECT ?person ?name WHERE { ?person <http://xmlns.com/foaf/0.1/name> \"Alice\" . }")]
+      (let [all-persons (db/execute-sparql-select db/*dataset* "SELECT ?person ?name WHERE { ?person a <http://xmlns.com/foaf/0.1/Person> ; <http://xmlns.com/foaf/0.1/name> ?name . }")
+            alice (db/execute-sparql-select db/*dataset* "SELECT ?person ?name WHERE { ?person <http://xmlns.com/foaf/0.1/name> \"Alice\" . }")]
         (is (= 2 (count all-persons)) "Should find two persons")
         (is (= 1 (count alice)) "Should find Alice")
         (is (= (-> alice first :name) "Alice") "Alice's name should be correct")))))
 
 (deftest error-handling-test
   (testing "Error handling for SPARQL queries"
-    (is (empty? (db/execute-sparql-select "SELECT ?s WHERE { INVALID SPARQL }")) "Should return empty list on invalid query")))
+    (is (empty? (db/execute-sparql-select db/*dataset* "SELECT ?s WHERE { INVALID SPARQL }")) "Should return empty list on invalid query")))
 
 ;; Note: Testing JENA_DB_PATH override requires running as a separate process
 ;; or more complex fixture setup, which might be overkill for unit tests if
