@@ -7,12 +7,23 @@
                  [metosin/ring-swagger-ui "4.0.0"]
                  [org.clojure/tools.logging "1.3.0"]
                  [org.apache.jena/jena-tdb2 "5.0.0"]
+                 [org.apache.jena/jena-arq "5.0.0"]
+                 [org.apache.jena/jena-core "5.0.0"]
                  [clj-http "3.13.0"]
                  [metosin/jsonista "0.3.13"]
-                 [ring/ring-jetty-adapter "1.14.2"]
+                 [ring/ring-core "1.12.2"]
+                 [ring/ring-jetty-adapter "1.12.2"]
                  [ring/ring-json "0.5.1"]
-                 [compojure "1.7.1"]]
+                 [ring/ring-codec "1.2.0"]
+                 [compojure "1.7.1"]
+                 [com.drewnoakes/metadata-extractor "2.19.0"]
+                 [ring/ring-mock "0.4.0"]
+                 [org.clojure/data.json "2.5.0"]
+                 [ring/ring-devel "1.12.2"]]
   :main ^:skip-aot rwclj.core
   :target-path "target/%s"
+  :test-selectors {:default (fn [m] (not (or (:integration m) (:skip m))))
+                   :integration :integration
+                   :all (constantly true)}
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})

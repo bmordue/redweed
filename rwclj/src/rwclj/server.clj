@@ -10,7 +10,8 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-            [rwclj.photo :as photo])
+            [rwclj.photo :as photo]
+            [rwclj.video :as video])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -132,10 +133,18 @@
   (POST "/api/photo/upload" request
     {:summary "Upload a photo"
      :consumes ["multipart/form-data"]
-     :parameters {:formData {:file org.ring-core.spec.MultipartFileInput}}
+     :parameters {:formData {:file "file"}}
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
+
+  (POST "/api/video/ingest" request
+    {:summary "Ingest a video from a URL"
+     :consumes ["application/json"]
+     :parameters {:body {:url string?}}
+     :responses {200 {:body {:message string? :video-url string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (video/process-video-ingest request))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})

@@ -5,39 +5,13 @@
             [clojure.tools.logging :as log]
             [rwclj.db :as db])
   (:import [org.apache.jena.rdf.model ModelFactory ResourceFactory]
-           [org.apache.jena.vocabulary RDF]
-           [java.util UUID]))
+           [org.apache.jena.vocabulary RDF DC]
+           [java.util UUID]
+           [com.github.andrewoma.dexx.collection Map]))
 
 ;; Namespace definitions
 (def base-uri "http://redweed.local/")
 (def foaf-ns "http://xmlns.com/foaf/0.1/")
-(def vcard-ns "http://www.w3.org/2006/vcard/ns#")
-
-;; Helper functions
-(defn create-resource [uri]
-  (ResourceFactory/createResource uri))
-
-(defn create-property [uri]
-  (ResourceFactory/createProperty uri))
-
-(defn create-literal 
-  ([value] (ResourceFactory/createPlainLiteral (str value)))
-  ([value datatype] (ResourceFactory/createTypedLiteral value datatype)))
-
-;; Properties
-(def foaf-name (create-property (str foaf-ns "name")))
-(def foaf-givenName (create-property (str foaf-ns "givenName")))
-(def foaf-familyName (create-property (str foaf-ns "familyName")))
-(def foaf-mbox (create-property (str foaf-ns "mbox")))
-(def foaf-phone (create-property (str foaf-ns "phone")))
-(def vcard-hasEmail (create-property (str vcard-ns "hasEmail")))
-(def vcard-hasTelephone (create-property (str vcard-ns "hasTelephone")))
-(def vcard-hasAddress (create-property (str vcard-ns "hasAddress")))
-(def vcard-organization-name (create-property (str vcard-ns "organization-name")))
-
-;; Types
-(def foaf-Person (create-resource (str foaf-ns "Person")))
-(def vcard-Individual (create-resource (str vcard-ns "Individual")))
 
 ;; vCard parsing
 (defn parse-vcard-line [line]
@@ -56,7 +30,7 @@
               (update acc prop (fnil conj []) value))
             {} properties)))
 
-(defn generate-person-uri 
+(defn generate-person-uri
   "Generate a URI for a person based on vCard data"
   [vcard-data]
   (let [fn-name (first (get vcard-data "FN" []))
@@ -71,16 +45,14 @@
 (defn vcard->rdf
   "Convert vCard data to RDF triples"
   [vcard-data person-uri model]
-  (let [person (create-resource person-uri)]
+  (let [person (ResourceFactory/createResource person-uri)]
 
     ;; Basic person type
-    (doto model
-      (.add person RDF/type foaf-Person)
-      (.add person RDF/type vcard-Individual))
+    (.add model person RDF/type (ResourceFactory/createResource (str foaf-ns "Agent")))
 
     ;; Full name
     (when-let [fn-name (first (get vcard-data "FN"))]
-      (.add model person foaf-name (create-literal fn-name)))
+      (.add model person DC/title (ResourceFactory/createPlainLiteral fn-name)))
 
     ;; Structured name
     (when-let [n-value (first (get vcard-data "N"))]
@@ -88,25 +60,25 @@
             family-name (first name-parts)
             given-name (second name-parts)]
         (when (and family-name (not (str/blank? family-name)))
-          (.add model person foaf-familyName (create-literal family-name)))
+          (.add model person DC/subject (ResourceFactory/createPlainLiteral family-name)))
         (when (and given-name (not (str/blank? given-name)))
-          (.add model person foaf-givenName (create-literal given-name)))))
+          (.add model person DC/subject (ResourceFactory/createPlainLiteral given-name)))))
 
     ;; Email addresses
     (doseq [email (get vcard-data "EMAIL" [])]
-      (.add model person foaf-mbox (create-resource (str "mailto:" email))))
+      (.add model person DC/source (ResourceFactory/createResource (str "mailto:" email))))
 
     ;; Phone numbers
     (doseq [tel (get vcard-data "TEL" [])]
-      (.add model person foaf-phone (create-literal tel)))
+      (.add model person DC/source (ResourceFactory/createPlainLiteral tel)))
 
     ;; Organization
     (when-let [org (first (get vcard-data "ORG"))]
-      (.add model person vcard-organization-name (create-literal org)))
+      (.add model person DC/publisher (ResourceFactory/createPlainLiteral org)))
 
     ;; Address (simplified - vCard addresses are complex)
     (when-let [adr (first (get vcard-data "ADR"))]
-      (.add model person vcard-hasAddress (create-literal adr)))
+      (.add model person DC/source (ResourceFactory/createPlainLiteral adr)))
 
     person-uri))
 
@@ -135,7 +107,7 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
 
-              (db/store-rdf-model! db/get-dataset model)
+              (db/store-rdf-model! (db/get-dataset) model)
               (log/info "Successfully stored vCard RDF for person:" person-uri)
 
               (-> (response/response
@@ -163,7 +135,7 @@
                   model (ModelFactory/createDefaultModel)
                   _ (vcard->rdf vcard-data person-uri model)]
 
-              (db/store-rdf-model! db/get-dataset model)
+              (db/store-rdf-model! (db/get-dataset) model)
               (log/info "Successfully stored vCard RDF for person:" person-uri)
 
               (-> (response/response
@@ -199,7 +171,7 @@
           (response/status 500)))))
 
 ;; Test data and utilities
-(def sample-vcard 
+(def sample-vcard
   "BEGIN:VCARD
 VERSION:3.0
 FN:John Doe
@@ -216,11 +188,11 @@ END:VCARD")
   (let [vcard-data (parse-vcard sample-vcard)
         person-uri (generate-person-uri vcard-data)
         model (ModelFactory/createDefaultModel)]
-    
+
     (vcard->rdf vcard-data person-uri model)
-    (db/store-rdf-model! db/get-dataset model)
+    (db/store-rdf-model! (db/get-dataset) model)
     (log/info "Test vCard imported for person:" person-uri)
-    
+
     (println "Test vCard imported:")
     (println "Person URI:" person-uri)
     (println "vCard data:" vcard-data)))
@@ -228,6 +200,6 @@ END:VCARD")
 (comment
   ;; Test the vCard parsing
   (parse-vcard sample-vcard)
-  
+
   ;; Test the full import process
   (test-vcard-import))

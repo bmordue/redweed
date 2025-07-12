@@ -1,11 +1,13 @@
 (ns rwclj.photo
   (:require [clojure.java.io :as io]
             [clojure.tools.logging :as log]
-            [rwclj.db :as db])
+            [rwclj.db :as db]
+            [ring.util.response :as response]
+            [jsonista.core :as json])
   (:import [com.drew.imaging ImageMetadataReader]
            [com.drew.metadata.exif ExifSubIFDDirectory]
            [org.apache.jena.rdf.model ModelFactory Resource]
-           [org.apache.jena.vocabulary RDF VCARD]))
+           [org.apache.jena.vocabulary DC RDF]))
 
 (defn- get-exif-date-time [metadata]
   (when-let [directory (.getDirectory metadata ExifSubIFDDirectory)]
@@ -15,9 +17,9 @@
 (defn- create-rdf-model [metadata file-uri]
   (let [model (ModelFactory/createDefaultModel)
         photo-resource (.createResource model file-uri)]
-    (.add model photo-resource RDF/type VCARD/PHOTO)
+    (.add model photo-resource DC/type "StillImage")
     (when-let [date-time (get-exif-date-time metadata)]
-      (.add model photo-resource (.createProperty model "http://purl.org/dc/elements/1.1/date") (str date-time)))
+      (.add model photo-resource DC/date (str date-time)))
     model))
 
 (defn extract-exif-metadata [file]
@@ -33,7 +35,11 @@
       (let [metadata (extract-exif-metadata (io/file file-uri))
             rdf-model (create-rdf-model metadata file-uri)]
         (db/store-rdf-model! (db/get-dataset) rdf-model)
-        {:status 200 :body {:message "Photo uploaded successfully" :file-uri file-uri}})
+        (-> (response/response (json/write-value-as-string {:message "Photo uploaded successfully" :file-uri file-uri}))
+            (response/status 200)
+            (response/header "Content-Type" "application/json")))
       (catch Exception e
         (log/error e "Error processing photo upload")
-        {:status 500 :body {:error "Error processing photo upload"}}))))
+        (-> (response/response (json/write-value-as-string {:error "Error processing photo upload"}))
+            (response/status 500)
+            (response/header "Content-Type" "application/json"))))))
