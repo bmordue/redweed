@@ -2,7 +2,7 @@
 
 **About**
 
-redweed is an RDF database for personal information management. It c supports importing and querying descriptions of people, places, events, media and other arbitrary types of data.
+redweed is an RDF database for personal information management. It supports importing and querying descriptions of people (via vCard import), places, events, and photos.
 
 **Key Dependencies:**
 - **Jena stack** - Core RDF functionality, TDB2 storage, SPARQL
