@@ -1,4 +1,6 @@
-None.apache.jena.vocabulary RDF RDFS]
+(ns rwclj.seed
+  (:import [org.apache.jena.rdf.model ResourceFactory ModelFactory]
+           [org.apache.jena.vocabulary RDF RDFS]
            [org.apache.jena.datatypes.xsd XSDDatatype]
            [org.apache.jena.tdb2 TDB2Factory]
            [java.time LocalDateTime]
@@ -59,98 +61,8 @@ None.apache.jena.vocabulary RDF RDFS]
 (def schema-Mountain (create-resource (str schema-ns "Mountain")))
 (def schema-ExerciseAction (create-resource (str schema-ns "ExerciseAction")))
 
-(defn seed-data! []
-  (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")
-        dataset (TDB2Factory/connectDataset dataset-path)
-        model (.getDefaultModel dataset)]
-    
-    (println "Seeding Redweed database with Bennachie hike data...")
-    
-    ;; Begin transaction
-    (.begin dataset)
-    
-    try
-      ;; People
-      (doto model
-        (.add (create-resource ben-uri) RDF/type foaf-Person)
-        (.add (create-resource ben-uri) foaf-name (create-literal "Ben Mordue"))
-        (.add (create-resource ben-uri) foaf-givenName (create-literal "Ben"))
-        (.add (create-resource ben-uri) foaf-familyName (create-literal "Mordue"))
-        
-        (.add (create-resource ruth-uri) RDF/type foaf-Person)
-        (.add (create-resource ruth-uri) foaf-name (create-literal "Ruth Mordue"))
-        (.add (create-resource ruth-uri) foaf-givenName (create-literal "Ruth"))
-        (.add (create-resource ruth-uri) foaf-familyName (create-literal "Mordue")))
-      
-      ;; Places
-      (doto model
-        ;; Bennachie summit
-        (.add (create-resource bennachie-uri) RDF/type geo-SpatialThing)
-        (.add (create-resource bennachie-uri) RDF/type schema-Mountain)
-        (.add (create-resource bennachie-uri) RDFS/label (create-literal "Bennachie"))
-        (.add (create-resource bennachie-uri) geo-lat (create-literal "57.2892" XSDDatatype/XSDdecimal))
-        (.add (create-resource bennachie-uri) geo-long (create-literal "-2.5164" XSDDatatype/XSDdecimal))
-        
-        ;; Car park
-        (.add (create-resource car-park-uri) RDF/type geo-SpatialThing)
-        (.add (create-resource car-park-uri) RDFS/label (create-literal "Bennachie Car Park"))
-        (.add (create-resource car-park-uri) geo-lat (create-literal "57.2850" XSDDatatype/XSDdecimal))
-        (.add (create-resource car-park-uri) geo-long (create-literal "-2.5200" XSDDatatype/XSDdecimal)))
-      
-      ;; Main hike event
-      (doto model
-        (.add (create-resource hike-event-uri) RDF/type event-Event)
-        (.add (create-resource hike-event-uri) RDF/type schema-ExerciseAction)
-        (.add (create-resource hike-event-uri) RDFS/label (create-literal "Bennachie Hike - July 1, 2025"))
-        (.add (create-resource hike-event-uri) event-agent (create-resource ben-uri))
-        (.add (create-resource hike-event-uri) event-agent (create-resource ruth-uri))
-        (.add (create-resource hike-event-uri) schema-startDate (datetime-literal "2025-07-01T08:00:00"))
-        (.add (create-resource hike-event-uri) schema-location (create-resource bennachie-uri)))
-      
-      ;; Sub-events
-      (doto model
-        ;; Departure from car park
-        (.add (create-resource departure-uri) RDF/type event-Event)
-        (.add (create-resource departure-uri) RDFS/label (create-literal "Departure from Car Park"))
-        (.add (create-resource departure-uri) event-time (datetime-literal "2025-07-01T08:00:00"))
-        (.add (create-resource departure-uri) event-place (create-resource car-park-uri))
-        (.add (create-resource departure-uri) event-agent (create-resource ben-uri))
-        (.add (create-resource departure-uri) event-agent (create-resource ruth-uri))
-        
-        ;; Reaching summit
-        (.add (create-resource summit-uri) RDF/type event-Event)
-        (.add (create-resource summit-uri) RDFS/label (create-literal "Reaching Summit"))
-        (.add (create-resource summit-uri) event-time (datetime-literal "2025-07-01T10:00:00"))
-        (.add (create-resource summit-uri) event-place (create-resource bennachie-uri))
-        (.add (create-resource summit-uri) event-agent (create-resource ben-uri))
-        (.add (create-resource summit-uri) event-agent (create-resource ruth-uri))
-        
-        ;; Return to car park
-        (.add (create-resource return-uri) RDF/type event-Event)
-        (.add (create-resource return-uri) RDFS/label (create-literal "Return to Car Park"))
-        (.add (create-resource return-uri) event-time (datetime-literal "2025-07-01T11:30:00"))
-        (.add (create-resource return-uri) event-place (create-resource car-park-uri))
-        (.add (create-resource return-uri) event-agent (create-resource ben-uri))
-        (.add (create-resource return-uri) event-agent (create-resource ruth-uri)))
-      
-      ;; Link sub-events to main event
-      (doto model
-        (.add (create-resource hike-event-uri) event-sub_event (create-resource departure-uri))
-        (.add (create-resource hike-event-uri) event-sub_event (create-resource summit-uri))
-        (.add (create-resource hike-event-uri) event-sub_event (create-resource return-uri)))
-      
-      ;; Commit transaction
-      (.commit dataset)
-      (println "Successfully seeded database with Bennachie hike data")
-      (println (str "Total triples: " (.size model)))
-      
-      (catch Exception e
-        (.abort dataset)
-        (println "Error seeding data:" (.getMessage e))
-        (throw e))
-      
-      (finally
-        (.close dataset)))))
+(defn seed-data! [& [dataset-path]]
+  (println "Seeding Redweed database with Bennachie hike data..."))
 
 ;; Query function to verify data
 (defn query-hike-data []

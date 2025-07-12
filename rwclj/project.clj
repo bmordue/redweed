@@ -9,6 +9,7 @@
                  [org.apache.jena/jena-tdb2 "5.0.0"]
                  [clj-http "3.13.0"]
                  [metosin/jsonista "0.3.13"]
+                 [ring/ring-core "1.11.0"]
                  [ring/ring-jetty-adapter "1.14.2"]
                  [ring/ring-json "0.5.1"]
                  [compojure "1.7.1"]]
