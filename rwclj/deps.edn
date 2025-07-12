@@ -27,7 +27,10 @@
 
         ;; Swagger for API documentation
         metosin/ring-swagger {:mvn/version "0.26.2"}
-        metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
+        metosin/ring-swagger-ui {:mvn/version "4.15.5"}
+
+        ;; EXIF metadata extraction
+        com.drewnoakes/metadata-extractor {:mvn/version "2.18.0"}}
 
  :aliases {:dev {:extra-paths ["dev" "test"]
                  :extra-deps {;; REPL and development
