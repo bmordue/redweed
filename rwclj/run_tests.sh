@@ -1,3 +1,3 @@
 #!/bin/bash
-cd "$(dirname "$0")"
-/usr/local/bin/lein test
+set -e
+clojure -Spath -M:test

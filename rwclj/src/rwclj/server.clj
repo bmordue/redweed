@@ -9,7 +9,9 @@
             [clojure.tools.logging :as log]
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
-            [rwclj.db :as db])
+            [rwclj.db :as db]
+            [ring.swagger.ui :as swagger-ui]
+            [ring.swagger.core :as swagger])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -129,9 +131,9 @@
      :handler (fn [request] (vcard/import-vcard-handler request))})
 
   ;; API documentation
-  ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
-  ;; (GET "/swagger.json" []
-  ;;   (response (swagger/swagger-json #'app-routes)))
+  (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
+  (GET "/swagger.json" []
+    (response (swagger/swagger-json #'app-routes)))
 
   (GET "/contacts" []
     {:summary "List all contacts"
@@ -159,9 +161,9 @@
 
 (def app
   (-> app-routes
-      ;; (swagger/wrap-swagger {:info {:title "Redweed API"
-      ;;                              :version "1.0.0"
-      ;;                              :description "API for the Redweed application"}})
+      (swagger/wrap-swagger {:info {:title "Redweed API"
+                                   :version "1.0.0"
+                                   :description "API for the Redweed application"}})
       wrap-keyword-params
       wrap-params
       wrap-json-body
