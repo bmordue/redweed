@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
+            [rwclj.kml :as kml]
             [rwclj.db :as db])
   (:gen-class))
 
@@ -127,6 +128,16 @@
      :responses {200 {:body {:message string?}}
                  400 {:body {:error string?}}}
      :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  ;; KML import endpoint
+  (POST "/api/kml/import" request
+    {:summary "Import KML data to RDF store"
+     :consumes ["application/vnd.google-earth.kml+xml" "application/xml" "text/xml"]
+     :parameters {:body string?}
+     :responses {201 {:body {:message string? :place-uris list?}}
+                 400 {:body {:error string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (kml/import-kml-handler request))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
