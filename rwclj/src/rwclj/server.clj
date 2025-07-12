@@ -10,7 +10,8 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-            [rwclj.photo :as photo])
+            [rwclj.photo :as photo]
+            [rwclj.import :as import])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -120,22 +121,16 @@
      :responses {200 {:body {:status string? :service string?}}}
      :handler (fn [_] (response {:status "ok" :service "Redweed Server"}))})
 
-  ;; vCard import endpoint
-  (POST "/api/vcard/import" [request]
-    {:summary "Import vCard data to RDF store"
-     :consumes ["text/vcard" "application/json"]
-     :parameters {:body {:vcard string?}}
+  ;; Generic import endpoint
+  (POST "/api/import/:type" request
+    {:summary "Import a resource"
+     :consumes ["application/json" "text/vcard" "multipart/form-data"]
+     :parameters {:path {:type string?}
+                  :body {:resource string?}}
      :responses {200 {:body {:message string?}}
-                 400 {:body {:error string?}}}
-     :handler (fn [request] (vcard/import-vcard-handler request))})
-
-  (POST "/api/photo/upload" request
-    {:summary "Upload a photo"
-     :consumes ["multipart/form-data"]
-     :parameters {:formData {:file org.ring-core.spec.MultipartFileInput}}
-     :responses {200 {:body {:message string? :file-uri string?}}
+                 400 {:body {:error string?}}
                  500 {:body {:error string?}}}
-     :handler (fn [request] (photo/process-photo-upload request))})
+     :handler import/import-handler})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
