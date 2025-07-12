@@ -70,7 +70,7 @@
     (is (false? (vcard/validate-vcard "")))
     (is (false? (vcard/validate-vcard "Just some random text")))))
 
-(deftest ^:kaocha/skip vcard->rdf-test
+(deftest vcard->rdf-test
   (testing "Converting vCard data to RDF"
     (let [vcard-data {"FN" ["John Doe"]
                       "N" ["Doe;John;;;"]
@@ -86,7 +86,7 @@
       (is (not (nil? person-resource)) "Person resource should exist in model")
 
       ;; Check types
-      (is (.hasProperty model person-resource RDF/type vcard/foaf-Person) "Should be a foaf:Person")
+      (is (.hasProperty model person-resource RDF/type FOAF/Person) "Should be a foaf:Person")
       (is (.hasProperty model person-resource RDF/type vcard/vcard-Individual) "Should be a vcard:Individual")
 
       ;; Check properties using properties defined in vcard-api
