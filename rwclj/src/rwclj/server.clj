@@ -10,8 +10,12 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+
             [ring.swagger.ui :as swagger-ui]
             [ring.swagger.core :as swagger])
+
+            [rwclj.photo :as photo])
+
   (:gen-class))
 
 ;; SPARQL Queries
@@ -129,6 +133,14 @@
      :responses {200 {:body {:message string?}}
                  400 {:body {:error string?}}}
      :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  (POST "/api/photo/upload" request
+    {:summary "Upload a photo"
+     :consumes ["multipart/form-data"]
+     :parameters {:formData {:file org.ring-core.spec.MultipartFileInput}}
+     :responses {200 {:body {:message string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (photo/process-photo-upload request))})
 
   ;; API documentation
   (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
