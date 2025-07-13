@@ -18,7 +18,7 @@ This document outlines potential new features for the `redweed` project. These f
 
 7.  **Calendar/Event Management:** Add support for managing calendar events, which can be linked to people, places, and media. This would include API endpoints for creating, updating, and deleting events, as well as for querying events by date range or other criteria.
 
-8.  **Geolocation and Mapping:** Extract GPS data from photos and display them on a map. This would involve adding a new API endpoint to retrieve photos with GPS data and potentially integrating with a mapping library like Leaflet or OpenLayers on the frontend.
+8.  **Geolocation and Mapping:** Extract GPS data from photos and display them on a map. This would involve adding a new API endpoint to retrieve photos with GPS data, enabling a client application to display them on a map (e.g., using Leaflet or OpenLayers).
 
 9.  **Support for Additional Media Types:** Extend the application to handle videos and audio files, with metadata extraction and search capabilities. This would require adding support for different file types and extending the metadata extraction process to handle video and audio-specific metadata.
 
