@@ -35,7 +35,7 @@ man_dir="$prefix_dir/share/man/man1"
 clojure_lib_dir="$lib_dir/clojure"
 
 echo "Installing libs into $clojure_lib_dir"
-mkdir -p $bin_dir $man_dir $clojure_lib_dir/libexec
+mkdir -p "$bin_dir" "$man_dir" "$clojure_lib_dir/libexec"
 install -m644 clojure-tools/deps.edn "$clojure_lib_dir/deps.edn"
 install -m644 clojure-tools/example-deps.edn "$clojure_lib_dir/example-deps.edn"
 install -m644 clojure-tools/tools.edn "$clojure_lib_dir/tools.edn"
