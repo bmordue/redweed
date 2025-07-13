@@ -21,6 +21,9 @@ jobs:
     - name: Run tests
       run: nix-shell --run "cd rwclj && clj -X:test"
 
+    - name: Run mutation tests
+      run: nix-shell --run "cd rwclj && clj -M:mutate -m bin.mutate"
+
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()

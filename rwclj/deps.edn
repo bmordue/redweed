@@ -54,9 +54,14 @@
                               org.apache.jena/jena-text {:mvn/version "4.10.0"}
                               org.apache.jena/jena-iri {:mvn/version "4.10.0"}
                               metosin/ring-swagger {:mvn/version "0.26.2"}
-                              metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
+                              metosin/ring-swagger-ui {:mvn/version "4.15.5"}
+                              mutant/mutant {:mvn/version "0.2.0"}}
                  :main-opts ["-m" "kaocha.runner"]
                  :exec-fn kaocha.runner/exec-fn}
+
+           :mutate {:extra-paths ["test" "src"]
+                    :extra-deps {mutant/mutant {:mvn/version "0.2.0"}}
+                    :main-opts ["-m" "mutant.core"]}
 
            :jena-deps {:extra-deps {org.apache.jena/jena-core {:mvn/version "4.10.0"}
                                     org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}
