@@ -4,9 +4,11 @@
         org.clojure/clojure {:mvn/version "1.11.1"}
         
         ;; Web server and routing
-        ring/ring-core {:mvn/version "1.10.0"}
-        ring/ring-jetty-adapter {:mvn/version "1.10.0"}
+        ring/ring-core {:mvn/version "1.11.0"}
+        ring/ring-jetty-adapter {:mvn/version "1.11.0"}
         ring/ring-json {:mvn/version "0.5.1"}
+        org.ring-clojure/ring-websocket-protocols {:mvn/version "1.11.0"}
+        ring/ring-devel {:mvn/version "1.11.0"}
         compojure/compojure {:mvn/version "1.7.0"}
         
         ;; JSON handling
@@ -53,8 +55,11 @@
                               org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
                               org.apache.jena/jena-text {:mvn/version "4.10.0"}
                               org.apache.jena/jena-iri {:mvn/version "4.10.0"}
+                              ring/ring-core {:mvn/version "1.10.0"}
                               metosin/ring-swagger {:mvn/version "0.26.2"}
-                              metosin/ring-swagger-ui {:mvn/version "4.15.5"}}
+                              metosin/ring-swagger-ui {:mvn/version "4.15.5"}
+                              org.ring-clojure/ring-websocket-protocols {:mvn/version "1.11.0"}
+                              ring/ring-devel {:mvn/version "1.11.0"}}
                  :main-opts ["-m" "kaocha.runner"]
                  :exec-fn kaocha.runner/exec-fn}
 
