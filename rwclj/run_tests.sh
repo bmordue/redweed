@@ -1,3 +1,4 @@
 #!/bin/bash
 set -e
-clojure -Spath -M:test
+cd "$(dirname "$0")"
+clojure -M:test
