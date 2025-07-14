@@ -11,7 +11,7 @@
  (def event-ns "http://purl.org/NET/c4dm/event.owl#")
  (def geo-ns "http://www.w3.org/2003/01/geo/wgs84_pos#")
  (def schema-ns "http://schema.org/")
- (def time-ns "http://www.w3.org/2006/time#")
+;;  (def time-ns "http://www.w3.org/2006/time#")
 
  ;; Helper functions
  (defn create-resource [uri]
@@ -49,9 +49,9 @@
  (def geo-long (create-property (str geo-ns "long")))
  (def schema-startDate (create-property (str schema-ns "startDate")))
  (def schema-location (create-property (str schema-ns "location")))
- (def time-hasBeginning (create-property (str time-ns "hasBeginning")))
- (def time-hasEnd (create-property (str time-ns "hasEnd")))
- (def time-inXSDDateTime (create-property (str time-ns "inXSDDateTime")))
+;;  (def time-hasBeginning (create-property (str time-ns "hasBeginning")))
+;;  (def time-hasEnd (create-property (str time-ns "hasEnd")))
+;;  (def time-inXSDDateTime (create-property (str time-ns "inXSDDateTime")))
 
  ;; Types
  (def foaf-Person (create-resource (str foaf-ns "Person")))

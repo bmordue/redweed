@@ -1,10 +1,8 @@
 (ns rwclj.db-test
   (:require [clojure.test :refer [deftest is testing use-fixtures]]
-            [rwclj.db :as db]
             [clojure.java.io :as io])
   (:import [org.apache.jena.tdb2 TDB2Factory]
-           [org.apache.jena.query Dataset]
-           [org.apache.jena.rdf.model ModelFactory]))
+           [org.apache.jena.query Dataset]))
 
 (def test-db-dir-str "target/test-jena-db")
 
@@ -13,7 +11,7 @@
     (when (.exists dir-file)
       (doseq [f (reverse (file-seq dir-file))]
         (when (.exists f)
-          (try 
+          (try
             (io/delete-file f)
             (catch Exception _)))))
     (.mkdirs dir-file)))
@@ -24,7 +22,7 @@
 (defn get-test-dataset []
   (TDB2Factory/connectDataset test-db-dir-str))
 
-(use-fixtures :each (fn [f] 
+(use-fixtures :each (fn [f]
                       (setup-test)
                       (f)
                       (setup-test)))
