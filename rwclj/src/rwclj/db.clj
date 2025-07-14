@@ -17,26 +17,26 @@
       (let [model (.getDefaultModel dataset)
             query (QueryFactory/create query-string)]
         (with-open [qexec (QueryExecutionFactory/create query model)]
+
           (let [results (.execSelect qexec)
-                result-list (atom [])]
-            (while (.hasNext results)
-              (let [soln (.nextSolution results)
-                    vars (.varNames soln)
-                    row (reduce (fn [acc var]
-                                  (let [node (.get soln var)]
-                                    (assoc acc (keyword var)
-                                           (cond
-                                             (.isResource node) (.getURI node)
-                                             (.isLiteral node) (.getLexicalForm node)
-                                             :else (.toString node)))))
-                                {} vars)]
-                (swap! result-list conj row)))
-            @result-list)))
+                vars (.getResultVars results)]
+            (doall
+             (for [soln (iterator-seq results)]
+               (reduce (fn [m v]
+                         (assoc m (keyword v)
+                                (when-let [node (.get soln v)]
+                                  (cond
+                                    (.isResource node) (.getURI node)
+                                    (.isLiteral node) (.getLexicalForm node)
+                                    :else (.toString node)))))
+                       {} vars))))))
+
+
       (catch Exception e
         (log/error e "Error executing SPARQL query")
         [])
       (finally
-        (.end dataset) ; Ensure dataset is ended in finally block
+        (.end dataset)
         (.close dataset)))))
 
 (defn store-rdf-model! [dataset ^Model model]
