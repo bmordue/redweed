@@ -10,27 +10,27 @@
   (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")]
     (TDB2Factory/connectDataset dataset-path)))
 
-(defn execute-sparql-select [dataset query-string]
+(defn execute-sparql-select [query-string]
   (try
-    (let [model (.getDefaultModel dataset)
-          query (QueryFactory/create query-string)
-          qexec (QueryExecutionFactory/create query model)
-          results (.execSelect qexec)
-          result-list (atom [])]
-      (while (.hasNext results)
-        (let [soln (.nextSolution results)
-              vars (.varNames soln)
-              row (reduce (fn [acc var]
-                            (let [node (.get soln var)]
-                              (assoc acc (keyword var)
-                                     (cond
-                                       (.isResource node) (.getURI node)
-                                       (.isLiteral node) (.getLexicalForm node)
-                                       :else (.toString node)))))
-                          {} vars)]
-        (swap! result-list conj row)))
-      (.close qexec)
-      @result-list)
+    (with-open [dataset (get-dataset)]
+      (.begin dataset)
+      (try
+        (let [model (.getDefaultModel dataset)
+              query (QueryFactory/create query-string)]
+          (with-open [qexec (QueryExecutionFactory/create query model)]
+            (let [results (.execSelect qexec)]
+              (doall
+               (for [soln (iterator-seq results)]
+                 (reduce (fn [acc var]
+                           (let [node (.get soln var)]
+                             (assoc acc (keyword var)
+                                    (cond
+                                      (.isResource node) (.getURI node)
+                                      (.isLiteral node) (.getLexicalForm node)
+                                      :else (.toString node)))))
+                         {} (iterator-seq (.varNames soln))))))))
+        (finally
+          (.end dataset))))
     (catch Exception e
       (log/error e "Error executing SPARQL query")
       [])))
@@ -39,6 +39,4 @@
   (let [target-model (.getDefaultModel dataset)]
     (.add target-model model)
     (log/info "Successfully stored RDF model")))
-
-
 
