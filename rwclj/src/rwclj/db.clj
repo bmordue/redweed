@@ -1,8 +1,10 @@
-(ns my-clojure-project.db
+(ns rwclj.db
   (:require [clojure.tools.logging :as log])
   (:import [org.apache.jena.tdb2 TDB2Factory]
            [org.apache.jena.query QueryFactory QueryExecutionFactory]
-           [org.apache.jena.rdf.model Model RDFNode]))
+           [org.apache.jena.rdf.model Model]))
+
+(def ^:dynamic *dataset* nil)
 
 (defn get-dataset []
   (let [dataset-path (or (System/getenv "JENA_DB_PATH") "data/tdb2")]
@@ -37,18 +39,8 @@
         (.end dataset) ; Ensure dataset is ended in finally block
         (.close dataset)))))
 
-(defn store-rdf-model! [^Model model]
-  (let [dataset (get-dataset)
-        target-model (.getDefaultModel dataset)]
-    (.begin dataset)
-    (try
-      (.add target-model model)
-      (.commit dataset)
-      (log/info "Successfully stored RDF model")
-      (catch Exception e
-        (.abort dataset)
-        (log/error "Failed to store RDF model:" (.getMessage e))
-        (throw e))
-      (finally
-        (.end dataset) ; Ensure dataset is ended in finally block
-        (.close dataset)))))
+(defn store-rdf-model! [dataset ^Model model]
+  (let [target-model (.getDefaultModel dataset)]
+    (.add target-model model)
+    (log/info "Successfully stored RDF model")))
+
