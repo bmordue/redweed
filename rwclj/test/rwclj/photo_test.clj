@@ -20,6 +20,6 @@
       (is (= "Photo uploaded successfully" (-> response :body :message)))
       (is (.exists (io/file "media/photos/test-image.jpg")))
       (let [query "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?date WHERE { <media/photos/test-image.jpg> dc:date ?date . }"
-            results (db/execute-sparql-select (db/get-dataset) query)]
+            results (db/execute-sparql-select query)]
         (is (= "2024-01-01T12:00:00Z" (-> results first :date)))
         ))))
