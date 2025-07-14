@@ -11,8 +11,8 @@
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
 
-            [ring.swagger.swagger-ui :as swagger-ui]
-            [ring.swagger.core :as swagger]
+            ;; [ring.swagger.swagger-ui :as swagger-ui]
+            ;; [ring.swagger.core :as swagger]
 
             [rwclj.photo :as photo])
 
