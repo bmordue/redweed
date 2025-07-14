@@ -4,8 +4,8 @@
             [rwclj.db :as db])
   (:import [com.drew.imaging ImageMetadataReader]
            [com.drew.metadata.exif ExifSubIFDDirectory]
-           [org.apache.jena.rdf.model ModelFactory Resource]
-           [org.apache.jena.vocabulary RDF VCARD]))
+           [org.apache.jena.vocabulary RDF VCARD]
+           [org.apache.jena.rdf.model ModelFactory]))
 
 (defn- get-exif-date-time [metadata]
   (when-let [directory (.getDirectory metadata ExifSubIFDDirectory)]

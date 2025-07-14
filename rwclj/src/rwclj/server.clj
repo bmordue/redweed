@@ -10,8 +10,17 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-            [rwclj.photo :as photo]
+
+           [rwclj.photo :as photo]
             [rwclj.import :as import])
+
+
+            ;; [ring.swagger.swagger-ui :as swagger-ui]
+            ;; [ring.swagger.core :as swagger]
+
+            
+
+
   (:gen-class))
 
 ;; SPARQL Queries
@@ -94,12 +103,12 @@
 
 ;; API endpoint handlers
 (defn list-contacts []
-  (response {:contacts (db/execute-sparql-select (db/get-dataset) list-contacts-query)}))
+  (response {:contacts (db/execute-sparql-select list-contacts-query)}))
 
 (defn get-contact-by-name [full-name]
   (let [escaped-name (str/replace full-name "\"" "\\\"")
         query (get-contact-by-name-query escaped-name)
-        results (db/execute-sparql-select (db/get-dataset) query)]
+        results (db/execute-sparql-select query)]
     (if (empty? results)
       (status (response {:error "Contact not found"}) 404)
       (response {:contact (first results)
@@ -107,11 +116,11 @@
 
 (defn list-events-in-range [start-date end-date]
   (let [query (list-events-in-range-query start-date end-date)]
-    (response {:events (db/execute-sparql-select (db/get-dataset) query)
+    (response {:events (db/execute-sparql-select query)
                :date-range {:start start-date :end end-date}})))
 
 (defn list-places []
-  (response {:places (db/execute-sparql-select (db/get-dataset) list-places-query)}))
+  (response {:places (db/execute-sparql-select list-places-query)}))
 
 ;; Routes
 (defroutes app-routes
@@ -128,7 +137,18 @@
      :parameters {:path {:type string?}
                   :body {:resource string?}}
      :responses {200 {:body {:message string?}}
+
                  400 {:body {:error string?}}
+
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  (POST "/api/photo/upload" request
+    {:summary "Upload a photo"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}  ; Change this line
+     :responses {200 {:body {:message string? :file-uri string?}}
+
                  500 {:body {:error string?}}}
      :handler import/import-handler})
 
