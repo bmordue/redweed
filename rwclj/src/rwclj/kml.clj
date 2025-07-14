@@ -5,7 +5,7 @@
             [jsonista.core :as json]
             [clojure.tools.logging :as log]
             [rwclj.db :as db])
-  (:import [org.apache.jena.rdf.model Model ModelFactory ResourceFactory]
+  (:import [org.apache.jena.rdf.model ModelFactory ResourceFactory]
            [org.apache.jena.vocabulary RDF]
            [java.util UUID]))
 
@@ -43,7 +43,7 @@
 (defn- parse-placemark [placemark-element]
   (let [name (find-first-content placemark-element :name)
         description (find-first-content placemark-element :description)
-        coordinates-str (find-first-content (first (xml/element-seq placemark-element :Point)) :coordinates)
+        coordinates-str (some-> (first (xml/element-seq placemark-element :Point)) (find-first-content :coordinates))
         [long lat] (when coordinates-str (str/split coordinates-str #","))]
     {:name name
      :description description
@@ -63,7 +63,7 @@
                    (str/replace #"[^a-z0-9\s]" "")
                    (str/replace #"\s+" "-")))
         uuid (str (UUID/randomUUID))]
-    (str base-uri "place/" (or slug uuid))))
+    (str base-uri "place/" (or (not-empty slug) uuid))))
 
 (defn kml->rdf [placemark-data model]
   (let [place-uri (generate-place-uri placemark-data)
@@ -85,27 +85,40 @@
     place-uri))
 
 (defn import-kml-handler [request]
-  (try
-    (let [body (slurp (:body request))
-          placemarks (parse-kml body)
-          model (ModelFactory/createDefaultModel)
-          place-uris (map #(kml->rdf % model) placemarks)]
+  (let [dataset (db/get-dataset)]
+    (try
+      (let [body (slurp (:body request))
+            placemarks (parse-kml body)
+            model (ModelFactory/createDefaultModel)
+            place-uris (map #(kml->rdf % model) placemarks)]
 
-      (db/store-rdf-model! (db/get-dataset) model)
-      (log/info "Successfully stored KML RDF for places:" place-uris)
+        (.begin dataset)
+        (db/store-rdf-model! dataset model)
+        (.commit dataset)
+        (log/info "Successfully stored KML RDF for places:" place-uris)
 
-      (-> (response/response
-           (json/write-value-as-string
-            {:status "success"
-             :place-uris place-uris
-             :message "KML imported successfully"}))
-          (response/content-type "application/json")
-          (response/status 201)))
-    (catch Exception e
-      (log/error "Error processing KML import:" (.getMessage e))
-      (-> (response/response
-           (json/write-value-as-string
-            {:status "error"
-             :message "Internal server error"}))
-          (response/content-type "application/json")
-          (response/status 500)))))
+        (-> (response/response
+             (json/write-value-as-string
+              {:status "success"
+               :place-uris place-uris
+               :message "KML imported successfully"}))
+            (response/content-type "application/json")
+            (response/status 201)))
+      (catch org.xml.sax.SAXParseException e
+        (.abort dataset)
+        (log/error "Failed to parse KML:" (.getMessage e))
+        (-> (response/response
+             (json/write-value-as-string
+              {:status "error"
+               :message "Invalid KML format"}))
+            (response/content-type "application/json")
+            (response/status 400)))
+      (catch Exception e
+        (.abort dataset)
+        (log/error "Error processing KML import:" (.getMessage e))
+        (-> (response/response
+             (json/write-value-as-string
+              {:status "error"
+               :message "Internal server error"}))
+            (response/content-type "application/json")
+            (response/status 500))))))
