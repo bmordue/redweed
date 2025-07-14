@@ -95,8 +95,9 @@
   (response {:contacts (db/execute-sparql-select (db/get-dataset) list-contacts-query)}))
 
 (defn get-contact-by-name [full-name]
-  (let [
-        results (db/execute-sparql-select (db/get-dataset) get-contact-by-name-query)]
+  (let [results (db/execute-sparql-select (db/get-dataset)
+                                          get-contact-by-name-query
+                                          {:bindings {:full-name full-name}})]
     (if (empty? results)
       (status (response {:error "Contact not found"}) 404)
       (response {:contact (first results)
@@ -106,7 +107,7 @@
   (try
     (java.time.LocalDate/parse date-str)
     true
-    (catch Exception _ false)))
+    (catch java.time.format.DateTimeParseException _ false)))
 
 (defn list-events-in-range [start-date end-date]
   (if (and (valid-date? start-date) (valid-date? end-date))
@@ -172,23 +173,12 @@
   (route/not-found
    (status (response {:error "Not found"}) 404)))
 
-(defn wrap-vcard-body [handler]
-  (fn [request]
-    (if (str/starts-with? (get-in request [:headers "content-type"] "") "application/json")
-      ((wrap-json-body {:keywords? true}) handler request)
-      (handler request))))
-
 (def app
   (-> app-routes
       wrap-keyword-params
       wrap-params
-      wrap-vcard-body
-      ;; (swagger/wrap-swagger {:info {:title "Redweed API"
-      ;;                              :version "1.0.0"
-      ;;                              :description "API for the Redweed application"}})
-      wrap-keyword-params
-      wrap-params
-      wrap-json-body
+      (wrap-json-body {:keywords? true})
+      vcard/wrap-vcard-body
       wrap-json-response))
 
 (defn start-server!
