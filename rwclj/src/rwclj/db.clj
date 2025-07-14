@@ -11,33 +11,29 @@
     (TDB2Factory/connectDataset dataset-path)))
 
 (defn execute-sparql-select [query-string]
-  (let [dataset (get-dataset)]
-    (try
+  (try
+    (with-open [dataset (get-dataset)]
       (.begin dataset)
-      (let [model (.getDefaultModel dataset)
-            query (QueryFactory/create query-string)]
-        (with-open [qexec (QueryExecutionFactory/create query model)]
-
-          (let [results (.execSelect qexec)
-                vars (.getResultVars results)]
-            (doall
-             (for [soln (iterator-seq results)]
-               (reduce (fn [m v]
-                         (assoc m (keyword v)
-                                (when-let [node (.get soln v)]
-                                  (cond
-                                    (.isResource node) (.getURI node)
-                                    (.isLiteral node) (.getLexicalForm node)
-                                    :else (.toString node)))))
-                       {} vars))))))
-
-
-      (catch Exception e
-        (log/error e "Error executing SPARQL query")
-        [])
-      (finally
-        (.end dataset)
-        (.close dataset)))))
+      (try
+        (let [model (.getDefaultModel dataset)
+              query (QueryFactory/create query-string)]
+          (with-open [qexec (QueryExecutionFactory/create query model)]
+            (let [results (.execSelect qexec)]
+              (doall
+               (for [soln (iterator-seq results)]
+                 (reduce (fn [acc var]
+                           (let [node (.get soln var)]
+                             (assoc acc (keyword var)
+                                    (cond
+                                      (.isResource node) (.getURI node)
+                                      (.isLiteral node) (.getLexicalForm node)
+                                      :else (.toString node)))))
+                         {} (iterator-seq (.varNames soln))))))))
+        (finally
+          (.end dataset))))
+    (catch Exception e
+      (log/error e "Error executing SPARQL query")
+      [])))
 
 (defn store-rdf-model! [dataset ^Model model]
   (let [target-model (.getDefaultModel dataset)]
