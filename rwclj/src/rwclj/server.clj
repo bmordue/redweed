@@ -1,19 +1,16 @@
-(ns redeemed.server
-  (:require [compojure.core :refer [defroutes GET POST PUT DELETE]]
+(ns rwclj.server
+  (:require [compojure.core :refer [defroutes GET POST]]
             [compojure.route :as route]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :refer [response status]]
-            [jsonista.core :as json]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
-            [redweed.api.vcard :as vcard] ; Moved from duplicate
-            [my-clojure-project.db :as db]) ; Moved from duplicate and added db require
-  (:import [org.apache.jena.rdf.model ModelFactory] ; Kept ModelFactory for vcard import if needed directly
-           [java.time LocalDate]
-           [java.time.format DateTimeFormatter])
+            [rwclj.vcard :as vcard]
+            [rwclj.db :as db]
+            [rwclj.photo :as photo])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -95,10 +92,11 @@
 
 ;; API endpoint handlers
 (defn list-contacts []
-  (response {:contacts (db/execute-sparql-select list-contacts-query)}))
+  (response {:contacts (db/execute-sparql-select (db/get-dataset) list-contacts-query)}))
 
 (defn get-contact-by-name [full-name]
-  (let [results (db/execute-sparql-select get-contact-by-name-query {:fullName full-name})]
+  (let [
+        results (db/execute-sparql-select (db/get-dataset) get-contact-by-name-query)]
     (if (empty? results)
       (status (response {:error "Contact not found"}) 404)
       (response {:contact (first results)
@@ -106,56 +104,73 @@
 
 (defn valid-date? [date-str]
   (try
-    (LocalDate/parse date-str)
+    (java.time.LocalDate/parse date-str)
     true
     (catch Exception _ false)))
 
 (defn list-events-in-range [start-date end-date]
   (if (and (valid-date? start-date) (valid-date? end-date))
     (let [query (list-events-in-range-query start-date end-date)]
-      (response {:events (db/execute-sparql-select query)
+      (response {:events (db/execute-sparql-select (db/get-dataset) query)
                  :date-range {:start start-date :end end-date}}))
     (status (response {:error "Invalid date format. Please use YYYY-MM-DD."}) 400)))
 
 (defn list-places []
-  (response {:places (db/execute-sparql-select list-places-query)}))
+  (response {:places (db/execute-sparql-select (db/get-dataset) list-places-query)}))
 
 ;; Routes
 (defroutes app-routes
   ;; Health check
   (GET "/health" []
-    (response/response {:status "ok" :service "redeemed"})) ; Updated service name
+    {:summary "Health check endpoint"
+     :responses {200 {:body {:status string? :service string?}}}
+     :handler (fn [_] (response {:status "ok" :service "Redweed Server"}))})
 
   ;; vCard import endpoint
-  (POST "/api/vcard/import" request
-    (vcard/import-vcard-handler request))
+  (POST "/api/vcard/import" [request]
+    {:summary "Import vCard data to RDF store"
+     :consumes ["text/vcard" "application/json"]
+     :parameters {:body {:vcard string?}}
+     :responses {200 {:body {:message string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  (POST "/api/photo/upload" request
+    {:summary "Upload a photo"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}  ; Change this line
+     :responses {200 {:body {:message string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (photo/process-photo-upload request))})
 
   ;; API documentation
-  (GET "/api" []
-    (response/response
-     {:endpoints
-      [{:path "/contacts" :method "GET" :description "List all contacts"}
-       {:path "/contacts/:name" :method "GET" :description "Get contact by name"}
-       {:path "/events" :method "GET" :description "List events in date range (requires start_date and end_date params)"}
-       {:path "/places" :method "GET" :description "List all places"}
-       {:method "POST"
-        :path "/api/vcard/import"
-        :description "Import vCard data to RDF store"
-        :content-types ["text/vcard" "application/json"]
-        :example-json {:vcard "BEGIN:VCARD\nVERSION:3.0\nFN:John Doe\n..."}}
-       {:method "GET"
-        :path "/health"
-        :description "Health check endpoint"}]}))
+  ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
+  ;; (GET "/swagger.json" []
+  ;;   (response (swagger/swagger-json #'app-routes)))
 
-  ;; Existing redeemed.server routes (assuming they will be added here)
-  (GET "/contacts" [] (list-contacts))
-  (GET "/contacts/:name" [name] (get-contact-by-name name))
-  (GET "/events" [start_date end_date] (list-events-in-range start_date end_date))
-  (GET "/places" [] (list-places))
+  (GET "/contacts" []
+    {:summary "List all contacts"
+     :responses {200 {:body {:contacts list?}}}
+     :handler (fn [_] (list-contacts))})
+  (GET "/contacts/:name" [name]
+    {:summary "Get contact by name"
+     :parameters {:path {:name string?}}
+     :responses {200 {:body {:contact map? :events list?}}
+                 404 {:body {:error string?}}}
+     :handler (fn [_] (get-contact-by-name name))})
+  (GET "/events" [start_date end_date]
+    {:summary "List events in date range"
+     :parameters {:query {:start_date string? :end_date string?}}
+     :responses {200 {:body {:events list? :date-range map?}}}
+     :handler (fn [_] (list-events-in-range start_date end_date))})
+  (GET "/places" []
+    {:summary "List all places"
+     :responses {200 {:body {:places list?}}}
+     :handler (fn [_] (list-places))})
 
   ;; 404 handler
   (route/not-found
-   (status (response {:error "Not found"}) 404))) ; Added status to 404
+   (status (response {:error "Not found"}) 404)))
 
 (defn wrap-vcard-body [handler]
   (fn [request]
@@ -168,20 +183,38 @@
       wrap-keyword-params
       wrap-params
       wrap-vcard-body
+      ;; (swagger/wrap-swagger {:info {:title "Redweed API"
+      ;;                              :version "1.0.0"
+      ;;                              :description "API for the Redweed application"}})
+      wrap-keyword-params
+      wrap-params
+      wrap-json-body
       wrap-json-response))
 
 (defn start-server!
   ([] (start-server! 8080))
   ([port]
-   (log/info "Starting Redeemed server on port" port) ; Updated server name
-   (run-jetty app {:port port :join? false}))) ; run-jetty from redeemed.server
+   (log/info "Starting Redweed server on port" port)
+   (run-jetty app {:port port :join? false})))
+
+(defn parse-port [args]
+  (let [port-str (first args)]
+    (try
+      (let [port (Integer/parseInt port-str)]
+        (if (<= 1 port 65535)
+          port
+          (do
+            (log/warn (str "Port" port "is out of the valid range (1-65535). Falling back to default port 8080."))
+            8080)))
+      (catch NumberFormatException _
+        (when port-str
+          (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
+        8080)))))
 
 (defn -main [& args]
-  (let [port (if (first args)
-               (Integer/parseInt (first args))
-               8080)]
+  (let [port (parse-port args)]
     (start-server! port)
-    (log/info "Redeemed server running on port" port))) ; Updated server name
+    (log/info (str "Redweed server running on port " port))))
 
 ;; For REPL development
 (comment
