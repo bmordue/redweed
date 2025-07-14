@@ -132,7 +132,7 @@
   (POST "/api/photo/upload" request
     {:summary "Upload a photo"
      :consumes ["multipart/form-data"]
-     :parameters {:formData {:file org.ring-core.spec.MultipartFileInput}}
+     :parameters {:multipart {:file any?}}  ; Change this line
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
