@@ -28,16 +28,13 @@ The application uses the following RDF vocabularies to represent data:
     *   `foaf:familyName`: The family name of the person.
     *   `foaf:mbox`: The email address of the person.
     *   `foaf:phone`: The phone number of the person.
-*   **vCard:** Used to represent contact information.
+*   **vCard:** Used to represent contact information and for photo metadata.
     *   `vcard:Individual`: Represents an individual.
-    *   `vcard:hasEmail`: The email address of the person.
-    *   `vcard:hasTelephone`: The telephone number of the person.
     *   `vcard:hasAddress`: The address of the person.
     *   `vcard:organization-name`: The organization name of the person.
+    *   `vcard:PHOTO`: Represents a photo.
 *   **Dublin Core:** Used for photo metadata.
     *   `dc:date`: The date the photo was taken.
-*   **VCARD:** Used for photo metadata.
-    *   `VCARD:PHOTO`: Represents a photo.
 
 **Useful Aliases:**
 ```bash

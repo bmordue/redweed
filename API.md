@@ -26,16 +26,18 @@ This document provides a detailed description of the Redweed API endpoints.
 *   **Parameters:**
     *   `body`: The vCard data as a string.
 *   **Responses:**
-    *   `200 OK`: vCard data imported successfully.
+    *   `201 Created`: vCard data imported successfully.
         ```json
         {
+          "status": "success",
+          "person-uri": "...",
           "message": "vCard data imported successfully"
         }
         ```
     *   `400 Bad Request`: Invalid vCard data.
         ```json
         {
-          "error": "Invalid vCard data"
+          "error": "Invalid vCard format"
         }
         ```
 
@@ -51,14 +53,14 @@ This document provides a detailed description of the Redweed API endpoints.
     *   `200 OK`: Photo uploaded successfully.
         ```json
         {
-          "message": "File processed successfully",
+          "message": "Photo uploaded successfully",
           "file-uri": "..."
         }
         ```
     *   `500 Internal Server Error`: Error processing the photo.
         ```json
         {
-          "error": "Error processing photo"
+          "error": "Error processing photo upload"
         }
         ```
 
