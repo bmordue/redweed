@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
+            [rwclj.ical :as ical]
             [rwclj.db :as db]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
@@ -133,6 +134,14 @@
      :responses {200 {:body {:message string?}}
                  400 {:body {:error string?}}}
      :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  (POST "/api/ical/import" [request]
+    {:summary "Import iCalendar data to RDF store"
+     :consumes ["text/calendar" "application/json"]
+     :parameters {:body {:ical string?}}
+     :responses {200 {:body {:message string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (ical/import-ical-handler request))})
 
   (POST "/api/photo/upload" request
     {:summary "Upload a photo"

@@ -39,7 +39,10 @@
         org.apache.jena/jena-arq {:mvn/version "4.10.0"}
         org.apache.jena/jena-fuseki-main {:mvn/version "4.10.0"}
         org.apache.jena/jena-text {:mvn/version "4.10.0"}
-        org.apache.jena/jena-iri {:mvn/version "4.10.0"}}
+        org.apache.jena/jena-iri {:mvn/version "4.10.0"}
+
+        ;; iCal4j for parsing iCalendar data
+        org.mnode.ical4j/ical4j {:mvn/version "3.2.1"}}
 
  :aliases {:dev {:extra-paths ["dev" "test"]
                  :extra-deps {;; REPL and development
