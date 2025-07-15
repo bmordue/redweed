@@ -27,6 +27,7 @@
     (ImageMetadataReader/readMetadata stream)))
 
 (defn photo-import-handler [dataset request]
+  ;; TODO finish the implementation of this function
   (-> (response/response
        (json/write-value-as-string
         {:status "success"

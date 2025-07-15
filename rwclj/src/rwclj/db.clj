@@ -12,12 +12,8 @@
 
 (defn execute-sparql-select
   ([query-string]
-   (with-open [dataset (get-dataset)]
-     (.begin dataset)
-     (try
-       (execute-sparql-select dataset query-string)
-       (finally
-         (.end dataset)))))
+   (execute-sparql-select get-dataset query-string)
+   )
   ([the-dataset query-string]
    (with-open [dataset the-dataset]
      (.begin dataset)
@@ -40,7 +36,7 @@
        (catch Exception e
          (.abort dataset)
          (log/error e "Error executing SPARQL query")
-         [])))))
+         [])(finally (.end dataset))))))
 
 (defn store-rdf-model! [dataset ^Model model]
   (let [target-model (.getDefaultModel dataset)]

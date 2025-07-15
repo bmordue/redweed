@@ -134,7 +134,16 @@
                   person-uri (generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)]
               (vcard->rdf vcard-data person-uri model)
-              (db/store-rdf-model! dataset model)
+              (.begin dataset)
+              (try
+                (db/store-rdf-model! dataset model)
+                (.commit dataset)
+                (catch Exception e
+                  (.abort dataset)
+                  (log/error e)
+                  (throw e))
+                (finally (.end dataset)))
+
               (log/info "Successfully imported vCard for person:" person-uri)
               (-> (response/response (json/write-value-as-string
                                       {:status "success"
@@ -157,7 +166,15 @@
                   person-uri (generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)]
               (vcard->rdf vcard-data person-uri model)
-              (db/store-rdf-model! dataset model)
+              (.begin dataset)
+              (try
+                (db/store-rdf-model! dataset model)
+                (.commit dataset)
+                (catch Exception e
+                  (.abort dataset)
+                  (log/error e)
+                  (throw e))
+                (finally (.end dataset)))
               (log/info "Successfully imported vCard from JSON for person:" person-uri)
               (-> (response/response (json/write-value-as-string
                                       {:status "success"
