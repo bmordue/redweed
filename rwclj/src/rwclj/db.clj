@@ -18,25 +18,29 @@
        (execute-sparql-select dataset query-string)
        (finally
          (.end dataset)))))
-  ([dataset query-string]
-   (try
-     (let [model (.getDefaultModel dataset)
-           query (QueryFactory/create query-string)]
-       (with-open [qexec (QueryExecutionFactory/create query model)]
-         (let [results (.execSelect qexec)]
-           (doall
-            (for [soln (iterator-seq results)]
-              (reduce (fn [acc var]
-                        (let [node (.get soln var)]
-                          (assoc acc (keyword var)
-                                 (cond
-                                   (.isResource node) (.getURI node)
-                                   (.isLiteral node) (.getLexicalForm node)
-                                   :else (.toString node)))))
-                      {} (iterator-seq (.varNames soln))))))))
-     (catch Exception e
-       (log/error e "Error executing SPARQL query")
-       []))))
+  ([the-dataset query-string]
+   (with-open [dataset the-dataset]
+     (.begin dataset)
+     (try
+       (let [model (.getDefaultModel dataset)
+             query (QueryFactory/create query-string)]
+         (with-open [qexec (QueryExecutionFactory/create query model)]
+           (let [results (.execSelect qexec)]
+             (doall
+              (for [soln (iterator-seq results)]
+                (reduce (fn [acc var]
+                          (let [node (.get soln var)]
+                            (assoc acc (keyword var)
+                                   (cond
+                                     (.isResource node) (.getURI node)
+                                     (.isLiteral node) (.getLexicalForm node)
+                                     :else (.toString node)))))
+                        {} (iterator-seq (.varNames soln))))))))
+       (.commit dataset)
+       (catch Exception e
+         (.abort dataset)
+         (log/error e "Error executing SPARQL query")
+         [])))))
 
 (defn store-rdf-model! [dataset ^Model model]
   (let [target-model (.getDefaultModel dataset)]
