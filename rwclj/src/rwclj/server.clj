@@ -7,10 +7,10 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :refer [response status]]
             [clojure.tools.logging :as log]
-            [clojure.string :as str]
+;            [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-            [rwclj.photo :as photo]
+;            [rwclj.photo :as photo]
             [rwclj.import :as import])
   (:gen-class))
 

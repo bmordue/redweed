@@ -9,7 +9,7 @@
             [clojure.java.io :as io])
   (:import [org.apache.jena.rdf.model ModelFactory]))
 
-(defmulti import-resource (fn [dataset type _] type))
+(defmulti import-resource (fn [_dataset type _] type))
 
 (defmethod import-resource :vcard [dataset request]
   (try

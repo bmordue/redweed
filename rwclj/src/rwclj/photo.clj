@@ -1,7 +1,8 @@
 (ns rwclj.photo
   (:require [clojure.java.io :as io]
-            [clojure.tools.logging :as log]
-            [rwclj.db :as db])
+;            [clojure.tools.logging :as log]
+;            [rwclj.db :as db]
+            )
   (:import [com.drew.imaging ImageMetadataReader]
            [com.drew.metadata.exif ExifSubIFDDirectory]
            [org.apache.jena.vocabulary RDF VCARD]
