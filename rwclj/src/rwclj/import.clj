@@ -77,19 +77,9 @@
           (response/content-type "application/json")
           (response/status 500)))))
 
-(defmethod import-resource :photo [dataset request]
-  (let [temp-file (-> request :params :file :tempfile)
-        original-filename (-> request :params :file :filename)
-        file-uri (str "media/photos/" original-filename)]
-    (try
-      (io/copy temp-file (io/file file-uri))
-      (let [metadata (photo/extract-exif-metadata (io/file file-uri))
-            rdf-model (photo/create-rdf-model metadata file-uri)]
-        (db/store-rdf-model! dataset rdf-model)
-        {:status 200 :body {:message "Photo uploaded successfully" :file-uri file-uri}})
-      (catch Exception e
-        (log/error e "Error processing photo upload")
-        {:status 500 :body {:error "Error processing photo upload"}}))))
+
+
+
 
 (defmethod import-resource :default [_ type _]
   (log/warn "No implementation for resource type:" type)

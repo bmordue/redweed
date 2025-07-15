@@ -1,8 +1,9 @@
 (ns rwclj.photo
   (:require [clojure.java.io :as io]
-;            [clojure.tools.logging :as log]
-;            [rwclj.db :as db]
-            )
+            [clojure.tools.logging :as log]
+            [rwclj.db :as db]
+            [jsonista.core :as json]
+            [ring.util.response :as response])
   (:import [com.drew.imaging ImageMetadataReader]
            [com.drew.metadata.exif ExifSubIFDDirectory]
            [org.apache.jena.vocabulary RDF VCARD]
@@ -24,3 +25,12 @@
 (defn extract-exif-metadata [file]
   (with-open [stream (io/input-stream file)]
     (ImageMetadataReader/readMetadata stream)))
+
+(defn photo-import-handler [dataset request]
+  (-> (response/response
+       (json/write-value-as-string
+        {:status "success"
+         :message "Photo uploaded successfully"
+         :file-uri "test"}))
+      (response/content-type "application/json")
+      (response/status 200)))

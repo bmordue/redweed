@@ -10,7 +10,7 @@
 ;            [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-;            [rwclj.photo :as photo]
+            [rwclj.photo :as photo]
             [rwclj.import :as import])
   (:gen-class))
 
@@ -125,7 +125,7 @@
       (vcard/import-vcard-handler dataset request))
 
     (POST "/api/import/photo" request
-      (import/import-handler dataset request))
+      (photo/photo-import-handler dataset request))
 
     (GET "/contacts" []
       (list-contacts dataset))
