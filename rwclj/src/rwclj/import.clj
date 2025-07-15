@@ -9,9 +9,9 @@
             [clojure.java.io :as io])
   (:import [org.apache.jena.rdf.model ModelFactory]))
 
-(defmulti import-resource (fn [type _] type))
+(defmulti import-resource (fn [dataset type _] type))
 
-(defmethod import-resource :vcard [_ request]
+(defmethod import-resource :vcard [dataset request]
   (try
     (let [body (slurp (:body request))
           content-type (get-in request [:headers "content-type"] "")]
@@ -23,7 +23,7 @@
                   person-uri (vcard/generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)
                   _ (vcard/vcard->rdf vcard-data person-uri model)]
-              (db/store-rdf-model! db/get-dataset model)
+              (db/store-rdf-model! dataset model)
               (log/info "Successfully stored vCard RDF for person:" person-uri)
               (-> (response/response
                    (json/write-value-as-string
@@ -46,7 +46,7 @@
                   person-uri (vcard/generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)
                   _ (vcard/vcard->rdf vcard-data person-uri model)]
-              (db/store-rdf-model! db/get-dataset model)
+              (db/store-rdf-model! dataset model)
               (log/info "Successfully stored vCard RDF for person:" person-uri)
               (-> (response/response
                    (json/write-value-as-string
@@ -77,7 +77,7 @@
           (response/content-type "application/json")
           (response/status 500)))))
 
-(defmethod import-resource :photo [_ request]
+(defmethod import-resource :photo [dataset request]
   (let [temp-file (-> request :params :file :tempfile)
         original-filename (-> request :params :file :filename)
         file-uri (str "media/photos/" original-filename)]
@@ -85,16 +85,16 @@
       (io/copy temp-file (io/file file-uri))
       (let [metadata (photo/extract-exif-metadata (io/file file-uri))
             rdf-model (photo/create-rdf-model metadata file-uri)]
-        (db/store-rdf-model! (db/get-dataset) rdf-model)
+        (db/store-rdf-model! dataset rdf-model)
         {:status 200 :body {:message "Photo uploaded successfully" :file-uri file-uri}})
       (catch Exception e
         (log/error e "Error processing photo upload")
         {:status 500 :body {:error "Error processing photo upload"}}))))
 
-(defmethod import-resource :default [type _]
+(defmethod import-resource :default [_ type _]
   (log/warn "No implementation for resource type:" type)
   (response/bad-request {:error (str "Unsupported resource type: " (name type))}))
 
-(defn import-handler [request]
+(defn import-handler [dataset request]
   (let [type (keyword (get-in request [:params :type]))]
-    (import-resource type request)))
+    (import-resource dataset type request)))

@@ -120,7 +120,7 @@
 
 (defn import-vcard-handler
   "Handler for importing vCard data via HTTP requests"
-  [request]
+  [dataset request]
   (try
     (let [content-type (get-in request [:headers "content-type"])
           body (:body request)]
@@ -134,7 +134,7 @@
                   person-uri (generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)]
               (vcard->rdf vcard-data person-uri model)
-              (db/store-rdf-model! (db/get-dataset) model)
+              (db/store-rdf-model! dataset model)
               (log/info "Successfully imported vCard for person:" person-uri)
               (-> (response/response (json/write-value-as-string
                                       {:status "success"
@@ -157,7 +157,7 @@
                   person-uri (generate-person-uri vcard-data)
                   model (ModelFactory/createDefaultModel)]
               (vcard->rdf vcard-data person-uri model)
-              (db/store-rdf-model! (db/get-dataset) model)
+              (db/store-rdf-model! dataset model)
               (log/info "Successfully imported vCard from JSON for person:" person-uri)
               (-> (response/response (json/write-value-as-string
                                       {:status "success"
