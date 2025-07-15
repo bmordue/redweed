@@ -1,6 +1,6 @@
 (ns rwclj.kml
   (:require [clojure.string :as str]
-            [clojure.data.xml :as xml]
+            [clojure.data.xml :refer [parse-str]]
             [ring.util.response :as response]
             [jsonista.core :as json]
             [clojure.tools.logging :as log]
@@ -37,13 +37,21 @@
 (def schema-place (create-resource (str schema-ns "Place")))
 
 ;; KML parsing
+(defn- element-seq-local
+  "Returns a lazy sequence of elements from an XML tree, filtered by tags."
+  ([root]
+   (tree-seq :content :content root))
+  ([root tags]
+   (let [tag-set (if (coll? tags) (set tags) (set [tags]))]
+     (filter #(and (map? %) (tag-set (:tag %))) (element-seq-local root)))))
+
 (defn- find-first-content [element tag]
-  (first (:content (first (xml/element-seq element [tag])))))
+  (first (:content (first (element-seq-local element [tag])))))
 
 (defn- parse-placemark [placemark-element]
   (let [name (find-first-content placemark-element :name)
         description (find-first-content placemark-element :description)
-        coordinates-str (some-> (first (xml/element-seq placemark-element :Point)) (find-first-content :coordinates))
+        coordinates-str (some-> (first (element-seq-local placemark-element :Point)) (find-first-content :coordinates))
         [long lat] (when coordinates-str (str/split coordinates-str #","))]
     {:name name
      :description description
@@ -51,9 +59,9 @@
      :long long}))
 
 (defn parse-kml [kml-string]
-  (let [parsed-xml (xml/parse-str kml-string)]
+  (let [parsed-xml (parse-str kml-string)]
     (->> parsed-xml
-         (xml/element-seq [:Placemark])
+         (element-seq-local [:Placemark])
          (map parse-placemark))))
 
 (defn generate-place-uri [placemark-data]

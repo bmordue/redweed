@@ -6,6 +6,7 @@ pkgs.mkShellNoCC {
     jdk21_headless
     clojure
     gemini-cli
+    nodejs_24
   ];
   
   shellHook = ''

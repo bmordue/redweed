@@ -1,7 +1,6 @@
 (ns rwclj.kml-test
   (:require [clojure.test :refer :all]
-            [rwclj.kml :refer :all]
-            [clojure.data.xml :as xml])
+            [rwclj.kml :refer :all]))
   (:import [org.apache.jena.rdf.model ModelFactory]))
 
 (def sample-kml
