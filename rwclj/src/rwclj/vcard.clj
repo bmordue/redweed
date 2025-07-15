@@ -119,6 +119,7 @@
 
 
 ;; Test data and utilities
+;; TODO: move these to test/rwclj/vcard_test.clj
 (def sample-vcard 
   "BEGIN:VCARD
 VERSION:3.0

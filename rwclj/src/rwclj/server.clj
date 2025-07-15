@@ -137,9 +137,6 @@
      :parameters {:path {:type string?}
                   :body {:resource string?}}
      :responses {200 {:body {:message string?}}
-
-                 400 {:body {:error string?}}
-
                  400 {:body {:error string?}}}
      :handler (fn [request] (vcard/import-vcard-handler request))})
 
