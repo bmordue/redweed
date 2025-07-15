@@ -10,6 +10,7 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+            [rwclj.hledger :as hledger]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
             ;; [ring.swagger.core :as swagger]
@@ -133,6 +134,14 @@
      :responses {200 {:body {:message string?}}
                  400 {:body {:error string?}}}
      :handler (fn [request] (vcard/import-vcard-handler request))})
+
+  (POST "/api/hledger/import" request
+    {:summary "Import hledger journal data to RDF store"
+     :consumes ["text/plain"]
+     :parameters {:body {:journal string?}}
+     :responses {200 {:body {:message string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (hledger/import-hledger-handler request))})
 
   (POST "/api/photo/upload" request
     {:summary "Upload a photo"
