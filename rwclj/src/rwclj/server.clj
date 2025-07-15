@@ -11,14 +11,14 @@
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
 
-           [rwclj.photo :as photo]
+            [rwclj.photo :as photo]
             [rwclj.import :as import])
 
 
-            ;; [ring.swagger.swagger-ui :as swagger-ui]
-            ;; [ring.swagger.core :as swagger]
+  ;; [ring.swagger.swagger-ui :as swagger-ui]
+  ;; [ring.swagger.core :as swagger]
 
-            
+
 
 
   (:gen-class))
@@ -189,10 +189,13 @@
       wrap-json-response))
 
 (defn start-server!
-  ([] (start-server! 8080))
-  ([port]
-   (log/info "Starting Redweed server on port" port)
-   (run-jetty app {:port port :join? false})))
+  ([] (let [port (or (some-> (System/getenv "PORT")
+                             Integer/parseInt)
+                     3000)]
+        (start-server! port)))
+  ([port] (log/info "Starting Redweed server on port" port)
+          (run-jetty app {:port port
+                          :join? false})))
 
 (defn parse-port [args]
   (let [port-str (first args)]
@@ -206,7 +209,7 @@
       (catch NumberFormatException _
         (when port-str
           (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
-        8080)))))
+          8080)))))
 
 (defn -main [& args]
   (let [port (parse-port args)]

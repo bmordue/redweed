@@ -73,7 +73,7 @@
 
            :seed {:main-opts ["-m" "rwclj.seed"]}
 
-           :server {:main-opts ["-m" "rwclj.server"]}
+           :server {:main-opts ["-m" "rwclj.server" "8080"]}
 
            :uberjar {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
