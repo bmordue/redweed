@@ -60,8 +60,8 @@ graph TD
     F --> K
     G --> I
     H --> J
-    I --> L
-    J --> L
+    G --> L
+    H --> L
     K --> L
     L --> M
 ```
