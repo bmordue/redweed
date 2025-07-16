@@ -1,4 +1,4 @@
-package main.java.me.bmordue.redweed.util;
+package me.bmordue.redweed.util;
 
 public class SparqlQueryBuilder {
     
