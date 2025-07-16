@@ -9,7 +9,10 @@
             [clojure.tools.logging :as log]
 ;            [clojure.string :as str]
             [rwclj.vcard :as vcard]
+            [rwclj.kml :as kml]
             [rwclj.db :as db]
+            ;; [ring.swagger.swagger-ui :as swagger-ui]
+            ;; [ring.swagger.core :as swagger]
             [rwclj.photo :as photo]
             [rwclj.import :as import]
             [ring.middleware.multipart-params :refer [wrap-multipart-params]])
@@ -115,31 +118,68 @@
   (response {:places (db/execute-sparql-select dataset list-places-query)}))
 
 ;; Routes
-(defn app-routes [dataset]
-  (defroutes app-routes-instance
-    ;; Health check
-    (GET "/health" []
-      (response {:status "ok" :service "Redweed Server"}))
+(defroutes app-routes
+  ;; Health check
+  (GET "/health" []
+    {:summary "Health check endpoint"
+     :responses {200 {:body {:status string? :service string?}}}
+     :handler (fn [_] (response {:status "ok" :service "Redweed Server"}))})
 
-    ;; Generic import endpoint
-    (POST "/api/import/vcard" request
-      (vcard/import-vcard-handler dataset request))
+  ;; vCard import endpoint
+  (POST "/api/vcard/import" [request]
+    {:summary "Import vCard data to RDF store"
+     :consumes ["text/vcard" "application/json"]
+     :parameters {:body {:vcard string?}}
+     :responses {200 {:body {:message string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (vcard/import-vcard-handler request))})
 
-    (POST "/api/import/photo" request
-      (photo/photo-import-handler dataset request))
+  ;; KML import endpoint
+  (POST "/api/kml/import" request
+    {:summary "Import KML data to RDF store"
+     :consumes ["application/vnd.google-earth.kml+xml" "application/xml" "text/xml"]
+     :parameters {:body string?}
+     :responses {201 {:body {:message string? :place-uris list?}}
+                 400 {:body {:error string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (kml/import-kml-handler request))})
 
-    (GET "/contacts" []
-      (list-contacts dataset))
-    (GET "/contacts/:name" [name]
-      (get-contact-by-name dataset name))
-    (GET "/events" [start_date end_date]
-      (list-events-in-range dataset start_date end_date))
-    (GET "/places" []
-      (list-places dataset))
+  (POST "/api/photo/upload" request
+    {:summary "Upload a photo"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}  ; Change this line
+     :responses {200 {:body {:message string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (photo/process-photo-upload request))})
 
-    ;; 404 handler
-    (route/not-found
-     (status (response {:error "Not found"}) 404))))
+  ;; API documentation
+  ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
+  ;; (GET "/swagger.json" []
+  ;;   (response (swagger/swagger-json #'app-routes)))
+
+  (GET "/contacts" []
+    {:summary "List all contacts"
+     :responses {200 {:body {:contacts list?}}}
+     :handler (fn [_] (list-contacts))})
+  (GET "/contacts/:name" [name]
+    {:summary "Get contact by name"
+     :parameters {:path {:name string?}}
+     :responses {200 {:body {:contact map? :events list?}}
+                 404 {:body {:error string?}}}
+     :handler (fn [_] (get-contact-by-name name))})
+  (GET "/events" [start_date end_date]
+    {:summary "List events in date range"
+     :parameters {:query {:start_date string? :end_date string?}}
+     :responses {200 {:body {:events list? :date-range map?}}}
+     :handler (fn [_] (list-events-in-range start_date end_date))})
+  (GET "/places" []
+    {:summary "List all places"
+     :responses {200 {:body {:places list?}}}
+     :handler (fn [_] (list-places))})
+
+  ;; 404 handler
+  (route/not-found
+   (status (response {:error "Not found"}) 404)))
 
 (defn make-app [dataset]
   (-> (app-routes dataset)

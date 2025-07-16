@@ -1,4 +1,8 @@
+  (ns mutate
+    (:require [mutant :as mutant]
+              [clojure.test :as clojure-test]))
+  
   (binding [*out* *err*]
-    (mutant/run! source-paths
-                 test-paths
-                 clojure-test/test-fn))
+    (mutant/run! ["src"]
+                 ["test"]
+                 clojure.test/run-tests))
