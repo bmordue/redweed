@@ -47,10 +47,9 @@ public class PersonServiceTest {
         dataset.begin(ReadWrite.READ);
         try {
             Model model = dataset.getDefaultModel();
-            Resource person = model.listResourcesWithProperty(VCARD.FN, "John Doe").nextResource();
-            assertTrue(person.hasProperty(VCARD.N));
-            Resource n = person.getProperty(VCARD.N).getResource();
-            assertEquals("Doe", n.getProperty(VCARD.Family).getString());
+            var resources = model.listResourcesWithProperty(VCARD.FN, "John Doe").toList();
+            assertEquals(1, resources.size(), "Expected exactly one person with FN 'John Doe'");
+            Resource person = resources.get(0);
             assertEquals("John", n.getProperty(VCARD.Given).getString());
             assertEquals("johndoe@example.com", person.getProperty(VCARD.EMAIL).getString());
             assertEquals("tel:+1-555-555-5555", person.getProperty(VCARD.TEL).getString());
