@@ -12,7 +12,13 @@ public class PersonRepository {
 
     public void savePerson(Person person) {
         // Logic to save the person to the dataset
-        throw new UnsupportedOperationException("Method not implemented yet");
+        // Logic to save the person to the dataset
+        try {
+            throw new UnsupportedOperationException("Method not implemented yet");
+        } catch (UnsupportedOperationException e) {
+            log.error("Method savePerson not implemented", e);
+            throw e;
+        }
     }
 
     public Person findByUri(String uri) {
