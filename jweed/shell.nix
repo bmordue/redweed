@@ -10,9 +10,6 @@ pkgs.mkShell {
     # Build tools
     gradle
     
-    # Micronaut CLI
-    micronaut-cli
-    
     # Development tools
     git
     curl
