@@ -1,6 +1,6 @@
 package me.bmordue.redweed.exception;
 
-public class ResourceNotFoundException {
+public class ResourceNotFoundException extends RuntimeException {
     private String resourceName;
     private String fieldName;
     private Object fieldValue;
