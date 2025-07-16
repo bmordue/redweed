@@ -7,15 +7,12 @@
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [ring.util.response :refer [response status]]
             [clojure.tools.logging :as log]
-            [clojure.string :as str]
+;            [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
-
-            ;; [ring.swagger.swagger-ui :as swagger-ui]
-            ;; [ring.swagger.core :as swagger]
-
-            [rwclj.photo :as photo])
-
+            [rwclj.photo :as photo]
+            [rwclj.import :as import]
+            [ring.middleware.multipart-params :refer [wrap-multipart-params]])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -97,95 +94,68 @@
   ORDER BY ?label")
 
 ;; API endpoint handlers
-(defn list-contacts []
-  (response {:contacts (db/execute-sparql-select list-contacts-query)}))
+(defn list-contacts [dataset]
+  (response {:contacts (db/execute-sparql-select dataset list-contacts-query)}))
 
-(defn get-contact-by-name [full-name]
-  (let [escaped-name (str/replace full-name "\"" "\\\"")
+(defn get-contact-by-name [dataset full-name]
+  (let [escaped-name full-name;(str/replace full-name \"\" \"\\\"\")
         query (get-contact-by-name-query escaped-name)
-        results (db/execute-sparql-select query)]
+        results (db/execute-sparql-select dataset query)]
     (if (empty? results)
       (status (response {:error "Contact not found"}) 404)
       (response {:contact (first results)
                  :events (map #(select-keys % [:event :eventLabel :eventTime]) results)}))))
 
-(defn list-events-in-range [start-date end-date]
+(defn list-events-in-range [dataset start-date end-date]
   (let [query (list-events-in-range-query start-date end-date)]
-    (response {:events (db/execute-sparql-select query)
+    (response {:events (db/execute-sparql-select dataset query)
                :date-range {:start start-date :end end-date}})))
 
-(defn list-places []
-  (response {:places (db/execute-sparql-select list-places-query)}))
+(defn list-places [dataset]
+  (response {:places (db/execute-sparql-select dataset list-places-query)}))
 
 ;; Routes
-(defroutes app-routes
-  ;; Health check
-  (GET "/health" []
-    {:summary "Health check endpoint"
-     :responses {200 {:body {:status string? :service string?}}}
-     :handler (fn [_] (response {:status "ok" :service "Redweed Server"}))})
+(defn app-routes [dataset]
+  (defroutes app-routes-instance
+    ;; Health check
+    (GET "/health" []
+      (response {:status "ok" :service "Redweed Server"}))
 
-  ;; vCard import endpoint
-  (POST "/api/vcard/import" [request]
-    {:summary "Import vCard data to RDF store"
-     :consumes ["text/vcard" "application/json"]
-     :parameters {:body {:vcard string?}}
-     :responses {200 {:body {:message string?}}
-                 400 {:body {:error string?}}}
-     :handler (fn [request] (vcard/import-vcard-handler request))})
+    ;; Generic import endpoint
+    (POST "/api/import/vcard" request
+      (vcard/import-vcard-handler dataset request))
 
-  (POST "/api/photo/upload" request
-    {:summary "Upload a photo"
-     :consumes ["multipart/form-data"]
-     :parameters {:multipart {:file any?}}  ; Change this line
-     :responses {200 {:body {:message string? :file-uri string?}}
-                 500 {:body {:error string?}}}
-     :handler (fn [request] (photo/process-photo-upload request))})
+    (POST "/api/import/photo" request
+      (photo/photo-import-handler dataset request))
 
-  ;; API documentation
-  ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
-  ;; (GET "/swagger.json" []
-  ;;   (response (swagger/swagger-json #'app-routes)))
+    (GET "/contacts" []
+      (list-contacts dataset))
+    (GET "/contacts/:name" [name]
+      (get-contact-by-name dataset name))
+    (GET "/events" [start_date end_date]
+      (list-events-in-range dataset start_date end_date))
+    (GET "/places" []
+      (list-places dataset))
 
-  (GET "/contacts" []
-    {:summary "List all contacts"
-     :responses {200 {:body {:contacts list?}}}
-     :handler (fn [_] (list-contacts))})
-  (GET "/contacts/:name" [name]
-    {:summary "Get contact by name"
-     :parameters {:path {:name string?}}
-     :responses {200 {:body {:contact map? :events list?}}
-                 404 {:body {:error string?}}}
-     :handler (fn [_] (get-contact-by-name name))})
-  (GET "/events" [start_date end_date]
-    {:summary "List events in date range"
-     :parameters {:query {:start_date string? :end_date string?}}
-     :responses {200 {:body {:events list? :date-range map?}}}
-     :handler (fn [_] (list-events-in-range start_date end_date))})
-  (GET "/places" []
-    {:summary "List all places"
-     :responses {200 {:body {:places list?}}}
-     :handler (fn [_] (list-places))})
+    ;; 404 handler
+    (route/not-found
+     (status (response {:error "Not found"}) 404))))
 
-  ;; 404 handler
-  (route/not-found
-   (status (response {:error "Not found"}) 404)))
-
-(def app
-  (-> app-routes
-      ;; (swagger/wrap-swagger {:info {:title "Redweed API"
-      ;;                              :version "1.0.0"
-      ;;                              :description "API for the Redweed application"}})
+(defn make-app [dataset]
+  (-> (app-routes dataset)
       wrap-keyword-params
+      wrap-multipart-params
       wrap-params
       wrap-json-body
       wrap-json-response))
 
 (defn start-server!
-  ([] (start-server! 8080))
-  ([port]
+  ([port dataset]
    (log/info "Starting Redweed server on port" port)
-   (run-jetty app {:port port :join? false})))
+   (let [app (make-app dataset)]
+     (run-jetty app {:port port :join? false})))
+  ([port]
+   (start-server! port (db/get-dataset))))
 
 (defn parse-port [args]
   (let [port-str (first args)]
@@ -198,12 +168,13 @@
             8080)))
       (catch NumberFormatException _
         (when port-str
-          (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080."))
-        8080)))))
+          (log/warn (str "Invalid port specified:" port-str ". Falling back to default port 8080.")))
+        8080))))
 
 (defn -main [& args]
-  (let [port (parse-port args)]
-    (start-server! port)
+  (let [port (parse-port args)
+        dataset (db/get-dataset)]
+    (start-server! port dataset)
     (log/info (str "Redweed server running on port " port))))
 
 ;; For REPL development

@@ -56,7 +56,9 @@
                   :extra-deps {ring/ring-mock {:mvn/version "0.4.0"}
                                org.clojure/test.check {:mvn/version "1.1.1"}
                                lambdaisland/kaocha {:mvn/version "1.87.1366"}
-                               lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
+                               lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}
+                               org.apache.jena/jena-core {:mvn/version "4.10.0"}
+                               org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}}
                   :main-opts ["-m" "kaocha.runner"]
                   :exec-fn kaocha.runner/exec-fn}
 
@@ -73,7 +75,7 @@
 
            :seed {:main-opts ["-m" "rwclj.seed"]}
 
-           :server {:main-opts ["-m" "rwclj.server"]}
+           :server {:main-opts ["-m" "rwclj.server" "8080"]}
 
            :uberjar {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     org.apache.jena/jena-core {:mvn/version "4.10.0"}
