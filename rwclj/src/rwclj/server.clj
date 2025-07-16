@@ -11,7 +11,8 @@
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
             [rwclj.photo :as photo]
-            [rwclj.import :as import])
+            [rwclj.import :as import]
+            [ring.middleware.multipart-params :refer [wrap-multipart-params]])
   (:gen-class))
 
 ;; SPARQL Queries
@@ -143,6 +144,7 @@
 (defn make-app [dataset]
   (-> (app-routes dataset)
       wrap-keyword-params
+      wrap-multipart-params
       wrap-params
       wrap-json-body
       wrap-json-response))
