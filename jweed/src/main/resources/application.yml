@@ -1,0 +1,13 @@
+micronaut:
+  application:
+    name: redweed
+  server:
+    port: 8080
+
+rdf:
+  dataset:
+    location: "./data/tdb"
+    type: "TDB2"
+  namespaces:
+    default: "http://example.org/redweed/"
+
