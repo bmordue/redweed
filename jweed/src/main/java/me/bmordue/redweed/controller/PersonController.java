@@ -1,6 +1,8 @@
 package me.bmordue.redweed.controller;
 
 import io.micronaut.http.annotation.*;
+import me.bmordue.redweed.service.PersonService;
+import me.bmordue.redweed.model.dto.IngestVCardResponseDto;
 
 @Controller()
 public class PersonController {
@@ -9,7 +11,7 @@ public class PersonController {
     private PersonService personService;
 
     @Post
-    public IngestVCardResponseDto ingestVCard(@Body VCard body) {
+    public IngestVCardResponseDto ingestVCard(@Body String body) {
         return personService.ingestVCard(body);
     }
 }

@@ -1,5 +1,9 @@
 package me.bmordue.redweed.repository;
 
+import jakarta.inject.Singleton;
+import jakarta.inject.Inject;
+import me.bmordue.redweed.model.domain.Person;
+
 @Singleton
 public class PersonRepository {
     
