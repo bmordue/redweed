@@ -22,11 +22,15 @@ dependencies {
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
     runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.yaml:snakeyaml")
     testImplementation("io.micronaut.jsonschema:micronaut-json-schema-validation")
     testImplementation("org.apache.commons:commons-compress:1.27.1")
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:testcontainers")
+    implementation("org.apache.jena:jena-core:4.10.0")
+    implementation("org.apache.jena:jena-arq:4.10.0")
+    implementation("org.apache.jena:jena-tdb2:4.10.0")
 }
 
 
