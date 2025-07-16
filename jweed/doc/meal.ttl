@@ -1,0 +1,135 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix food: <http://purl.org/heals/food/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix meal: <http://example.org/meal#> .
+
+# Persons
+meal:Alice a foaf:Person ;
+    foaf:name "Alice" .
+
+meal:Bob a foaf:Person ;
+    foaf:name "Bob" .
+
+# Places
+meal:Restaurant a schema:Restaurant ;
+    rdfs:label "Restaurant" ;
+    schema:description "A nearby restaurant" .
+
+meal:Home a schema:Place ;
+    rdfs:label "Home" ;
+    schema:description "Alice and Bob's home" .
+
+# Food Items
+meal:PizzaFiorentina a food:Food ;
+    rdfs:label "Pizza Fiorentina" ;
+    food:foodType "pizza" .
+
+meal:PizzaDiavola a food:Food ;
+    rdfs:label "Pizza Diavola" ;
+    food:foodType "pizza" .
+
+meal:Margaritas a food:Beverage ;
+    rdfs:label "Margaritas" ;
+    food:beverageType "cocktail" .
+
+# Recipe
+meal:MargaritaRecipe a schema:Recipe ;
+    rdfs:label "Margarita Recipe" ;
+    schema:description "An old recipe for making margaritas" ;
+    schema:recipeYield meal:Margaritas .
+
+# Events
+meal:FridayNightDinner a schema:Event ;
+    rdfs:label "Friday Night Dinner" ;
+    schema:startDate "2025-07-11T19:00:00"^^xsd:dateTime ;
+    schema:location meal:Home ;
+    schema:attendee meal:Alice, meal:Bob .
+
+meal:FoodOrder a schema:Order ;
+    rdfs:label "Pizza Order" ;
+    schema:orderDate "2025-07-11T18:30:00"^^xsd:dateTime ;
+    schema:seller meal:Restaurant ;
+    schema:customer meal:Bob ;
+    schema:orderedItem meal:PizzaFiorentina, meal:PizzaDiavola .
+
+# Actions and Consumption
+meal:BobOrdersFood a schema:Action ;
+    schema:agent meal:Bob ;
+    schema:object meal:FoodOrder ;
+    schema:location meal:Restaurant .
+
+meal:BobMakesMargaritas a schema:CookAction ;
+    schema:agent meal:Bob ;
+    schema:result meal:Margaritas ;
+    schema:instrument meal:MargaritaRecipe ;
+    schema:location meal:Home .
+
+meal:AliceEatsPizza a schema:ConsumeAction ;
+    schema:agent meal:Alice ;
+    schema:object meal:PizzaDiavola ;
+    schema:location meal:Home .
+
+meal:BobEatsPizza a schema:ConsumeAction ;
+    schema:agent meal:Bob ;
+    schema:object meal:PizzaFiorentina ;
+    schema:location meal:Home .
+
+meal:AliceDrinksMargaritas a schema:ConsumeAction ;
+    schema:agent meal:Alice ;
+    schema:object meal:Margaritas ;
+    schema:location meal:Home .
+
+meal:BobDrinksMargaritas a schema:ConsumeAction ;
+    schema:agent meal:Bob ;
+    schema:object meal:Margaritas ;
+    schema:location meal:Home .
+
+# Reviews and Ratings
+meal:BobsPizzaReview a schema:Review ;
+    schema:author meal:Bob ;
+    schema:itemReviewed meal:PizzaFiorentina ;
+    schema:ratingValue "5"^^xsd:integer ;
+    schema:bestRating "5"^^xsd:integer ;
+    schema:worstRating "1"^^xsd:integer ;
+    schema:reviewBody "Bob enjoys his pizza and gives it 5 stars" .
+
+meal:AlicesPizzaReview a schema:Review ;
+    schema:author meal:Alice ;
+    schema:itemReviewed meal:PizzaDiavola ;
+    schema:reviewBody "Alice likes her pizza but finds it slightly too spicy" ;
+    schema:ratingValue "3"^^xsd:integer ;
+    schema:bestRating "5"^^xsd:integer ;
+    schema:worstRating "1"^^xsd:integer .
+
+meal:MargaritasReview a schema:Review ;
+    schema:author meal:Alice, meal:Bob ;
+    schema:itemReviewed meal:Margaritas ;
+    schema:reviewBody "They both agree the margaritas are excellent" ;
+    schema:ratingValue "5"^^xsd:integer ;
+    schema:bestRating "5"^^xsd:integer ;
+    schema:worstRating "1"^^xsd:integer .
+
+meal:RestaurantReview a schema:Review ;
+    schema:author meal:Alice, meal:Bob ;
+    schema:itemReviewed meal:Restaurant ;
+    schema:reviewBody "Overall, the restaurant provided good food and service" ;
+    schema:ratingValue "4"^^xsd:integer ;
+    schema:bestRating "5"^^xsd:integer ;
+    schema:worstRating "1"^^xsd:integer .
+
+# Relationships
+meal:Alice foaf:knows meal:Bob .
+meal:Bob foaf:knows meal:Alice .
+
+# Dining relationship
+meal:FridayNightDinner schema:attendee meal:Alice, meal:Bob .
+
+# Location relationships
+meal:PizzaFiorentina schema:provider meal:Restaurant .
+meal:PizzaDiavola schema:provider meal:Restaurant .
+meal:Margaritas schema:provider meal:Home .
