@@ -12,10 +12,6 @@ The application can be configured using environment variables.
 
 **Key Dependencies:**
 - **Jena stack** - Core RDF functionality, TDB2 storage, SPARQL
-- **Ring/Compojure** - Web server for your API
-- **Jsonista** - Fast JSON handling for JSON-LD
-- **Aero** - Configuration management
-- **Spec** - Data validation
 
 **Data Model**
 
@@ -35,24 +31,6 @@ The application uses the following RDF vocabularies to represent data:
     *   `vcard:PHOTO`: Represents a photo.
 *   **Dublin Core:** Used for photo metadata.
     *   `dc:date`: The date the photo was taken.
-
-**Useful Aliases:**
-```bash
-# Seed the database
-clj -M:seed
-
-# Start the API server
-clj -M:server
-
-# Development REPL with CIDER
-clj -M:repl
-
-# Run tests
-clj -M:test
-
-# Build uberjar for deployment
-clj -M:uberjar
-```
 
 **Usage**
 
