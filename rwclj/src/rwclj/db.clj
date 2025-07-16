@@ -43,3 +43,19 @@
     (.add target-model model)
     (log/info "Successfully stored RDF model")))
 
+(defn execute-sparql-update
+  ([update-string]
+   (with-open [dataset (get-dataset)]
+     (.begin dataset)
+     (try
+       (execute-sparql-update dataset update-string)
+       (.commit dataset)
+       (finally
+         (.end dataset)))))
+  ([dataset update-string]
+   (try
+     (let [update (UpdateFactory/create update-string)]
+       (with-open [qexec (UpdateExecutionFactory/create update dataset)]
+         (.execute qexec)))
+     (catch Exception e
+       (log/error e "Error executing SPARQL update")))))

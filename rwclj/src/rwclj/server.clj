@@ -10,6 +10,7 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+            [rwclj.review :as review]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
             ;; [ring.swagger.core :as swagger]
@@ -141,6 +142,14 @@
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
+
+  (POST "/api/review/import" request
+    {:summary "Import a review"
+     :consumes ["application/json"]
+     :parameters {:body {:review map?}}
+     :responses {201 {:body {:message string? :review-uri string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request] (review/import-review-handler request))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})

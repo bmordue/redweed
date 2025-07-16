@@ -17,6 +17,36 @@ This document provides a detailed description of the Redweed API endpoints.
         }
         ```
 
+## Reviews
+
+### POST /api/review/import
+
+*   **Description:** Imports a review.
+*   **Consumes:** `application/json`
+*   **Parameters:**
+    *   `body`: The review data as a JSON object.
+        ```json
+        {
+          "rating": 5,
+          "text": "This is a great product!"
+        }
+        ```
+*   **Responses:**
+    *   `201 Created`: Review imported successfully.
+        ```json
+        {
+          "status": "success",
+          "review-uri": "...",
+          "message": "Review imported successfully"
+        }
+        ```
+    *   `400 Bad Request`: Invalid review data.
+        ```json
+        {
+          "error": "Invalid review format"
+        }
+        ```
+
 ## vCard
 
 ### POST /api/vcard/import
