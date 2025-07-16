@@ -18,11 +18,13 @@ public class PersonRepository {
 
     public void save(Model model) {
         dataset.begin(ReadWrite.WRITE);
-        try {
+                try {
             dataset.getDefaultModel().add(model);
             dataset.commit();
-        } finally {
-            dataset.end();
-        }
+        } catch (Exception e) {
+            log.error("Transaction failed, aborting.", e);
+            dataset.abort();
+            throw e;
+        } 
     }
 }

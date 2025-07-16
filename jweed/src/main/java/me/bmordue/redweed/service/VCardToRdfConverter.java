@@ -31,26 +31,36 @@ public final class VCardToRdfConverter {
             N n = (N) vcard.getProperty(Property.Id.N);
             if (n != null) {
                 person.addProperty(VCARD.N,
-                    model.createResource()
-                        .addProperty(VCARD.Family, n.getFamilyName())
-                        .addProperty(VCARD.Given, n.getGivenName()));
+                        model.createResource()
+                                .addProperty(VCARD.Family, n.getFamilyName())
+                                .addProperty(VCARD.Given, n.getGivenName()));
             }
 
             vcard.getProperties(Property.Id.EMAIL).forEach(email -> person.addProperty(VCARD.EMAIL, email.getValue()));
             vcard.getProperties(Property.Id.TEL).forEach(tel -> person.addProperty(VCARD.TEL, tel.getValue()));
             vcard.getProperties(Property.Id.ADR).forEach(addr -> {
-                String[] adrParts = addr.getValue().split(";");
-                Resource address = model.createResource();
-                address.addProperty(VCARD.Street, adrParts[2]);
-                address.addProperty(VCARD.Locality, adrParts[3]);
-                address.addProperty(VCARD.Region, adrParts[4]);
-                address.addProperty(VCARD.Pcode, adrParts[5]);
-                address.addProperty(VCARD.Country, adrParts[6]);
-                person.addProperty(VCARD.ADR, address);
+                String[] adrParts = addr.getValue().split(";", -1);
+                if (adrParts.length >= 7) {
+                    Resource address = model.createResource();
+                    if (!adrParts[2].isEmpty())
+                        address.addProperty(VCARD.Street, adrParts[2]);
+                    if (!adrParts[3].isEmpty())
+                        address.addProperty(VCARD.Locality, adrParts[3]);
+                    if (!adrParts[4].isEmpty())
+                        address.addProperty(VCARD.Region, adrParts[4]);
+                    if (!adrParts[5].isEmpty())
+                        address.addProperty(VCARD.Pcode, adrParts[5]);
+                    if (!adrParts[6].isEmpty())
+                        address.addProperty(VCARD.Country, adrParts[6]);
+
+                    if (address.listProperties().hasNext()) {
+                        person.addProperty(VCARD.ADR, address);
+                    }
+                }
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to convert vCard to RDF", e);
         }
         return model;
     }
