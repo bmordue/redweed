@@ -10,6 +10,7 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+            [rwclj.eat :as eat]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
             ;; [ring.swagger.core :as swagger]
@@ -141,6 +142,14 @@
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
+
+  (POST "/api/eat" [request]
+    {:summary "Record an eating event"
+     :consumes ["application/json"]
+     :parameters {:body {:summary string?}}
+     :responses {201 {:body {:status string? :activity-uri string? :message string?}}
+                 400 {:body {:status string? :message string?}}}
+     :handler (fn [request] (eat/eat-handler request))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
