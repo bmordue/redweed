@@ -4,7 +4,7 @@ import io.micronaut.http.annotation.*;
 import me.bmordue.redweed.service.PersonService;
 import me.bmordue.redweed.model.dto.IngestVCardResponseDto;
 
-@Controller()
+@Controller("/persons")
 public class PersonController {
 
     @Inject
