@@ -10,6 +10,7 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+            [rwclj.recipe :as recipe]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
             ;; [ring.swagger.core :as swagger]
@@ -141,6 +142,20 @@
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
+
+  (POST "/api/recipe/import" request
+    {:summary "Import hRecipe data to RDF store"
+     :consumes ["text/html"]
+     :parameters {:body string?}
+     :responses {201 {:body {:message string? :recipe-uri string?}}
+                 400 {:body {:error string?}}}
+     :handler (fn [request]
+                (let [html-string (slurp (:body request))]
+                  (let [parsed-recipe (recipe/parse-hrecipe html-string)
+                        rdf-model (recipe/recipe->rdf parsed-recipe)]
+                    (db/add-model-to-db rdf-model)
+                    (status (response {:message "Recipe imported successfully"
+                                       :recipe-uri (recipe/recipe-uri (:name parsed-recipe))}) 201))))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})

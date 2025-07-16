@@ -43,3 +43,12 @@
     (.add target-model model)
     (log/info "Successfully stored RDF model")))
 
+(defn add-model-to-db [^Model model]
+  (with-open [dataset (get-dataset)]
+    (.begin dataset)
+    (try
+      (store-rdf-model! dataset model)
+      (.commit dataset)
+      (catch Exception e
+        (log/error e "Error adding model to DB")
+        (.abort dataset)))))
