@@ -122,7 +122,7 @@
         ;; Test with raw vcard
         (let [request {:headers {"content-type" "text/vcard"}
                        :body (java.io.ByteArrayInputStream. (.getBytes sample-vcard-text "UTF-8"))}
-              response (vcard/import-vcard-handler request)]
+              response (vcard/import-vcard-handler (db/get-dataset) request)]
           (is (= 201 (:status response)))
           (is (str/includes? (:body response) "\"status\":\"success\""))
           (is (str/includes? (:body response) "Test Handler")) ; Check if person URI (containing name) is in response
@@ -140,7 +140,7 @@
         (let [json-body (str "{\"vcard\": \"" (str/escape sample-vcard-text {"\n" "\\n"}) "\"}")
               request {:headers {"content-type" "application/json"}
                        :body (java.io.ByteArrayInputStream. (.getBytes json-body "UTF-8"))}
-              response (vcard/import-vcard-handler request)]
+              response (vcard/import-vcard-handler (db/get-dataset) request)]
           (is (= 201 (:status response)))
           (is (str/includes? (:body response) "\"status\":\"success\""))
           (is (= 1 (count @mock-stored-models))))
@@ -151,7 +151,7 @@
         (let [invalid-vcard-text "BEGIN:VCARD\nFN:Bad Card\nEND:VCARD" ; Missing VERSION
               request {:headers {"content-type" "text/vcard"}
                        :body (java.io.ByteArrayInputStream. (.getBytes invalid-vcard-text "UTF-8"))}
-              response (vcard/import-vcard-handler request)]
+              response (vcard/import-vcard-handler (db/get-dataset) request)]
           (is (= 400 (:status response)))
           (is (str/includes? (:body response) "Invalid vCard format"))
           (is (empty? @mock-stored-models)))
@@ -159,7 +159,7 @@
         ;; Test with unsupported content type
         (let [request {:headers {"content-type" "application/xml"}
                        :body (java.io.ByteArrayInputStream. (.getBytes "<xml></xml>" "UTF-8"))}
-              response (vcard/import-vcard-handler request)]
+              response (vcard/import-vcard-handler (db/get-dataset) request)]
           (is (= 415 (:status response)))
           (is (str/includes? (:body response) "Unsupported content type"))
           (is (empty? @mock-stored-models)))))))

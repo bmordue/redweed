@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: me.bmordue
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [app-name, github-workflow-ci, gradle, http-client, java, java-application, jetty-server, json-schema, json-schema-validation, junit, logback, micronaut-aot, micronaut-build, micronaut-http-validation, mockito, openapi, openapi-explorer, properties, readme, serialization-jackson, shade, static-resources, testcontainers]

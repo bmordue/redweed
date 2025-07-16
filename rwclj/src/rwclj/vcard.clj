@@ -20,7 +20,7 @@
 (defn create-property [uri]
   (ResourceFactory/createProperty uri))
 
-(defn create-literal 
+(defn create-literal
   ([value] (ResourceFactory/createPlainLiteral (str value)))
   ([value datatype] (ResourceFactory/createTypedLiteral value datatype)))
 
@@ -56,7 +56,7 @@
               (update acc prop (fnil conj []) value))
             {} properties)))
 
-(defn generate-person-uri 
+(defn generate-person-uri
   "Generate a URI for a person based on vCard data"
   [vcard-data]
   (let [fn-name (first (get vcard-data "FN" []))
@@ -117,89 +117,97 @@
        (str/includes? vcard-text "END:VCARD")
        (str/includes? vcard-text "VERSION:")))
 
-;; HTTP handlers
+
 (defn import-vcard-handler
-  "Handle vCard import POST request"
-  [request]
+  "Handler for importing vCard data via HTTP requests"
+  [dataset request]
   (try
-    (let [body (slurp (:body request))
-          content-type (get-in request [:headers "content-type"] "")]
+    (let [content-type (get-in request [:headers "content-type"])
+          body (:body request)]
 
       (cond
-        ;; Raw vCard text
-        (str/includes? content-type "text/vcard")
-        (let [vcard-text body]
+        ;; Handle text/vcard content type
+        (= content-type "text/vcard")
+        (let [vcard-text (slurp body)]
           (if (validate-vcard vcard-text)
             (let [vcard-data (parse-vcard vcard-text)
                   person-uri (generate-person-uri vcard-data)
-                  model (ModelFactory/createDefaultModel)
-                  _ (vcard->rdf vcard-data person-uri model)]
+                  model (ModelFactory/createDefaultModel)]
+              (vcard->rdf vcard-data person-uri model)
+              (.begin dataset)
+              (try
+                (db/store-rdf-model! dataset model)
+                (.commit dataset)
+                (catch Exception e
+                  (.abort dataset)
+                  (log/error e)
+                  (throw e))
+                (finally (.end dataset)))
 
-              (db/store-rdf-model! db/get-dataset model)
-              (log/info "Successfully stored vCard RDF for person:" person-uri)
+              (log/info "Successfully imported vCard for person:" person-uri)
+              (-> (response/response (json/write-value-as-string
+                                      {:status "success"
+                                       :person-uri person-uri
+                                       :message "vCard imported successfully"}))
+                  (response/status 201)
+                  (response/header "Content-Type" "application/json")))
+            (-> (response/response (json/write-value-as-string
+                                    {:status "error"
+                                     :message "Invalid vCard format"}))
+                (response/status 400)
+                (response/header "Content-Type" "application/json"))))
 
-              (-> (response/response
-                   (json/write-value-as-string
-                    {:status "success"
-                     :person-uri person-uri
-                     :message "vCard imported successfully"}))
-                  (response/content-type "application/json")
-                  (response/status 201)))
-
-            (-> (response/response
-                 (json/write-value-as-string
-                  {:status "error"
-                   :message "Invalid vCard format"}))
-                (response/content-type "application/json")
-                (response/status 400))))
-
-        ;; JSON with vCard content
-        (str/includes? content-type "application/json")
-        (let [json-data (json/read-value body)
+        ;; Handle application/json content type
+        (= content-type "application/json")
+        (let [json-data (json/read-value (slurp body))
               vcard-text (get json-data "vcard")]
           (if (and vcard-text (validate-vcard vcard-text))
             (let [vcard-data (parse-vcard vcard-text)
                   person-uri (generate-person-uri vcard-data)
-                  model (ModelFactory/createDefaultModel)
-                  _ (vcard->rdf vcard-data person-uri model)]
+                  model (ModelFactory/createDefaultModel)]
+              (vcard->rdf vcard-data person-uri model)
+              (.begin dataset)
+              (try
+                (db/store-rdf-model! dataset model)
+                (.commit dataset)
+                (catch Exception e
+                  (.abort dataset)
+                  (log/error e)
+                  (throw e))
+                (finally (.end dataset)))
+              (log/info "Successfully imported vCard from JSON for person:" person-uri)
+              (-> (response/response (json/write-value-as-string
+                                      {:status "success"
+                                       :person-uri person-uri
+                                       :message "vCard imported successfully"}))
+                  (response/status 201)
+                  (response/header "Content-Type" "application/json")))
+            (-> (response/response (json/write-value-as-string
+                                    {:status "error"
+                                     :message "Invalid vCard format"}))
+                (response/status 400)
+                (response/header "Content-Type" "application/json"))))
 
-              (db/store-rdf-model! db/get-dataset model)
-              (log/info "Successfully stored vCard RDF for person:" person-uri)
-
-              (-> (response/response
-                   (json/write-value-as-string
-                    {:status "success"
-                     :person-uri person-uri
-                     :message "vCard imported successfully"}))
-                  (response/content-type "application/json")
-                  (response/status 201)))
-
-            (-> (response/response
-                 (json/write-value-as-string
-                  {:status "error"
-                   :message "Invalid or missing vCard data"}))
-                (response/content-type "application/json")
-                (response/status 400))))
-
+        ;; Unsupported content type
         :else
-        (-> (response/response
-             (json/write-value-as-string
-              {:status "error"
-               :message "Unsupported content type. Use text/vcard or application/json"}))
-            (response/content-type "application/json")
-            (response/status 415))))
+        (-> (response/response (json/write-value-as-string
+                                {:status "error"
+                                 :message "Unsupported content type"}))
+            (response/status 415)
+            (response/header "Content-Type" "application/json"))))
 
     (catch Exception e
-      (log/error "Error processing vCard import:" (.getMessage e))
-      (-> (response/response
-           (json/write-value-as-string
-            {:status "error"
-             :message "Internal server error"}))
-          (response/content-type "application/json")
-          (response/status 500)))))
+      (log/error "Error during vCard import:" (.getMessage e))
+      (-> (response/response (json/write-value-as-string
+                              {:status "error"
+                               :message "Internal server error during import"}))
+          (response/status 500)
+          (response/header "Content-Type" "application/json")))))
+
 
 ;; Test data and utilities
-(def sample-vcard 
+;; TODO: move these to test/rwclj/vcard_test.clj
+(def sample-vcard
   "BEGIN:VCARD
 VERSION:3.0
 FN:John Doe
@@ -216,18 +224,12 @@ END:VCARD")
   (let [vcard-data (parse-vcard sample-vcard)
         person-uri (generate-person-uri vcard-data)
         model (ModelFactory/createDefaultModel)]
-    
+
     (vcard->rdf vcard-data person-uri model)
     (db/store-rdf-model! db/get-dataset model)
     (log/info "Test vCard imported for person:" person-uri)
-    
+
     (println "Test vCard imported:")
     (println "Person URI:" person-uri)
     (println "vCard data:" vcard-data)))
 
-(comment
-  ;; Test the vCard parsing
-  (parse-vcard sample-vcard)
-  
-  ;; Test the full import process
-  (test-vcard-import))
