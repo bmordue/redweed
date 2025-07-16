@@ -33,6 +33,9 @@
         ;; EXIF metadata extraction
         com.drewnoakes/metadata-extractor {:mvn/version "2.18.0"}
 
+        ;; MP3 metadata extraction
+        com.mpatric/mp3agic {:mvn/version "0.9.1"}
+
         ;; Apache Jena dependencies
         org.apache.jena/jena-core {:mvn/version "4.10.0"}
         org.apache.jena/jena-tdb2 {:mvn/version "4.10.0"}

@@ -10,6 +10,7 @@
             [clojure.string :as str]
             [rwclj.vcard :as vcard]
             [rwclj.db :as db]
+            [rwclj.music :as music]
 
             ;; [ring.swagger.swagger-ui :as swagger-ui]
             ;; [ring.swagger.core :as swagger]
@@ -141,6 +142,14 @@
      :responses {200 {:body {:message string? :file-uri string?}}
                  500 {:body {:error string?}}}
      :handler (fn [request] (photo/process-photo-upload request))})
+
+  (POST "/api/music/upload" request
+    {:summary "Upload a music file"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}
+     :responses {200 {:body {:message string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (music/process-music-upload request))})
 
   ;; API documentation
   ;; (swagger-ui/create-swagger-ui-handler {:path "/api-docs"})
