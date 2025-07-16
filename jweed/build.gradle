@@ -9,6 +9,7 @@ group = "me.bmordue"
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -31,6 +32,7 @@ dependencies {
     implementation("org.apache.jena:jena-core:4.10.0")
     implementation("org.apache.jena:jena-arq:4.10.0")
     implementation("org.apache.jena:jena-tdb2:4.10.0")
+    implementation 'org.mnode.ical4j:ical4j-vcard:1.0.0'
 }
 
 

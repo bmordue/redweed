@@ -1,36 +1,30 @@
 package me.bmordue.redweed.config;
 
-import javax.swing.SwingContainer;
+import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Factory;
 import jakarta.inject.Singleton;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.tdb2.TDB2Factory;
 
 @Factory
 public class RdfConfiguration {
 
     @ConfigurationProperties("rdf.dataset")
     public static class DatasetConfiguration {
-        private String name;
-        private String type;
+        private String location;
 
-        public String getName() {
-            return name;
+        public String getLocation() {
+            return location;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
+        public void setLocation(String location) {
+            this.location = location;
         }
     }
 
     @Singleton
     public Dataset dataset(DatasetConfiguration config) {
-        return TDB2Factory.createDataset(config.getName(), config.getType());
+        return TDB2Factory.connectDataset(config.getLocation());
     }
 
 }

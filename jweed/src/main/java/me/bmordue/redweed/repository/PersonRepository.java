@@ -1,41 +1,28 @@
 package me.bmordue.redweed.repository;
 
-import jakarta.inject.Singleton;
 import jakarta.inject.Inject;
-import me.bmordue.redweed.model.domain.Person;
+import jakarta.inject.Singleton;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
+import org.apache.jena.rdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class PersonRepository {
-    
+
+    private static final Logger log = LoggerFactory.getLogger(PersonRepository.class);
+
     @Inject
     private Dataset dataset;
 
-    public void savePerson(Person person) {
-        // Logic to save the person to the dataset
-        // Logic to save the person to the dataset
+    public void save(Model model) {
+        dataset.begin(ReadWrite.WRITE);
         try {
-            throw new UnsupportedOperationException("Method not implemented yet");
-        } catch (UnsupportedOperationException e) {
-            log.error("Method savePerson not implemented", e);
-            throw e;
-        }
-    }
-
-    public Person findByUri(String uri) {
-        // Logic to find a person by ID in the dataset
-
-        String sparql = "SELECT ?s WHERE { ?s <http://example.org/redweed#id> \"" + uri + "\" }";
-
-        try (QueryExecution qexec = QueryExecutionFactory.create(sparql, dataset)) {
-            ResultSet results = qexec.execSelect();
-            if (results.hasNext()) {
-                QuerySolution soln = results.nextSolution();
-                Resource resource = soln.getResource("s");
-                return new Person(resource.getURI());
-            }
-        } catch (Exception e) {
-            // Handle exceptions
-            throw e;
+            dataset.getDefaultModel().add(model);
+            dataset.commit();
+        } finally {
+            dataset.end();
         }
     }
 }
