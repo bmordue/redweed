@@ -1,4 +1,4 @@
-package main.java.me.bmordue.redweed.model.domain;
+package me.bmordue.redweed.model.domain;
 
 public class Person {
     private String uri;
