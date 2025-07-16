@@ -12,7 +12,7 @@ import org.apache.jena.vocabulary.VCARD;
 import java.io.StringReader;
 import java.util.UUID;
 
-public class VCardToRdfConverter {
+public final class VCardToRdfConverter {
 
     public static Model convert(String vCardString) {
         Model model = ModelFactory.createDefaultModel();
