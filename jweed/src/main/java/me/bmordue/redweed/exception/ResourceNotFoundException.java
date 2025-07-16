@@ -1,4 +1,4 @@
-package main.java.me.bmordue.redweed.exception;
+package me.bmordue.redweed.exception;
 
 public class ResourceNotFoundException {
     private String resourceName;
