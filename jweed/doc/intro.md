@@ -1,6 +1,6 @@
-# Introduction to rwclj
+# Introduction
 
-This contains the Clojure code for interacting with the redweed data store.
+This project contains the code for interacting with the redweed data store.
 
 - seed with sample data
 

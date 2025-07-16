@@ -4,13 +4,13 @@ This document describes the architecture of the Redweed application.
 
 ## Overview
 
-Redweed is a personal information management system that uses an RDF database to store data. The application is built in Clojure and uses the Jena TDB2 database for RDF storage. The application is exposed as a web service with a JSON API.
+Redweed is a personal information management system that uses an RDF database to store data. The application uses the Jena TDB2 database for RDF storage. The application is exposed as a web service with a JSON API.
 
 ## Key Components
 
 The application is composed of the following key components:
 
-*   **Web Server:** The web server is implemented using Jetty and Compojure. It exposes a JSON API for interacting with the application.
+*   **Web Server:** The web server is implemented using Jetty. It exposes a JSON API for interacting with the application.
 *   **RDF Database:** The RDF database is implemented using Jena TDB2. It stores all of the application's data.
 *   **vCard Parser:** The vCard parser is responsible for parsing vCard files and converting them to RDF.
 *   **Photo Processor:** The photo processor is responsible for processing photo uploads, extracting EXIF metadata, and storing it as RDF.
@@ -27,7 +27,7 @@ graph TD
         B[curl]
     end
 
-    subgraph "Web Server (Jetty/Compojure)"
+    subgraph "Web Server (Jetty)"
         C[API Endpoints]
         D[SPARQL Queries]
     end
