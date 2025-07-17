@@ -19,9 +19,12 @@ public class PersonRepository extends RdfRepository {
     public Person findByUri(String uri) {
         // Logic to find a person by ID in the dataset
         dataset.begin(ReadWrite.READ);
-        String sparql = "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://example.org/redweed#id> \"" + uri + "\" }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://example.org/redweed#id> ?uri . }"
+        );
+        pss.setLiteral("uri", uri);
 
-        try (QueryExecution qexec = QueryExecutionFactory.create(sparql, dataset)) {
+        try (QueryExecution qexec = QueryExecutionFactory.create(pss.asQuery(), dataset)) {
             ResultSet results = qexec.execSelect();
             if (results.hasNext()) {
                 QuerySolution solution = results.nextSolution();

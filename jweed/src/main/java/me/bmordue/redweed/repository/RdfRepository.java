@@ -1,4 +1,3 @@
-
 package me.bmordue.redweed.repository;
 
 import jakarta.inject.Inject;
@@ -18,8 +17,15 @@ public class RdfRepository {
 
     public void save(Model model) {
         dataset.begin(ReadWrite.WRITE);
-        dataset.getDefaultModel().add(model);
-        dataset.commit();
-        dataset.end();
+        try {
+            dataset.getDefaultModel().add(model);
+            dataset.commit();
+        } catch (Exception e) {
+            dataset.abort();
+            log.error("Error saving model to dataset", e);
+            throw e;
+        } finally {
+            dataset.end();
+        }
     }
 }
