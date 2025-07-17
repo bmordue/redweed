@@ -1,29 +1,55 @@
 package me.bmordue.redweed.vocabulary;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import me.bmordue.redweed.config.RdfConfiguration;
+
 /**
  * Vocabulary constants for RDF properties and resources used in the Redweed application.
  * This class centralizes URI definitions to improve maintainability and avoid typos.
+ * The base namespace is now configurable via application.yml.
  */
-public final class RedweedVocab {
+@Singleton
+public class RedweedVocab {
     
-    // Private constructor to prevent instantiation
-    private RedweedVocab() {}
+    private final String baseNamespace;
+    private final String personNamespace;
+    private final String placeNamespace;
+    private final String reviewNamespace;
+    
+    @Inject
+    public RedweedVocab(RdfConfiguration.NamespaceConfiguration namespaceConfig) {
+        this.baseNamespace = namespaceConfig.getBase();
+        this.personNamespace = baseNamespace + "person/";
+        this.placeNamespace = baseNamespace + "place/";
+        this.reviewNamespace = baseNamespace + "review/";
+    }
     
     // Base namespace for local resources
-    public static final String REDWEED_NAMESPACE = "http://redweed.local/";
+    public String getBaseNamespace() {
+        return baseNamespace;
+    }
     
     // Resource type namespaces
-    public static final String PERSON_NAMESPACE = REDWEED_NAMESPACE + "person/";
-    public static final String PLACE_NAMESPACE = REDWEED_NAMESPACE + "place/";
-    public static final String REVIEW_NAMESPACE = REDWEED_NAMESPACE + "review/";
+    public String getPersonNamespace() {
+        return personNamespace;
+    }
     
-    // W3C Geo vocabulary
+    public String getPlaceNamespace() {
+        return placeNamespace;
+    }
+    
+    public String getReviewNamespace() {
+        return reviewNamespace;
+    }
+    
+    // W3C Geo vocabulary (these remain static as they are external standards)
     public static final String GEO_NAMESPACE = "http://www.w3.org/2003/01/geo/wgs84_pos#";
     public static final String GEO_SPATIAL_THING = GEO_NAMESPACE + "SpatialThing";
     public static final String GEO_LAT = GEO_NAMESPACE + "lat";
     public static final String GEO_LONG = GEO_NAMESPACE + "long";
     
-    // Review vocabulary
+    // Review vocabulary (these remain static as they are external standards)
     public static final String REV_NAMESPACE = "http://purl.org/stuff/rev#";
     public static final String REV_REVIEW = REV_NAMESPACE + "Review";
     public static final String REV_RATING = REV_NAMESPACE + "rating";

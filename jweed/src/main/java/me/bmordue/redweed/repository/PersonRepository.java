@@ -13,16 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class PersonRepository {
+public class PersonRepository extends RdfRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PersonRepository.class);
 
     @Inject
     private Dataset dataset;
-
-    public void save(Model model) {
-        super.save(model);
-    }
 
     public Person findByUri(String uri) {
         // Logic to find a person by ID in the dataset

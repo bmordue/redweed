@@ -22,12 +22,15 @@ public class ReviewService {
     @Inject
     private ReviewRepository reviewRepository;
 
+    @Inject
+    private RedweedVocab redweedVocab;
+
     public IngestHReviewResponseDto ingestHReview(String html) {
         List<Map<String, String>> reviews = HReviewParser.parse(html);
         Model model = ModelFactory.createDefaultModel();
         List<String> reviewUris = reviews.stream()
                 .map(review -> {
-                    String reviewUri = RedweedVocab.REVIEW_NAMESPACE + UUID.randomUUID();
+                    String reviewUri = redweedVocab.getReviewNamespace() + UUID.randomUUID();
                     Resource reviewResource = model.createResource(reviewUri)
                             .addProperty(RDF.type, model.createResource(RedweedVocab.REV_REVIEW))
                             .addProperty(model.createProperty(RedweedVocab.REV_RATING), review.get("rating"))

@@ -23,12 +23,15 @@ public class PlaceService {
     @Inject
     private PlaceRepository placeRepository;
 
+    @Inject
+    private RedweedVocab redweedVocab;
+
     public IngestKmlResponseDto ingestKml(String kmlString) {
         List<Map<String, String>> placemarks = KmlParser.parse(kmlString);
         Model model = ModelFactory.createDefaultModel();
         List<String> placeUris = placemarks.stream()
                 .map(placemark -> {
-                    String placeUri = RedweedVocab.PLACE_NAMESPACE + UUID.randomUUID();
+                    String placeUri = redweedVocab.getPlaceNamespace() + UUID.randomUUID();
                     Resource placeResource = model.createResource(placeUri)
                             .addProperty(RDF.type, model.createResource(RedweedVocab.GEO_SPATIAL_THING))
                             .addProperty(RDFS.label, placemark.get("name"))

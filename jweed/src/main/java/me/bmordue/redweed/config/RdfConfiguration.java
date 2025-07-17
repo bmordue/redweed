@@ -22,6 +22,19 @@ public class RdfConfiguration {
         }
     }
 
+    @ConfigurationProperties("rdf.namespaces")
+    public static class NamespaceConfiguration {
+        private String base = "http://redweed.local/";
+
+        public String getBase() {
+            return base;
+        }
+
+        public void setBase(String base) {
+            this.base = base;
+        }
+    }
+
     @Singleton
     public Dataset dataset(DatasetConfiguration config) {
         return TDB2Factory.connectDataset(config.getLocation());

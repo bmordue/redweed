@@ -13,10 +13,4 @@ public class PlaceRepository extends RdfRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PlaceRepository.class);
 
-    @Inject
-    private Dataset dataset;
-
-    public void save(Model model) {
-        super.save(model);
-    }
 }

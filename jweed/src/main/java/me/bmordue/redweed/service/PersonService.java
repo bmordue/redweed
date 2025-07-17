@@ -22,12 +22,15 @@ public class PersonService {
     @Inject
     private PersonRepository personRepository;
 
+    @Inject
+    private RedweedVocab redweedVocab;
+
     public IngestVCardResponseDto ingestVCard(String vCardString) {
         Map<String, String> vCardMap = VCardParser.parse(vCardString);
         String fn = java.util.Objects.requireNonNull(vCardMap.get("FN"), "vCard must contain a formatted name (FN)");
         String email = vCardMap.get("EMAIL");
 
-        String personUri = RedweedVocab.PERSON_NAMESPACE + UUID.randomUUID();
+        String personUri = redweedVocab.getPersonNamespace() + UUID.randomUUID();
 
         Model model = ModelFactory.createDefaultModel();
         Resource personResource = model.createResource(personUri)
