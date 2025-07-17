@@ -10,4 +10,5 @@ rdf:
     type: "TDB2"
   namespaces:
     default: "http://example.org/redweed/"
+    base: "http://redweed.local/"
 
