@@ -39,12 +39,17 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle
     - name: Validate Gradle wrapper
       uses: gradle/actions/wrapper-validation@v4
+      with:
+        working-directory: jweed
     - name: Build with Gradle
       run: ./gradlew build
+      working-directory: jweed
     - name: Generate test coverage report
       run: ./gradlew jacocoTestReport
+      working-directory: jweed
     - name: Run SonarCloud analysis
       run: ./gradlew sonar
+      working-directory: jweed
     - uses: actions/upload-artifact@v4
       if: always()
       with:
