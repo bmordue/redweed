@@ -31,7 +31,7 @@ public class PersonService {
             personRepository.save(model);
             return new IngestVCardResponseDto("Success");
         } catch (RuntimeException e) {
-            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard");
+throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard", e);
         }
     }
 }
