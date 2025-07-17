@@ -18,10 +18,18 @@ public class HReviewParser {
         Elements reviewElements = doc.select(".hreview");
         for (Element reviewElement : reviewElements) {
             Map<String, String> review = new HashMap<>();
-            review.put("rating", reviewElement.select(".rating").first().text());
-            review.put("description", reviewElement.select(".description").first().text());
-            review.put("reviewer", reviewElement.select(".reviewer").first().text());
-            reviews.add(review);
+            Element ratingEl = reviewElement.select(".rating").first();
+            if (ratingEl != null) {
+                review.put("rating", ratingEl.text());
+            }
+            Element descriptionEl = reviewElement.select(".description").first();
+            if (descriptionEl != null) {
+                review.put("description", descriptionEl.text());
+            }
+            Element reviewerEl = reviewElement.select(".reviewer").first();
+            if (reviewerEl != null) {
+                review.put("reviewer", reviewerEl.text());
+            }            reviews.add(review);
         }
         return reviews;
     }

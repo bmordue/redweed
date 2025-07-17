@@ -32,22 +32,28 @@ public class KmlParser {
                     placemark.put("description", getTagValue("description", placemarkElement));
                     NodeList coordinatesNodes = placemarkElement.getElementsByTagName("coordinates");
                     if (coordinatesNodes.getLength() > 0) {
-                        String[] coordinates = coordinatesNodes.item(0).getTextContent().split(",");
-                        placemark.put("longitude", coordinates[0]);
-                        placemark.put("latitude", coordinates[1]);
-                    }
+                        String[] coordinates = coordinatesNodes.item(0).getTextContent().trim().split(",");
+                        if (coordinates.length >= 2) {
+                            placemark.put("longitude", coordinates[0].trim());
+                            placemark.put("latitude", coordinates[1].trim());
+                        }                    }
                     placemarks.add(placemark);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return placemarks;
+            // Consider using a logger: log.error("Failed to parse KML string", e);
+            throw new RuntimeException("Failed to parse KML string", e);
+        }        return placemarks;
     }
 
     private static String getTagValue(String tag, Element element) {
-        NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
-        Node node = (Node) nodeList.item(0);
-        return node.getNodeValue();
+        NodeList nodeList = element.getElementsByTagName(tag);
+        if (nodeList.getLength() > 0) {
+            Node node = nodeList.item(0);
+            if (node != null && node.hasChildNodes()) {
+                return node.getFirstChild().getNodeValue();
+            }
+        }
+        return ""; // Return empty string or null for missing tags
     }
 }
