@@ -1,7 +1,5 @@
 package me.bmordue.redweed;
 
-import org.junit.jupiter.api.Test;
-
 import me.bmordue.redweed.repository.PersonRepository;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;

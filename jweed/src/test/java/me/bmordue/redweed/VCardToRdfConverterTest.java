@@ -1,7 +1,5 @@
 package me.bmordue.redweed;
 
-import org.junit.jupiter.api.Test;
-
 import me.bmordue.redweed.service.VCardToRdfConverter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
