@@ -8,8 +8,7 @@ public class IngestVCardResponseDto {
     private String personUri;
     private String message;
 
-    public IngestVCardResponseDto(String personUri, String message) {
-        this.personUri = personUri;
+    public IngestVCardResponseDto(String message) {
         this.message = message;
     }
 
