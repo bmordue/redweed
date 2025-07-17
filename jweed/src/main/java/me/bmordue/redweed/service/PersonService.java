@@ -24,7 +24,7 @@ public class PersonService {
 
     public IngestVCardResponseDto ingestVCard(String vCardString) {
         Map<String, String> vCardMap = VCardParser.parse(vCardString);
-        String fn = vCardMap.get("FN");
+        String fn = java.util.Objects.requireNonNull(vCardMap.get("FN"), "vCard must contain a formatted name (FN)");
         String email = vCardMap.get("EMAIL");
 
         String personUri = RedweedVocab.PERSON_NAMESPACE + UUID.randomUUID();
