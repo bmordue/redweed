@@ -18,14 +18,14 @@ class RdfRepositoryTest {
     Dataset dataset;
 
     @InjectMocks
-    PersonRepository personRepository;
+    RdfRepository rdfRepository;
 
     @Test
     void testSaveWithException() {
         Model model = ModelFactory.createDefaultModel();
         when(dataset.getDefaultModel()).thenThrow(new RuntimeException("Test Exception"));
 
-        assertThrows(RuntimeException.class, () -> personRepository.save(model));
+        assertThrows(RuntimeException.class, () -> rdfRepository.save(model));
 
         verify(dataset).begin(any(org.apache.jena.query.ReadWrite.class));
         verify(dataset).abort();
