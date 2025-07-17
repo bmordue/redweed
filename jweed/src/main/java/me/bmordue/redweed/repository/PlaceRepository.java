@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class PlaceRepository {
+public class PlaceRepository extends RdfRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PlaceRepository.class);
 
@@ -17,16 +17,6 @@ public class PlaceRepository {
     private Dataset dataset;
 
     public void save(Model model) {
-        dataset.begin(ReadWrite.WRITE);
-        try {
-            dataset.getDefaultModel().add(model);
-            dataset.commit();
-        } catch (Exception e) {
-            dataset.abort();
-            log.error("Error saving model to dataset", e);
-            throw e;
-        } finally {
-            dataset.end();
-        }
+        super.save(model);
     }
 }

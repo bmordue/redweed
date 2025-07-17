@@ -3,6 +3,9 @@ package me.bmordue.redweed.repository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.domain.Person;
+
+import java.sql.ResultSet;
+
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -18,17 +21,7 @@ public class PersonRepository {
     private Dataset dataset;
 
     public void save(Model model) {
-        dataset.begin(ReadWrite.WRITE);
-        try {
-            dataset.getDefaultModel().add(model);
-            dataset.commit();
-        } catch (Exception e) {
-            dataset.abort();
-            log.error("Error saving model to dataset", e);
-            throw e;
-        } finally {
-            dataset.end();
-        }
+        super.save(model);
     }
 
     public Person findByUri(String uri) {
