@@ -1,33 +1,28 @@
-package me.bmordue.redweed;
+package me.bmordue.redweed.service;
 
-import me.bmordue.redweed.service.VCardToRdfConverter;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.VCARD;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class VCardToRdfConverterTest {
 
     @Test
     void testConvertVCardToModel() {
         String vcardString = """
-            BEGIN:VCARD
-            VERSION:4.0
-            FN:John Doe
-            N:Doe;John;;;
-            EMAIL;TYPE=work:johndoe@example.com
-            TEL;TYPE=work,voice;VALUE=uri:tel:+1-555-555-5555
-            ADR;TYPE=work:;;123 Main St;Anytown;CA;12345;USA
-            END:VCARD
-            """;
+                BEGIN:VCARD
+                VERSION:4.0
+                FN:John Doe
+                N:Doe;John;;;
+                EMAIL;TYPE=work:johndoe@example.com
+                TEL;TYPE=work,voice;VALUE=uri:tel:+1-555-555-5555
+                ADR;TYPE=work:;;123 Main St;Anytown;CA;12345;USA
+                END:VCARD
+                """;
 
-Model model = VCardToRdfConverter.convert(vcardString);
-        Model model = converter.convert(vcardString);
+        Model model = VCardToRdfConverter.convert(vcardString);
 
         assertNotNull(model);
 
@@ -49,7 +44,6 @@ Model model = VCardToRdfConverter.convert(vcardString);
     void testConvertInvalidVCardToModel() {
         String vcardString = "this is not a vcard";
 
-assertThrows(RuntimeException.class, () -> VCardToRdfConverter.convert(vcardString));
-        assertThrows(RuntimeException.class, () -> converter.convert(vcardString));
+        assertThrows(RuntimeException.class, () -> VCardToRdfConverter.convert(vcardString));
     }
 }
