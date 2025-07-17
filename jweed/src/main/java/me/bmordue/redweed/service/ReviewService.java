@@ -5,6 +5,7 @@ import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.dto.IngestHReviewResponseDto;
 import me.bmordue.redweed.repository.ReviewRepository;
 import me.bmordue.redweed.util.HReviewParser;
+import me.bmordue.redweed.vocabulary.RedweedVocab;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -26,12 +27,12 @@ public class ReviewService {
         Model model = ModelFactory.createDefaultModel();
         List<String> reviewUris = reviews.stream()
                 .map(review -> {
-                    String reviewUri = "http://redweed.local/review/" + UUID.randomUUID();
+                    String reviewUri = RedweedVocab.REVIEW_NAMESPACE + UUID.randomUUID();
                     Resource reviewResource = model.createResource(reviewUri)
-                            .addProperty(RDF.type, model.createResource("http://purl.org/stuff/rev#Review"))
-                            .addProperty(model.createProperty("http://purl.org/stuff/rev#rating"), review.get("rating"))
-                            .addProperty(model.createProperty("http://purl.org/stuff/rev#text"), review.get("description"))
-                            .addProperty(model.createProperty("http://purl.org/stuff/rev#reviewer"), review.get("reviewer"));
+                            .addProperty(RDF.type, model.createResource(RedweedVocab.REV_REVIEW))
+                            .addProperty(model.createProperty(RedweedVocab.REV_RATING), review.get("rating"))
+                            .addProperty(model.createProperty(RedweedVocab.REV_TEXT), review.get("description"))
+                            .addProperty(model.createProperty(RedweedVocab.REV_REVIEWER), review.get("reviewer"));
                     return reviewUri;
                 })
                 .collect(Collectors.toList());

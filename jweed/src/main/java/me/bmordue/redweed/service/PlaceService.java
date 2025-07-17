@@ -5,6 +5,7 @@ import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.dto.IngestKmlResponseDto;
 import me.bmordue.redweed.repository.PlaceRepository;
 import me.bmordue.redweed.util.KmlParser;
+import me.bmordue.redweed.vocabulary.RedweedVocab;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -27,12 +28,12 @@ public class PlaceService {
         Model model = ModelFactory.createDefaultModel();
         List<String> placeUris = placemarks.stream()
                 .map(placemark -> {
-                    String placeUri = "http://redweed.local/place/" + UUID.randomUUID();
+                    String placeUri = RedweedVocab.PLACE_NAMESPACE + UUID.randomUUID();
                     Resource placeResource = model.createResource(placeUri)
-                            .addProperty(RDF.type, model.createResource("http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"))
+                            .addProperty(RDF.type, model.createResource(RedweedVocab.GEO_SPATIAL_THING))
                             .addProperty(RDFS.label, placemark.get("name"))
-                            .addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#lat"), placemark.get("latitude"))
-                            .addProperty(model.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#long"), placemark.get("longitude"));
+                            .addProperty(model.createProperty(RedweedVocab.GEO_LAT), placemark.get("latitude"))
+                            .addProperty(model.createProperty(RedweedVocab.GEO_LONG), placemark.get("longitude"));
                     if (placemark.get("description") != null) {
                         placeResource.addProperty(RDFS.comment, placemark.get("description"));
                     }

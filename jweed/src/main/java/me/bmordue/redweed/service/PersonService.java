@@ -6,6 +6,7 @@ import me.bmordue.redweed.model.domain.Person;
 import me.bmordue.redweed.model.dto.IngestVCardResponseDto;
 import me.bmordue.redweed.repository.PersonRepository;
 import me.bmordue.redweed.util.VCardParser;
+import me.bmordue.redweed.vocabulary.RedweedVocab;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -14,7 +15,6 @@ import org.apache.jena.vocabulary.VCARD;
 
 import java.util.Map;
 import java.util.UUID;
-import org.apache.jena.rdf.model.Model;
 
 @Singleton
 public class PersonService {
@@ -27,7 +27,7 @@ public class PersonService {
         String fn = vCardMap.get("FN");
         String email = vCardMap.get("EMAIL");
 
-        String personUri = "http://redweed.local/person/" + UUID.randomUUID();
+        String personUri = RedweedVocab.PERSON_NAMESPACE + UUID.randomUUID();
 
         Model model = ModelFactory.createDefaultModel();
         Resource personResource = model.createResource(personUri)
