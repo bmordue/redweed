@@ -49,7 +49,7 @@ Model model = VCardToRdfConverter.convert(vcardString);
     void testConvertInvalidVCardToModel() {
         String vcardString = "this is not a vcard";
 
-        VCardToRdfConverter converter = new VCardToRdfConverter();
+assertThrows(RuntimeException.class, () -> VCardToRdfConverter.convert(vcardString));
         assertThrows(RuntimeException.class, () -> converter.convert(vcardString));
     }
 }
