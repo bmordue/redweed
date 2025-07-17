@@ -14,6 +14,7 @@ import org.apache.jena.vocabulary.VCARD;
 
 import java.util.Map;
 import java.util.UUID;
+import org.apache.jena.rdf.model.Model;
 
 @Singleton
 public class PersonService {
@@ -40,6 +41,7 @@ public class PersonService {
         personRepository.save(model);
 
         return new IngestVCardResponseDto(personUri, "vCard ingested successfully");
+            
     }
 }
 
