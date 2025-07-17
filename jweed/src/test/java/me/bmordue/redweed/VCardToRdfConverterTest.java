@@ -26,7 +26,7 @@ class VCardToRdfConverterTest {
             END:VCARD
             """;
 
-        VCardToRdfConverter converter = new VCardToRdfConverter();
+Model model = VCardToRdfConverter.convert(vcardString);
         Model model = converter.convert(vcardString);
 
         assertNotNull(model);
