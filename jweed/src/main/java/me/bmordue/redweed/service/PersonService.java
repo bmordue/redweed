@@ -16,35 +16,24 @@ import org.apache.jena.vocabulary.VCARD;
 import java.util.Map;
 import java.util.UUID;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
+
 @Singleton
 public class PersonService {
 
     @Inject
     private PersonRepository personRepository;
 
-    @Inject
-    private RedweedVocab redweedVocab;
-
-    public IngestVCardResponseDto ingestVCard(String vCardString) {
-        Map<String, String> vCardMap = VCardParser.parse(vCardString);
-        String fn = java.util.Objects.requireNonNull(vCardMap.get("FN"), "vCard must contain a formatted name (FN)");
-        String email = vCardMap.get("EMAIL");
-
-        String personUri = redweedVocab.getPersonNamespace() + UUID.randomUUID();
-
-        Model model = ModelFactory.createDefaultModel();
-        Resource personResource = model.createResource(personUri)
-                .addProperty(RDF.type, VCARD.Individual)
-                .addProperty(VCARD.FN, fn);
-
-        if (email != null) {
-            personResource.addProperty(VCARD.EMAIL, email);
+    public IngestVCardResponseDto ingestVCard(String vCard) {
+        Model model;
+        try {
+            model = VCardToRdfConverter.convert(vCard);
+        } catch (RuntimeException e) {
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard", e);
         }
 
         personRepository.save(model);
-
-        return new IngestVCardResponseDto(personUri, "vCard ingested successfully");
-            
-    }
+        return new IngestVCardResponseDto("Success");    }
 }
 

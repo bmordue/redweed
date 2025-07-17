@@ -16,7 +16,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest
+import org.junit.jupiter.api.BeforeEach;
+
+import me.bmordue.redweed.annotation.WithTestDataset;
+
+@WithTestDataset
 public class PersonServiceTest {
 
     @Inject
@@ -25,6 +29,17 @@ public class PersonServiceTest {
 
     @Inject
     Dataset dataset;
+
+    @BeforeEach
+    void setup() {
+        dataset.begin(ReadWrite.WRITE);
+        try {
+            dataset.getDefaultModel().removeAll();
+            dataset.commit();
+        } finally {
+            dataset.end();
+        }
+    }
 
     @Test
     void testVCardIngest() {
@@ -50,9 +65,9 @@ public class PersonServiceTest {
             var resources = model.listResourcesWithProperty(VCARD.FN, "John Doe").toList();
             assertEquals(1, resources.size(), "Expected exactly one person with FN 'John Doe'");
             Resource person = resources.get(0);
-            assertEquals("John", n.getProperty(VCARD.Given).getString());
+            assertEquals("John", person.getProperty(VCARD.N).getResource().getProperty(VCARD.Given).getString());
             assertEquals("johndoe@example.com", person.getProperty(VCARD.EMAIL).getString());
-            assertEquals("tel:+1-555-555-5555", person.getProperty(VCARD.TEL).getString());
+            assertEquals("tel:+1-555-555-5555", person.getProperty(VCARD.TEL).getLiteral().getLexicalForm());
             Resource adr = person.getProperty(VCARD.ADR).getResource();
             assertEquals("123 Main St", adr.getProperty(VCARD.Street).getString());
             assertEquals("Anytown", adr.getProperty(VCARD.Locality).getString());
