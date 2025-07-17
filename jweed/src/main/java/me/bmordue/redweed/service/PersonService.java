@@ -26,13 +26,14 @@ public class PersonService {
     private PersonRepository personRepository;
 
     public IngestVCardResponseDto ingestVCard(String vCard) {
+        Model model;
         try {
-            Model model = VCardToRdfConverter.convert(vCard);
-            personRepository.save(model);
-            return new IngestVCardResponseDto("Success");
+            model = VCardToRdfConverter.convert(vCard);
         } catch (RuntimeException e) {
-throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard", e);
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard", e);
         }
-    }
+
+        personRepository.save(model);
+        return new IngestVCardResponseDto("Success");    }
 }
 
