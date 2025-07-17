@@ -30,10 +30,10 @@ public class PersonService {
         try {
             model = VCardToRdfConverter.convert(vCard);
         } catch (RuntimeException e) {
-            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard", e);
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid vCard");
         }
 
         personRepository.save(model);
-        return new IngestVCardResponseDto("Success");    }
+        return new IngestVCardResponseDto(null, "Success");    }
 }
 

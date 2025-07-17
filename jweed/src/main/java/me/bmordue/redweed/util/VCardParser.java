@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class VCardParser {
 
-    public static Map<String, String> parse(String vCardString) {
+    public static Map<String, String> parse(String vCardString) throws IOException {
         Map<String, String> vCardMap = new HashMap<>();
         BufferedReader reader = new BufferedReader(new StringReader(vCardString));
         String line;

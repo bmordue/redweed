@@ -14,9 +14,9 @@ public class ReviewRepository {
     private static final Logger log = LoggerFactory.getLogger(ReviewRepository.class);
 
     @Inject
-    private Dataset dataset;
+    private RdfRepository rdfRepository;
 
     public void save(Model model) {
-        super.save(model);
+        rdfRepository.save(model);
     }
 }

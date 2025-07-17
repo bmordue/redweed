@@ -1,0 +1,37 @@
+package me.bmordue.redweed.service;
+
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import me.bmordue.redweed.model.dto.IngestTtlResponseDto;
+import me.bmordue.redweed.repository.RdfRepository;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RiotException;
+
+import java.io.StringReader;
+
+@Singleton
+public class TtlService {
+
+    @Inject
+    private RdfRepository rdfRepository;
+
+    public IngestTtlResponseDto ingestTtl(String ttl) {
+        Model model = ModelFactory.createDefaultModel();
+        try {
+            RDFParser.create()
+                .source(new StringReader(ttl))
+                .lang(Lang.TTL)
+                .parse(model);
+        } catch (RiotException e) {
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid TTL");
+        }
+
+        rdfRepository.save(model);
+        return new IngestTtlResponseDto("Success");
+    }
+}

@@ -26,8 +26,7 @@ class VCardToRdfConverterTest {
             END:VCARD
             """;
 
-Model model = VCardToRdfConverter.convert(vcardString);
-        Model model = converter.convert(vcardString);
+        Model model = VCardToRdfConverter.convert(vcardString);
 
         assertNotNull(model);
 
@@ -49,7 +48,6 @@ Model model = VCardToRdfConverter.convert(vcardString);
     void testConvertInvalidVCardToModel() {
         String vcardString = "this is not a vcard";
 
-assertThrows(RuntimeException.class, () -> VCardToRdfConverter.convert(vcardString));
-        assertThrows(RuntimeException.class, () -> converter.convert(vcardString));
+        assertThrows(RuntimeException.class, () -> VCardToRdfConverter.convert(vcardString));
     }
 }
