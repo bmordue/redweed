@@ -20,6 +20,7 @@ public class KmlParser {
         List<Map<String, String>> placemarks = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(kmlString)));
             NodeList placemarkNodes = doc.getElementsByTagName("Placemark");
