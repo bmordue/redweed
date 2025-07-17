@@ -1,4 +1,4 @@
-﻿package me.bmordue.redweed.repository;
+package me.bmordue.redweed.repository;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
@@ -30,5 +30,4 @@ class RdfRepositoryTest {
         verify(dataset).begin(any(org.apache.jena.query.ReadWrite.class));
         verify(dataset).abort();
     }
-
 }
