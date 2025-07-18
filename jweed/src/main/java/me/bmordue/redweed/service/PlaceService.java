@@ -56,7 +56,7 @@ public class PlaceService {
             return new IngestKmlResponseDto(placeUris, "KML ingested successfully");
         } catch (IllegalArgumentException e) {
             log.error("Invalid KML", e);
-            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid KML");
+            throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid KML: " + e.getMessage());
         }
     }
 }
