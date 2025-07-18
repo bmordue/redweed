@@ -1,4 +1,4 @@
-﻿package me.bmordue.redweed.model.dto;
+package me.bmordue.redweed.model.dto;
 
 public class IngestICalResponseDto {
 }

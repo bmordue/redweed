@@ -1,4 +1,4 @@
-﻿package me.bmordue.redweed.service;
+package me.bmordue.redweed.service;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;

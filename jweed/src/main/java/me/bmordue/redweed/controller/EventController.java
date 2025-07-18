@@ -1,4 +1,4 @@
-﻿package me.bmordue.redweed.controller;
+package me.bmordue.redweed.controller;
 
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;

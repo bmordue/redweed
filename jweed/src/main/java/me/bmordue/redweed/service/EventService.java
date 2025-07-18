@@ -1,4 +1,4 @@
-﻿package me.bmordue.redweed.service;
+package me.bmordue.redweed.service;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
