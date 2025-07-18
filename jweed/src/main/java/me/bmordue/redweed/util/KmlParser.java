@@ -49,7 +49,7 @@ public class KmlParser {
                     placemarks.add(placemark);
                 }
             }
-        } catch (Exception e) {
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException e) {
             throw new IllegalArgumentException("Failed to parse KML string", e);
         }        return placemarks;
     }
