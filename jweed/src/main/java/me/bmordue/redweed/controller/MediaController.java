@@ -21,16 +21,20 @@ public class MediaController {
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file) {
+        File tempFile = null;
         try {
-            File tempFile = File.createTempFile("upload-", ".mp4");
+            tempFile = File.createTempFile("upload-", ".mp4");
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(file.getBytes());
             }
             IngestMp4ResponseDto responseDto = mediaService.ingestMp4(tempFile);
-            tempFile.delete();
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
             return HttpResponse.serverError();
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
         }
     }
 }

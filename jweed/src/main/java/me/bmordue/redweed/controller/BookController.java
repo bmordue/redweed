@@ -21,16 +21,20 @@ public class BookController {
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestEpubResponseDto> upload(CompletedFileUpload file) {
+        File tempFile = null;
         try {
-            File tempFile = File.createTempFile("upload-", ".epub");
+            tempFile = File.createTempFile("upload-", ".epub");
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(file.getBytes());
             }
             IngestEpubResponseDto responseDto = bookService.ingestEpub(tempFile);
-            tempFile.delete();
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
             return HttpResponse.serverError();
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
         }
     }
 }
