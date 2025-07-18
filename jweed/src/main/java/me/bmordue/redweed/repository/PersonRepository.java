@@ -10,6 +10,8 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ResultSet;
+
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;
@@ -26,18 +28,19 @@ public class PersonRepository extends RdfRepository {
     public Person findByUri(String uri) {
         // Logic to find a person by ID in the dataset
         dataset.begin(ReadWrite.READ);
-        try {
-            String sparql = "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://example.org/redweed#id> \"" + uri + "\" }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://example.org/redweed#id> ?uri . }"
+        );
+        pss.setLiteral("uri", uri);
 
-            try (QueryExecution qexec = QueryExecutionFactory.create(sparql, dataset)) {
-                org.apache.jena.query.ResultSet results = qexec.execSelect();
-                if (results.hasNext()) {
-                    QuerySolution soln = results.nextSolution();
-                    Resource resource = soln.getResource("s");
-                    return new Person(resource.getURI());
-                }
-                return null;
+        try (QueryExecution qexec = QueryExecutionFactory.create(pss.asQuery(), dataset)) {
+            ResultSet results = qexec.execSelect();
+            if (results.hasNext()) {
+                QuerySolution solution = results.nextSolution();
+                Resource resource = solution.getResource("s");
+                return new Person(resource.getURI());
             }
+            return null;
         } finally {
             dataset.end();
         }

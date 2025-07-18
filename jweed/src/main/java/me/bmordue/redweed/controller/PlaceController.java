@@ -9,7 +9,6 @@ import me.bmordue.redweed.service.PlaceService;
 
 @Controller("/places")
 public class PlaceController {
-
     @Inject
     private PlaceService placeService;
 
