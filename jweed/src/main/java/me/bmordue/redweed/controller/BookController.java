@@ -27,8 +27,9 @@ public class BookController {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("upload-", ".epub");
-            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                fos.write(file.getBytes());
+            try (java.io.InputStream data = file.getInputStream();
+                 FileOutputStream fos = new FileOutputStream(tempFile)) {
+                data.transferTo(fos);
             }
             IngestEpubResponseDto responseDto = bookService.ingestEpub(tempFile);
             return HttpResponse.created(responseDto);

@@ -1,5 +1,6 @@
 package me.bmordue.redweed.util;
 
+import me.bmordue.redweed.exception.EpubParserException;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Metadata;
 import nl.siegmann.epublib.epub.EpubReader;
@@ -8,6 +9,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +38,8 @@ public class EpubParser {
             if (!meta.getDates().isEmpty()) {
                 metadata.put("date", meta.getDates().get(0).getValue());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new EpubParserException("Error reading EPUB file: " + file.getName(), e);
         }
         return metadata;
     }

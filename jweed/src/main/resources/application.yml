@@ -2,7 +2,7 @@ micronaut:
   application:
     name: redweed
   server:
-    port: 8080
+    port: 8888
 
 rdf:
   dataset:

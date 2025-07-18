@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 @Controller("/music")
 public class MusicController {
@@ -24,18 +25,23 @@ public class MusicController {
     private MusicService musicService;
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
-    public HttpResponse<IngestMp3ResponseDto> upload(CompletedFileUpload file) {
+    public HttpResponse<IngestMp3ResponseDto> upload(CompletedFileUpload file) throws IOException {
+        File tempFile = null;
         try {
-            File tempFile = File.createTempFile("upload-", ".mp3");
+            tempFile = File.createTempFile("upload-", ".mp3");
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(file.getBytes());
             }
             IngestMp3ResponseDto responseDto = musicService.ingestMp3(tempFile);
-            tempFile.delete();
+            Files.delete(tempFile.toPath());
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
             log.error("Error processing MP3 file", e);
             return HttpResponse.serverError();
+        } finally {
+            if (tempFile != null) {
+                Files.delete(tempFile.toPath());
+            }
         }
     }
 }
