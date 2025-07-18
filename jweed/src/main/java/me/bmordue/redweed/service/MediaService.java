@@ -35,7 +35,9 @@ public class MediaService {
             resource.addProperty(model.createProperty(MediaVocabulary.MA_TITLE), metadata.get("title").toString());
         }
         if (metadata.get("creationDate") != null) {
-            resource.addProperty(model.createProperty(MediaVocabulary.MA_CREATION_DATE), metadata.get("creationDate").toString());
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTime((java.util.Date) metadata.get("creationDate"));
+            resource.addProperty(model.createProperty(MediaVocabulary.MA_CREATION_DATE), model.createTypedLiteral(cal));
         }
 
         rdfRepository.save(model);
