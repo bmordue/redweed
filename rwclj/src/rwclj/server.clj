@@ -132,7 +132,7 @@
      :parameters {:body {:vcard string?}}
      :responses {200 {:body {:message string?}}
                  400 {:body {:error string?}}}
-     :handler (fn [request] (vcard/import-vcard-handler request))})
+     :handler (fn [request] (import/import-handler (db/get-dataset) (assoc-in request [:params :type] "vcard")))})
 
   ;; KML import endpoint
   (POST "/api/kml/import" request
@@ -142,7 +142,31 @@
      :responses {201 {:body {:message string? :place-uris list?}}
                  400 {:body {:error string?}}
                  500 {:body {:error string?}}}
-     :handler (fn [request] (kml/import-kml-handler request))})
+     :handler (fn [request] (import/import-handler (db/get-dataset) (assoc-in request [:params :type] "kml")))})
+
+  (POST "/api/mp3/import" request
+    {:summary "Import MP3 file"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}
+     :responses {201 {:body {:message string? :work-uri string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (import/import-handler (db/get-dataset) (assoc-in request [:params :type] "mp3")))})
+
+  (POST "/api/mp4/import" request
+    {:summary "Import MP4 file"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}
+     :responses {201 {:body {:message string? :resource-uri string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (import/import-handler (db/get-dataset) (assoc-in request [:params :type] "mp4")))})
+
+  (POST "/api/epub/import" request
+    {:summary "Import EPUB file"
+     :consumes ["multipart/form-data"]
+     :parameters {:multipart {:file any?}}
+     :responses {201 {:body {:message string? :book-uri string? :file-uri string?}}
+                 500 {:body {:error string?}}}
+     :handler (fn [request] (import/import-handler (db/get-dataset) (assoc-in request [:params :type] "epub")))})
 
   (POST "/api/photo/upload" request
     {:summary "Upload a photo"
