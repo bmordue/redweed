@@ -30,15 +30,12 @@ public class RdfControllerTest {
         // Load meal.ttl
         try (InputStream mealStream = getClass().getResourceAsStream("/doc/meal.ttl")) {
             model.read(mealStream, null, "TTL");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        
 
         // Load trip.ttl
         try (InputStream tripStream = getClass().getResourceAsStream("/doc/trip.ttl")) {
             model.read(tripStream, null, "TTL");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         rdfRepository.save(model);
