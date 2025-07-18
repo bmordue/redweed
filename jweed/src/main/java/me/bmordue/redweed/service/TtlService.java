@@ -11,11 +11,15 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RiotException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 
 @Singleton
 public class TtlService {
+
+    private static final Logger log = LoggerFactory.getLogger(TtlService.class);
 
     @Inject
     private RdfRepository rdfRepository;
@@ -24,10 +28,11 @@ public class TtlService {
         Model model = ModelFactory.createDefaultModel();
         try {
             RDFParser.create()
-                .source(new StringReader(ttl))
-                .lang(Lang.TTL)
-                .parse(model);
+                    .source(new StringReader(ttl))
+                    .lang(Lang.TTL)
+                    .parse(model);
         } catch (RiotException e) {
+            log.error("Invalid TTL data", e);
             throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid TTL");
         }
 

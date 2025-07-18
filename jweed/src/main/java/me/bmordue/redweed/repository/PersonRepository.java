@@ -3,16 +3,7 @@ package me.bmordue.redweed.repository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.domain.Person;
-
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ResultSet;
-
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
