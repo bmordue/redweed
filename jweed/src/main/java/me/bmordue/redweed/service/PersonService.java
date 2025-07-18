@@ -1,13 +1,12 @@
 package me.bmordue.redweed.service;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.dto.IngestVCardResponseDto;
 import me.bmordue.redweed.repository.PersonRepository;
 import org.apache.jena.rdf.model.Model;
-
-import io.micronaut.http.HttpStatus;
-import io.micronaut.http.exceptions.HttpStatusException;
 
 @Singleton
 public class PersonService {
@@ -25,6 +24,7 @@ public class PersonService {
 
         personRepository.save(model);
 
-        return new IngestVCardResponseDto("success");    }
+        return new IngestVCardResponseDto("success");
+    }
 }
 
