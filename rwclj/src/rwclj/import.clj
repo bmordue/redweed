@@ -81,6 +81,23 @@
 
 
 
+(require '[rwclj.kml :as kml]
+         '[rwclj.mp3 :as mp3]
+         '[rwclj.mp4 :as mp4]
+         '[rwclj.epub :as epub])
+
+(defmethod import-resource :kml [_dataset request]
+  (kml/import-kml-handler request))
+
+(defmethod import-resource :mp3 [_dataset request]
+  (mp3/import-mp3-handler request))
+
+(defmethod import-resource :mp4 [_dataset request]
+  (mp4/import-mp4-handler request))
+
+(defmethod import-resource :epub [_dataset request]
+  (epub/import-epub-handler request))
+
 (defmethod import-resource :default [_ type _]
   (log/warn "No implementation for resource type:" type)
   (response/bad-request {:error (str "Unsupported resource type: " (name type))}))
