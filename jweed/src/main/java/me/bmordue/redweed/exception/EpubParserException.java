@@ -1,9 +1,7 @@
 package me.bmordue.redweed.exception;
 
-import java.io.IOException;
-
 public class EpubParserException extends RuntimeException {
-    public EpubParserException(String s, IOException e) {
+    public EpubParserException(String s, Exception e) {
         super(s, e);
     }
 }
