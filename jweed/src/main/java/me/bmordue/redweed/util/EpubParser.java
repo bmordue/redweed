@@ -1,37 +1,43 @@
 package me.bmordue.redweed.util;
 
-//import com.adobe.epubcheck.api.EpubCheck;
-
+import nl.siegmann.epublib.domain.Book;
+import nl.siegmann.epublib.domain.Metadata;
+import nl.siegmann.epublib.epub.EpubReader;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EpubParser {
 
+    private EpubParser() {
+        // Private constructor to prevent instantiation
+    }
+
     public static Map<String, String> parse(File file) {
         Map<String, String> metadata = new HashMap<>();
-        try {
-//            EpubCheck epubCheck = new EpubCheck(file);
-//            com.adobe.epubcheck.opf.OPFResource opf = epubCheck.getPackage().getOpfResource();
-//            try (InputStream in = opf.getInputStream()) {
-//                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//                factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
-//                DocumentBuilder builder = factory.newDocumentBuilder();
-//                Document doc = builder.parse(in);
-//                NodeList metadataNodes = doc.getElementsByTagName("metadata");
-//                if (metadataNodes.getLength() > 0) {
-//                    Element metadataElement = (Element) metadataNodes.item(0);
-//                    metadata.put("title", getTagValue("dc:title", metadataElement));
-//                    metadata.put("creator", getTagValue("dc:creator", metadataElement));
-//                    metadata.put("publisher", getTagValue("dc:publisher", metadataElement));
-//                    metadata.put("date", getTagValue("dc:date", metadataElement));
-//                }
-//            }
+        try (InputStream in = new FileInputStream(file)) {
+            EpubReader epubReader = new EpubReader();
+            Book book = epubReader.readEpub(in);
+            Metadata meta = book.getMetadata();
+            if (!meta.getTitles().isEmpty()) {
+                metadata.put("title", meta.getTitles().get(0));
+            }
+            if (!meta.getAuthors().isEmpty()) {
+                metadata.put("creator", meta.getAuthors().get(0).getFirstname() + " " + meta.getAuthors().get(0).getLastname());
+            }
+            if (!meta.getPublishers().isEmpty()) {
+                metadata.put("publisher", meta.getPublishers().get(0));
+            }
+            if (!meta.getDates().isEmpty()) {
+                metadata.put("date", meta.getDates().get(0).getValue());
+            }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse EPUB file", e);
+            e.printStackTrace();
         }
         return metadata;
     }

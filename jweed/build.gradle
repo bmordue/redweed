@@ -12,6 +12,7 @@ group = "me.bmordue"
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
+    maven { url "https://github.com/psiegman/mvn-repo/raw/master/releases" }
 }
 
 dependencies {
@@ -37,10 +38,9 @@ dependencies {
     implementation("org.apache.jena:jena-arq:4.10.0")
     implementation("org.apache.jena:jena-tdb2:4.10.0")
     implementation("org.jsoup:jsoup:1.17.2")
-    implementation 'org.mnode.ical4j:ical4j-vcard:1.0.0'
+    implementation('org.mnode.ical4j:ical4j-vcard:1.0.0')
     implementation 'com.mpatric:mp3agic:0.9.1'
-//    implementation 'org.mp4parser:isoparser:1.9.27'
-//    implementation 'com.adobe.epubcheck:epubcheck:4.2.6'
+    implementation 'nl.siegmann.epublib:epublib-core:3.1'
 }
 
 
