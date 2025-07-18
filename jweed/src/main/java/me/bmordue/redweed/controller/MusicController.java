@@ -8,6 +8,8 @@ import io.micronaut.http.multipart.CompletedFileUpload;
 import jakarta.inject.Inject;
 import me.bmordue.redweed.model.dto.IngestMp3ResponseDto;
 import me.bmordue.redweed.service.MusicService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +17,8 @@ import java.io.IOException;
 
 @Controller("/music")
 public class MusicController {
+
+    private static final Logger log = LoggerFactory.getLogger(MusicController.class);
 
     @Inject
     private MusicService musicService;
@@ -30,6 +34,7 @@ public class MusicController {
             tempFile.delete();
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
+            log.error("Error processing MP3 file", e);
             return HttpResponse.serverError();
         }
     }

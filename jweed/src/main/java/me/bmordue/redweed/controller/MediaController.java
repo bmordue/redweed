@@ -8,6 +8,8 @@ import io.micronaut.http.multipart.CompletedFileUpload;
 import jakarta.inject.Inject;
 import me.bmordue.redweed.model.dto.IngestMp4ResponseDto;
 import me.bmordue.redweed.service.MediaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +17,8 @@ import java.io.IOException;
 
 @Controller("/media")
 public class MediaController {
+    private static final Logger log = LoggerFactory.getLogger(MediaController.class);
+
 
     @Inject
     private MediaService mediaService;
@@ -30,6 +34,7 @@ public class MediaController {
             IngestMp4ResponseDto responseDto = mediaService.ingestMp4(tempFile);
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
+            log.error("Error processing MP4 file", e);
             return HttpResponse.serverError();
         } finally {
             if (tempFile != null) {
