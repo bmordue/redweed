@@ -12,3 +12,6 @@ rdf:
     default: "http://example.org/redweed/"
     base: "http://redweed.local/"
 
+endpoints:
+  prometheus:
+    sensitive: false
