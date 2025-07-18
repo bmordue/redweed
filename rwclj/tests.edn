@@ -1,5 +1,0 @@
-#kaocha/v1
-{:tests [{:id :unit
-          :test-paths ["test"]}]
- :plugins [:kaocha.plugin/junit-xml]
- :kaocha.plugin.junit-xml/target-file "target/junit.xml"}
