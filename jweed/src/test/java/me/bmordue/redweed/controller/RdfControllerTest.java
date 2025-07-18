@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import java.io.InputStream;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,7 +25,7 @@ public class RdfControllerTest {
     private Dataset dataset;
 
     @Test
-    void testImportTtlFiles() {
+    void testImportTtlFiles() throws IOException {
         Model model = ModelFactory.createDefaultModel();
 
         // Load meal.ttl
