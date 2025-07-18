@@ -44,7 +44,7 @@ public class PlaceService {
                                 .addProperty(RDFS.label, placemark.get("name"))
                                 .addProperty(model.createProperty(RedweedVocab.GEO_LAT), placemark.get("latitude"))
                                 .addProperty(model.createProperty(RedweedVocab.GEO_LONG), placemark.get("longitude"));
-                        if (placemark.get("description") != null) {
+                        if (!placemark.get("description").isEmpty()) {
                             placeResource.addProperty(RDFS.comment, placemark.get("description"));
                         }
                         return placeUri;
