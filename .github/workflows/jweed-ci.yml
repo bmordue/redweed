@@ -1,4 +1,4 @@
-name: Java CI with Gradle (Groovy)
+name: Jweed CI
 
 on:
   push:
@@ -41,15 +41,14 @@ jobs:
       uses: gradle/actions/wrapper-validation@v4
       with:
         working-directory: jweed
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Build, test, and generate coverage report
+      run: ./gradlew build jacocoTestReport
       working-directory: jweed
-    - name: Generate test coverage report
-      run: ./gradlew jacocoTestReport
-      working-directory: jweed
-    # - name: Run SonarCloud analysis
-    #   run: ./gradlew sonar
-    #   working-directory: jweed
+    - name: Display test results
+      run: |
+        echo "Test results:"
+        find jweed/build/reports/tests -name "*.xml" -exec grep -H "testsuite" {} +
+      working-directory: .
     - uses: actions/upload-artifact@v4
       if: always()
       with:
