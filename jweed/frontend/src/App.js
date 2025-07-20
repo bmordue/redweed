@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+
+function App() {
+  const [file, setFile] = useState(null);
+  const [mediaType, setMediaType] = useState('book');
+  const [dataType, setDataType] = useState('event');
+  const [data, setData] = useState('');
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleMediaTypeChange = (event) => {
+    setMediaType(event.target.value);
+  };
+
+  const handleDataTypeChange = (event) => {
+    setDataType(event.target.value);
+  };
+
+  const handleDataChange = (event) => {
+    setData(event.target.value);
+  };
+
+  const handleFileUploadSubmit = async (event) => {
+    event.preventDefault();
+    if (!file) {
+      alert('Please select a file!');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let endpoint = '';
+    if (mediaType === 'book') {
+      endpoint = '/books';
+    } else if (mediaType === 'media') {
+      endpoint = '/media';
+    } else if (mediaType === 'music') {
+      endpoint = '/music';
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert('File uploaded successfully!');
+      } else {
+        alert('File upload failed!');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('An error occurred while uploading the file.');
+    }
+  };
+
+  const handleDataSubmit = async (event) => {
+    event.preventDefault();
+    if (!data) {
+      alert('Please enter some data!');
+      return;
+    }
+
+    let endpoint = '';
+    if (dataType === 'event') {
+      endpoint = '/events';
+    } else if (dataType === 'person') {
+      endpoint = '/persons';
+    } else if (dataType === 'place') {
+      endpoint = '/places';
+    } else if (dataType === 'review') {
+      endpoint = '/reviews';
+    } else if (dataType === 'ttl') {
+      endpoint = '/ttl';
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: data,
+      });
+
+      if (response.ok) {
+        alert('Data submitted successfully!');
+      } else {
+        alert('Data submission failed!');
+      }
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      alert('An error occurred while submitting the data.');
+    }
+  };
+
+  return (
+    <div>
+      <h1>Jweed Frontend</h1>
+      <h2>File Upload</h2>
+      <form onSubmit={handleFileUploadSubmit}>
+        <div>
+          <label>
+            Media Type:
+            <select value={mediaType} onChange={handleMediaTypeChange}>
+              <option value="book">Book (EPUB)</option>
+              <option value="media">Media (MP4)</option>
+              <option value="music">Music (MP3)</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            File:
+            <input type="file" onChange={handleFileChange} />
+          </label>
+        </div>
+        <button type="submit">Upload</button>
+      </form>
+
+      <h2>Data Submission</h2>
+      <form onSubmit={handleDataSubmit}>
+        <div>
+          <label>
+            Data Type:
+            <select value={dataType} onChange={handleDataTypeChange}>
+              <option value="event">Event</option>
+              <option value="person">Person</option>
+              <option value="place">Place</option>
+              <option value="review">Review</option>
+              <option value="ttl">TTL</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Data:
+            <textarea value={data} onChange={handleDataChange} />
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+}
+
+export default App;
