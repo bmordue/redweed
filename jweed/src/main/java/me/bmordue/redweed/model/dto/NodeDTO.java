@@ -2,22 +2,7 @@ package me.bmordue.redweed.model.dto;
 
 import java.util.Objects;
 
-public class NodeDTO {
-    private final String id;
-    private final String label;
-
-    public NodeDTO(String id, String label) {
-        this.id = id;
-        this.label = label;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
+public record NodeDTO(String id, String label) {
 
     @Override
     public boolean equals(Object o) {
