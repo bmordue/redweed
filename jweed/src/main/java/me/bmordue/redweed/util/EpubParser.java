@@ -35,7 +35,7 @@ public class EpubParser {
                     break;
                 }
             }
-        } catch (Exception e) {
+        } catch (java.io.IOException e) {
             throw new EpubParserException("Error reading EPUB file: " + file.getName(), e);
         }
 
