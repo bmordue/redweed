@@ -85,7 +85,7 @@ public class EpubParser {
                 metadata.put("language", languageNodes.item(0).getTextContent().trim());
             }
 
-        } catch (Exception e) {
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException e) {
             throw new EpubParserException("Error parsing OPF metadata", e);
         }
     }
