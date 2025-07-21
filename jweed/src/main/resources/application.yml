@@ -3,6 +3,15 @@ micronaut:
     name: redweed
   server:
     port: 8888
+  security:
+    enabled: true
+    intercept-url-map:
+      - pattern: /swagger/**
+        access: [ isAnonymous() ]
+      - pattern: /swagger-ui/**
+        access: [ isAnonymous() ]
+      - pattern: /v3/api-docs/**
+        access: [ isAnonymous() ]
 
 rdf:
   dataset:
@@ -12,3 +21,6 @@ rdf:
     default: "http://example.org/redweed/"
     base: "http://redweed.local/"
 
+endpoints:
+  prometheus:
+    sensitive: false
