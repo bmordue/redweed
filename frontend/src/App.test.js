@@ -6,4 +6,3 @@ test('renders main heading', () => {
   const headingElement = screen.getByText(/Jweed Frontend/i);
   expect(headingElement).toBeInTheDocument();
 });
-});
