@@ -32,14 +32,12 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
 
-    let endpoint = '';
-    if (mediaType === 'book') {
-      endpoint = '/books';
-    } else if (mediaType === 'media') {
-      endpoint = '/media';
-    } else if (mediaType === 'music') {
-      endpoint = '/music';
-    }
+    const endpointMap = {
+      book: '/books',
+      media: '/media',
+      music: '/music',
+    };
+    const endpoint = endpointMap[mediaType];
 
     try {
       const response = await fetch(endpoint, {
@@ -65,18 +63,14 @@ function App() {
       return;
     }
 
-    let endpoint = '';
-    if (dataType === 'event') {
-      endpoint = '/events';
-    } else if (dataType === 'person') {
-      endpoint = '/persons';
-    } else if (dataType === 'place') {
-      endpoint = '/places';
-    } else if (dataType === 'review') {
-      endpoint = '/reviews';
-    } else if (dataType === 'ttl') {
-      endpoint = '/ttl';
-    }
+    const endpointMap = {
+      event: '/events',
+      person: '/persons',
+      place: '/places',
+      review: '/reviews',
+      ttl: '/ttl',
+    };
+    const endpoint = endpointMap[dataType];
 
     try {
       const response = await fetch(endpoint, {
