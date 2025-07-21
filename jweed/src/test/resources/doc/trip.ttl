@@ -1,0 +1,6 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix trip: <http://example.org/trip#> .
+
+trip:Journey1 a trip:Trip ;
+    trip:destination "Paris" ;
+    trip:duration "7 days" .
