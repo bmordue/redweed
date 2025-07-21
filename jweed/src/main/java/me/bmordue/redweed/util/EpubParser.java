@@ -35,7 +35,7 @@ public class EpubParser {
                     break;
                 }
             }
-        } catch (Exception e) {
+        } catch (java.io.IOException e) {
             throw new EpubParserException("Error reading EPUB file: " + file.getName(), e);
         }
 
@@ -45,6 +45,9 @@ public class EpubParser {
     private static void parseOpfMetadata(InputStream opfStream, Map<String, String> metadata) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            // Secure the XML parser against XXE attacks
+            factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(opfStream);
@@ -82,7 +85,7 @@ public class EpubParser {
                 metadata.put("language", languageNodes.item(0).getTextContent().trim());
             }
 
-        } catch (Exception e) {
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException e) {
             throw new EpubParserException("Error parsing OPF metadata", e);
         }
     }
