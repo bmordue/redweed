@@ -12,6 +12,18 @@ micronaut:
         access: [ isAnonymous() ]
       - pattern: /v3/api-docs/**
         access: [ isAnonymous() ]
+      - pattern: /rapidoc/**
+        access: [ isAnonymous() ]
+      - pattern: /redoc/**
+        access: [ isAnonymous() ]
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
 
 rdf:
   dataset:
