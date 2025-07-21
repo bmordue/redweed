@@ -12,7 +12,6 @@ group = "me.bmordue"
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
-    maven { url "https://github.com/psiegman/mvn-repo/raw/master/releases" }
 }
 
 dependencies {
@@ -29,7 +28,6 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.yaml:snakeyaml")
     testImplementation("io.micronaut.jsonschema:micronaut-json-schema-validation")
-    testImplementation("org.apache.commons:commons-compress:1.27.1")
     testImplementation("org.mockito:mockito-core:5.2.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
@@ -41,7 +39,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
     implementation('org.mnode.ical4j:ical4j-vcard:1.0.0')
     implementation 'com.mpatric:mp3agic:0.9.1'
-    implementation 'nl.siegmann.epublib:epublib-core:3.1'
+    implementation 'org.apache.commons:commons-compress:1.27.1'
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
@@ -52,8 +50,8 @@ application {
     mainClass = "me.bmordue.Application"
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("17")
-    targetCompatibility = JavaVersion.toVersion("17")
+    sourceCompatibility = JavaVersion.toVersion("21")
+    targetCompatibility = JavaVersion.toVersion("21")
 }
 
 
@@ -82,7 +80,7 @@ micronaut {
 
 
 tasks.named("dockerfileNative") {
-    jdkVersion = "17"
+    jdkVersion = "21"
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -138,8 +136,8 @@ sonar {
         property "sonar.organization", "bmordue"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.java.source", "17"
-        property "sonar.java.target", "17"
+        property "sonar.java.source", "21"
+        property "sonar.java.target", "21"
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"
         property "sonar.java.binaries", "build/classes/java/main"
