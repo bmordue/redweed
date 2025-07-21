@@ -45,6 +45,9 @@ public class EpubParser {
     private static void parseOpfMetadata(InputStream opfStream, Map<String, String> metadata) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            // Secure the XML parser against XXE attacks
+            factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(opfStream);
