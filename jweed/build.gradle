@@ -19,6 +19,7 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.jsonschema:micronaut-json-schema-processor")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
+    implementation("io.micronaut.openapi:micronaut-openapi")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     annotationProcessor("io.micronaut.servlet:micronaut-servlet-processor")
     implementation("io.micronaut:micronaut-http-client")
