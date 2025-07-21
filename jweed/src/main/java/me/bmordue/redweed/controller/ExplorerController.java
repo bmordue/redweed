@@ -9,8 +9,6 @@ import me.bmordue.redweed.model.dto.NodeDTO;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 
-import java.util.HashSet;
-
 @Controller("/api/graph")
 public class ExplorerController {
 
@@ -18,13 +16,18 @@ public class ExplorerController {
     private Dataset dataset;
 
     @Get
-    public GraphDTO getGraph() {
-        HashSet<NodeDTO> nodes = new HashSet<>();
-        HashSet<EdgeDTO> edges = new HashSet<>();
+    public GraphDTO getGraph(@io.micronaut.http.annotation.QueryValue(defaultValue = "100") int limit, @io.micronaut.http.annotation.QueryValue(defaultValue = "0") int offset) {
+        java.util.Map<String, NodeDTO> nodes = new java.util.HashMap<>();
+        java.util.Set<EdgeDTO> edges = new java.util.HashSet<>();
 
         dataset.begin(ReadWrite.READ);
         try {
-            try (QueryExecution qexec = QueryExecutionFactory.create("SELECT ?s ?p ?o WHERE { ?s ?p ?o }", dataset)) {
+            // Programmatically build the query to safely add LIMIT and OFFSET
+            Query query = org.apache.jena.query.QueryFactory.create("SELECT ?s ?p ?o WHERE { ?s ?p ?o }");
+            query.setLimit(limit);
+            query.setOffset(offset);
+
+            try (QueryExecution qexec = org.apache.jena.query.QueryExecutionFactory.create(query, dataset)) {
                 ResultSet results = qexec.execSelect();
                 while (results.hasNext()) {
                     QuerySolution solution = results.nextSolution();
@@ -32,19 +35,20 @@ public class ExplorerController {
                     RDFNode p = solution.get("p");
                     RDFNode o = solution.get("o");
 
-                    NodeDTO sourceNode = new NodeDTO(s.toString(), s.toString());
-                    nodes.add(sourceNode);
+                    String sourceId = s.toString();
+                    // Use a map to ensure nodes are created only once
+                    nodes.computeIfAbsent(sourceId, id -> new NodeDTO(id, id));
 
-                    NodeDTO targetNode = new NodeDTO(o.toString(), o.toString());
-                    nodes.add(targetNode);
+                    String targetId = o.toString();
+                    nodes.computeIfAbsent(targetId, id -> new NodeDTO(id, id));
 
-                    edges.add(new EdgeDTO(s.toString(), o.toString(), p.toString()));
+                    edges.add(new EdgeDTO(sourceId, targetId, p.toString()));
                 }
             }
         } finally {
             dataset.end();
         }
 
-        return new GraphDTO(nodes, edges);
+        return new GraphDTO(nodes.values(), edges);
     }
 }
