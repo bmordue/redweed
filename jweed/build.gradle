@@ -44,8 +44,6 @@ dependencies {
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
-    runtimeOnly("io.micronaut.acme:micronaut-acme")
-    runtimeOnly("io.micronaut:micronaut-http-server-netty")
 }
 
 
