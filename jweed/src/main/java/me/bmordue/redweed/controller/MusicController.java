@@ -35,8 +35,11 @@ public class MusicController {
             IngestMp3ResponseDto responseDto = musicService.ingestMp3(tempFile);
             Files.delete(tempFile.toPath());
             return HttpResponse.created(responseDto);
-        } catch (Exception e) {
-            log.error("Error processing MP3 file", e);
+        } catch (IOException e) {
+            log.error("I/O error while processing MP3 file", e);
+            return HttpResponse.serverError();
+        } catch (RuntimeException e) {
+            log.error("Unexpected error while processing MP3 file", e);
             return HttpResponse.serverError();
         } finally {
             if (tempFile != null) {
