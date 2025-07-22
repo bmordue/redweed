@@ -1,0 +1,204 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix trip: <http://example.org/trip#> .
+
+# Persons
+trip:Sarah a foaf:Person ;
+    foaf:name "Sarah" ;
+    schema:homeLocation trip:Seattle .
+
+trip:Mike a foaf:Person ;
+    foaf:name "Mike" ;
+    schema:homeLocation trip:MikesApartment .
+
+# Relationship
+trip:Sarah foaf:knows trip:Mike ;
+    schema:alumniOf trip:College .
+
+trip:Mike foaf:knows trip:Sarah ;
+    schema:alumniOf trip:College .
+
+trip:College a schema:EducationalOrganization ;
+    rdfs:label "College" ;
+    schema:description "The college where Sarah and Mike were friends" .
+
+# Places
+trip:Seattle a schema:City ;
+    rdfs:label "Seattle" ;
+    geo:lat "47.6062"^^xsd:decimal ;
+    geo:long "-122.3321"^^xsd:decimal .
+
+trip:Portland a schema:City ;
+    rdfs:label "Portland" ;
+    geo:lat "45.5152"^^xsd:decimal ;
+    geo:long "-122.6784"^^xsd:decimal .
+
+trip:ForestPark a schema:Park ;
+    rdfs:label "Forest Park" ;
+    schema:location trip:Portland ;
+    schema:description "Outdoor location with hiking trails" .
+
+trip:CoffeeShop a schema:CafeOrCoffeeShop ;
+    rdfs:label "Coffee Shop" ;
+    schema:location "downtown Portland" ;
+    schema:description "A new coffee shop downtown" .
+
+trip:Hotel a schema:Hotel ;
+    rdfs:label "Hotel" ;
+    schema:location trip:Portland ;
+    schema:description "A highly-rated hotel near Mike's apartment" .
+
+trip:MikesApartment a schema:Residence ;
+    rdfs:label "Mike's Apartment" ;
+    schema:location trip:Portland .
+
+trip:Coast a geo:SpatialThing ;
+    rdfs:label "Coast" ;
+    schema:description "Geographic location for road trip destination" .
+
+# Transportation
+trip:FridayFlight a schema:Flight ;
+    rdfs:label "Friday Evening Flight" ;
+    schema:departureAirport trip:SeattleAirport ;
+    schema:arrivalAirport trip:PortlandAirport ;
+    schema:departureTime "2025-07-18T18:00:00"^^xsd:dateTime ;
+    schema:passenger trip:Sarah .
+
+trip:SundayFlight a schema:Flight ;
+    rdfs:label "Sunday Night Return Flight" ;
+    schema:departureAirport trip:PortlandAirport ;
+    schema:arrivalAirport trip:SeattleAirport ;
+    schema:departureTime "2025-07-20T20:00:00"^^xsd:dateTime ;
+    schema:passenger trip:Sarah .
+
+trip:SeattleAirport a schema:Airport ;
+    rdfs:label "Seattle Airport" ;
+    schema:location trip:Seattle .
+
+trip:PortlandAirport a schema:Airport ;
+    rdfs:label "Portland Airport" ;
+    schema:location trip:Portland .
+
+trip:RoadTrip a schema:Trip ;
+    rdfs:label "Road Trip to Coast" ;
+    schema:startDate "2025-07-19T09:00:00"^^xsd:dateTime ;
+    schema:startLocation trip:Portland ;
+    schema:endLocation trip:Coast ;
+    schema:participant trip:Sarah, trip:Mike .
+
+# Events and Activities
+trip:WeekendVisit a schema:Event ;
+    rdfs:label "Weekend Visit" ;
+    schema:startDate "2025-07-18T18:00:00"^^xsd:dateTime ;
+    schema:endDate "2025-07-20T20:00:00"^^xsd:dateTime ;
+    schema:location trip:Portland ;
+    schema:attendee trip:Sarah, trip:Mike .
+
+trip:HikingActivity a schema:ExerciseAction ;
+    rdfs:label "Hiking" ;
+    schema:location trip:ForestPark ;
+    schema:agent trip:Sarah, trip:Mike ;
+    schema:exerciseType "hiking" .
+
+trip:HikingTrail a schema:ExerciseCourse ;
+    rdfs:label "Hiking Trail" ;
+    schema:location trip:ForestPark ;
+    schema:exerciseType "hiking" .
+
+# Actions
+trip:BookingFridayFlight a schema:ReserveAction ;
+    schema:agent trip:Sarah ;
+    schema:object trip:FridayFlight ;
+    schema:result trip:FlightReservation1 .
+
+trip:BookingSundayFlight a schema:ReserveAction ;
+    schema:agent trip:Sarah ;
+    schema:object trip:SundayFlight ;
+    schema:result trip:FlightReservation2 .
+
+trip:FlightReservation1 a schema:FlightReservation ;
+    schema:reservationFor trip:FridayFlight ;
+    schema:underName trip:Sarah .
+
+trip:FlightReservation2 a schema:FlightReservation ;
+    schema:reservationFor trip:SundayFlight ;
+    schema:underName trip:Sarah .
+
+trip:HotelBooking a schema:ReserveAction ;
+    schema:agent trip:Sarah ;
+    schema:object trip:Hotel ;
+    schema:result trip:HotelReservation .
+
+trip:HotelReservation a schema:LodgingReservation ;
+    schema:reservationFor trip:Hotel ;
+    schema:underName trip:Sarah ;
+    schema:checkinDate "2025-07-18"^^xsd:date ;
+    schema:checkoutDate "2025-07-20"^^xsd:date .
+
+trip:CheckingWeather a schema:SearchAction ;
+    schema:agent trip:Sarah ;
+    schema:object trip:WeatherForecast ;
+    schema:result trip:PackingAction .
+
+trip:PackingAction a schema:Action ;
+    schema:agent trip:Sarah ;
+    schema:description "Sarah packs accordingly based on weather forecast" .
+
+# Digital Content
+trip:SharedPlaylist a schema:MusicPlaylist ;
+    rdfs:label "Road Trip Playlist" ;
+    schema:creator trip:Mike ;
+    schema:audience trip:Sarah, trip:Mike ;
+    schema:description "Shared playlist for their road trip to the coast" .
+
+trip:WeatherForecast a schema:WeatherForecast ;
+    rdfs:label "Weather Forecast" ;
+    schema:location trip:Portland ;
+    schema:description "Weather forecast information for the weekend" .
+
+# Recommendations
+trip:HikingRecommendation a schema:Recommendation ;
+    schema:agent trip:Mike ;
+    schema:recipient trip:Sarah ;
+    schema:about trip:HikingTrail ;
+    schema:description "Mike recommends a hiking trail in Forest Park" .
+
+trip:CoffeeShopRecommendation a schema:Recommendation ;
+    schema:agent trip:Mike ;
+    schema:recipient trip:Sarah ;
+    schema:about trip:CoffeeShop ;
+    schema:description "Mike suggests they try a new coffee shop downtown" .
+
+# Reviews and Ratings
+trip:HotelRating a schema:Rating ;
+    schema:ratingValue "4.5"^^xsd:decimal ;
+    schema:bestRating "5"^^xsd:decimal ;
+    schema:worstRating "1"^^xsd:decimal ;
+    schema:description "Highly-rated hotel" .
+
+trip:Hotel schema:aggregateRating trip:HotelRating .
+
+# Planning Actions
+trip:ResearchingHotel a schema:SearchAction ;
+    schema:agent trip:Sarah ;
+    schema:object trip:Hotel ;
+    schema:result trip:HotelBooking .
+
+trip:CreatingPlaylist a schema:CreateAction ;
+    schema:agent trip:Mike ;
+    schema:result trip:SharedPlaylist ;
+    schema:description "Mike creates a shared playlist for their road trip" .
+
+# Temporal relationships
+trip:WeekendVisit schema:subEvent trip:HikingActivity, trip:RoadTrip .
+
+# Location relationships
+trip:Hotel schema:near trip:MikesApartment .
+trip:CoffeeShop schema:location "downtown Portland" .
+trip:ForestPark schema:containsPlace trip:HikingTrail .
