@@ -14,7 +14,7 @@ class JweedApiTest {
     @Test
     void openApiExposed(@Client("/") HttpClient httpClient) {
         BlockingHttpClient client = httpClient.toBlocking();
-        assertDoesNotThrow(() -> client.exchange("/swagger/micronaut-guides-1.0.yml"));
+        assertDoesNotThrow(() -> client.exchange("/swagger-ui"));
     }
 }
 
