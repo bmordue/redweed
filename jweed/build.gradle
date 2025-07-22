@@ -50,8 +50,8 @@ application {
     mainClass = "me.bmordue.Application"
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("17")
-    targetCompatibility = JavaVersion.toVersion("17")
+    sourceCompatibility = JavaVersion.toVersion("21")
+    targetCompatibility = JavaVersion.toVersion("21")
 }
 
 
@@ -80,7 +80,7 @@ micronaut {
 
 
 tasks.named("dockerfileNative") {
-    jdkVersion = "17"
+    jdkVersion = "21"
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -138,8 +138,8 @@ sonar {
         property "sonar.organization", "bmordue"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.java.source", "17"
-        property "sonar.java.target", "17"
+        property "sonar.java.source", "21"
+        property "sonar.java.target", "21"
         property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java"
         property "sonar.java.binaries", "build/classes/java/main"
