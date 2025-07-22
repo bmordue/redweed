@@ -47,9 +47,9 @@ jobs:
     - name: Generate test coverage report
       run: ./gradlew jacocoTestReport
       working-directory: jweed
-    # - name: Run SonarCloud analysis
-    #   run: ./gradlew sonar
-    #   working-directory: jweed
+    - name: Run SonarCloud analysis
+      run: ./gradlew sonar
+      working-directory: jweed
     - uses: actions/upload-artifact@v4
       if: always()
       with:
