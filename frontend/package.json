@@ -12,7 +12,8 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "jest": "^27.5.1"
   },
   "scripts": {
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
