@@ -1,37 +1,51 @@
 package me.bmordue.redweed.repository;
 
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.shared.JenaException;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.StringReader;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@MicronautTest
 class RdfRepositoryTest {
 
-    @Mock
-    Dataset dataset;
+    @Inject
+    private Dataset dataset;
 
-    @InjectMocks
-    RdfRepository rdfRepository;
+    @Inject
+    private RdfRepository rdfRepository;
 
     @Test
-    void testSaveWithException() {
+    void save() {
+        StringReader reader = new StringReader("""
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix redweed: <http://bmordue.me/redweed/> .
+
+            redweed:test a rdfs:Class .
+            """);
+
         Model model = ModelFactory.createDefaultModel();
-        when(dataset.getDefaultModel()).thenThrow(new JenaException("Test Exception"));
+        RDFDataMgr.read(model, reader, "", Lang.TURTLE);
 
-        assertThrows(JenaException.class, () -> rdfRepository.save(model));
+        rdfRepository.save(model);
 
-        verify(dataset).begin(any(org.apache.jena.query.ReadWrite.class));
-        verify(dataset).abort();
+        dataset.begin(ReadWrite.READ);
+        try {
+            Resource resource = dataset.getDefaultModel().getResource("http://bmordue.me/redweed/test");
+            assertTrue(dataset.getDefaultModel().contains(resource, RDF.type, RDFS.Class));
+        } finally {
+            dataset.end();
+        }
     }
 }

@@ -1,35 +1,50 @@
 package me.bmordue.redweed.repository;
 
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
+import me.bmordue.redweed.model.domain.Person;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.BeforeEach;
 
-import static org.mockito.Mockito.*;
+import java.io.StringReader;
 
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@MicronautTest
 class PersonRepositoryTest {
 
-    @Mock
-    Dataset dataset;
+    @Inject
+    private Dataset dataset;
 
-    @InjectMocks
-    PersonRepository personRepository;
+    @Inject
+    private PersonRepository personRepository;
+
+    @BeforeEach
+    void setUp() {
+        StringReader reader = new StringReader("""
+            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+            @prefix redweed: <http://example.org/redweed#> .
+
+            <http://example.org/person/1> rdf:type foaf:Person ;
+                redweed:id "1" .
+            """);
+
+        Model model = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(model, reader, "", Lang.TURTLE);
+        personRepository.save(model);
+    }
 
     @Test
-    void testSave() {
-        Model model = ModelFactory.createDefaultModel();
-        Model defaultModel = mock(Model.class);
-        when(dataset.getDefaultModel()).thenReturn(defaultModel);
-
-        personRepository.save(model);
-
-        verify(dataset).begin(any(org.apache.jena.query.ReadWrite.class));
-        verify(dataset).commit();
-        verify(defaultModel).add(model);
+    void findByUri() {
+        Person person = personRepository.findByUri("1");
+        assertNotNull(person);
+        assertEquals("http://example.org/person/1", person.getUri());
     }
 }
