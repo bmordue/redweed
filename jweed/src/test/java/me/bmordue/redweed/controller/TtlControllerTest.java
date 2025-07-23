@@ -26,7 +26,7 @@ class TtlControllerTest {
     void testIngestTtl() {
         String ttl = "@prefix schema: <https://schema.org/> .\\n" +
             "<https://www.example.com/books/1> a schema:Book ;\\n" +
-            "  schema:name \\\"The Great Gatsby\\\" .\\n\";";
+            "  schema:name \\\"The Great Gatsby\\\" .\\n\"";
 
         when(ttlService.ingestTtl(ttl)).thenReturn(new IngestTtlResponseDto(""));
 
