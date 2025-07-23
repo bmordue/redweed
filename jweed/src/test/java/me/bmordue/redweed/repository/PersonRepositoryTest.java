@@ -30,7 +30,7 @@ class PersonRepositoryTest {
         StringReader reader = new StringReader("""
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-            @prefix redweed: <http://example.org/redweed#> .
+            @prefix redweed: <http://bmordue.me/redweed/> .
 
             <http://example.org/person/1> rdf:type foaf:Person ;
                 redweed:id "1" .
