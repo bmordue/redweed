@@ -99,6 +99,27 @@ test {
     finalizedBy jacocoTestReport
 }
 
+// Configure JaCoCo agent to exclude external libraries from instrumentation
+tasks.withType(Test).configureEach {
+    jacoco {
+        includes = ['me.bmordue.*']
+        excludes = [
+                'java.*',
+                'javax.*',
+                'kotlin.*',
+                'kotlinx.*',
+                'org.apache.*',
+                'org.junit.*',
+                'org.mockito.*',
+                'io.micronaut.*',
+                'org.testcontainers.*',
+                'com.fasterxml.*',
+                'org.slf4j.*',
+                'ch.qos.logback.*'
+        ]
+    }
+}
+
 jacocoTestReport {
     dependsOn test
     reports {
