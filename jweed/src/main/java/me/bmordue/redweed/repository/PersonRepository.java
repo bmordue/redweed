@@ -22,7 +22,7 @@ public class PersonRepository extends RdfRepository {
         // Logic to find a person by ID in the dataset
         dataset.begin(ReadWrite.READ);
         ParameterizedSparqlString pss = new ParameterizedSparqlString(
-                "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://example.org/redweed#id> ?uri . }"
+                "SELECT ?s WHERE { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> ; <http://bmordue.me/redweed/id> ?uri . }"
         );
         pss.setLiteral("uri", uri);
 
