@@ -122,7 +122,7 @@ function App() {
             <option value="ttl">TTL</option>
           </select>
           <label htmlFor="data">Data</label>
-          <textarea id="data" value={data} onChange={handleDataChange} />
+<textarea id="data" value={data} onChange={handleDataChange} required />
           <button type="submit">Submit</button>
         </form>
       </article>
