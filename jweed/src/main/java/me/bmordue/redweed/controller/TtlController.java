@@ -10,8 +10,12 @@ import me.bmordue.redweed.service.TtlService;
 @Controller("/ttl")
 public class TtlController {
 
+    private final TtlService ttlService;
+
     @Inject
-    private TtlService ttlService;
+    public TtlController(TtlService ttlService) {
+        this.ttlService = ttlService;
+    }
 
     @Post
     public IngestTtlResponseDto ingestTtl(@Body String body) {

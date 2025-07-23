@@ -19,8 +19,12 @@ import java.io.IOException;
 public class BookController {
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
+    private final BookService bookService;
+
     @Inject
-    private BookService bookService;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestEpubResponseDto> upload(CompletedFileUpload file) {

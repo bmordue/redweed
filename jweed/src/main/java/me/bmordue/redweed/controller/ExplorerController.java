@@ -12,8 +12,12 @@ import org.apache.jena.rdf.model.RDFNode;
 @Controller("/api/graph")
 public class ExplorerController {
 
+    private final Dataset dataset;
+
     @Inject
-    private Dataset dataset;
+    public ExplorerController(Dataset dataset) {
+        this.dataset = dataset;
+    }
 
     @Get
     public GraphDTO getGraph(@io.micronaut.http.annotation.QueryValue(defaultValue = "100") int limit, @io.micronaut.http.annotation.QueryValue(defaultValue = "0") int offset) {

@@ -18,11 +18,14 @@ import java.util.UUID;
 @Singleton
 public class MusicService {
 
-    @Inject
-    private RdfRepository rdfRepository;
+    private final RdfRepository rdfRepository;
+    private final MusicVocabulary musicVocabulary;
 
     @Inject
-    private MusicVocabulary musicVocabulary;
+    public MusicService(RdfRepository rdfRepository, MusicVocabulary musicVocabulary) {
+        this.rdfRepository = rdfRepository;
+        this.musicVocabulary = musicVocabulary;
+    }
 
     public IngestMp3ResponseDto ingestMp3(File file) {
         Map<String, String> metadata = Mp3Parser.parse(file);

@@ -10,8 +10,12 @@ import me.bmordue.redweed.service.PersonService;
 @Controller("/persons")
 public class PersonController {
 
+    private final PersonService personService;
+
     @Inject
-    private PersonService personService;
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @Post
     public IngestVCardResponseDto ingestVCard(@Body String body) {

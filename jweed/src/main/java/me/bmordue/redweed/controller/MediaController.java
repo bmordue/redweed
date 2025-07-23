@@ -20,8 +20,12 @@ public class MediaController {
     private static final Logger log = LoggerFactory.getLogger(MediaController.class);
 
 
+    private final MediaService mediaService;
+
     @Inject
-    private MediaService mediaService;
+    public MediaController(MediaService mediaService) {
+        this.mediaService = mediaService;
+    }
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file) {
