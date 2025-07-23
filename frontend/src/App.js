@@ -93,52 +93,40 @@ function App() {
   };
 
   return (
-    <div>
+    <main className="container">
       <h1>Jweed Frontend</h1>
-      <h2>File Upload</h2>
-      <form onSubmit={handleFileUploadSubmit}>
-        <div>
-          <label>
-            Media Type:
-            <select value={mediaType} onChange={handleMediaTypeChange}>
-              <option value="book">Book (EPUB)</option>
-              <option value="media">Media (MP4)</option>
-              <option value="music">Music (MP3)</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            File:
-            <input type="file" onChange={handleFileChange} />
-          </label>
-        </div>
-        <button type="submit">Upload</button>
-      </form>
+      <article>
+        <h2>File Upload</h2>
+        <form onSubmit={handleFileUploadSubmit}>
+          <label htmlFor="mediaType">Media Type</label>
+          <select id="mediaType" value={mediaType} onChange={handleMediaTypeChange}>
+            <option value="book">Book (EPUB)</option>
+            <option value="media">Media (MP4)</option>
+            <option value="music">Music (MP3)</option>
+          </select>
+          <label htmlFor="file">File</label>
+          <input type="file" id="file" onChange={handleFileChange} />
+          <button type="submit">Upload</button>
+        </form>
+      </article>
 
-      <h2>Data Submission</h2>
-      <form onSubmit={handleDataSubmit}>
-        <div>
-          <label>
-            Data Type:
-            <select value={dataType} onChange={handleDataTypeChange}>
-              <option value="event">Event</option>
-              <option value="person">Person</option>
-              <option value="place">Place</option>
-              <option value="review">Review</option>
-              <option value="ttl">TTL</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            Data:
-            <textarea value={data} onChange={handleDataChange} />
-          </label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+      <article>
+        <h2>Data Submission</h2>
+        <form onSubmit={handleDataSubmit}>
+          <label htmlFor="dataType">Data Type</label>
+          <select id="dataType" value={dataType} onChange={handleDataTypeChange}>
+            <option value="event">Event</option>
+            <option value="person">Person</option>
+            <option value="place">Place</option>
+            <option value="review">Review</option>
+            <option value="ttl">TTL</option>
+          </select>
+          <label htmlFor="data">Data</label>
+          <textarea id="data" value={data} onChange={handleDataChange} />
+          <button type="submit">Submit</button>
+        </form>
+      </article>
+    </main>
   );
 }
 
