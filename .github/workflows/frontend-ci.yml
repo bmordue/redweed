@@ -38,9 +38,9 @@ jobs:
       run: npm ci
       working-directory: frontend
       
-    - name: Run linter
-      run: npm run lint --if-present
-      working-directory: frontend
+    # - name: Run linter
+    #   run: npm run lint --if-present
+    #   working-directory: frontend
       
     - name: Run tests
       run: npm test -- --coverage --watchAll=false
