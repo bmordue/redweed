@@ -1,7 +1,10 @@
 package me.bmordue.redweed.model.dto;
 
+import io.micronaut.serde.annotation.Serdeable;
+
 import java.util.List;
 
+@Serdeable
 public class IngestHReviewResponseDto {
     private List<String> reviewUris;
     private String message;
