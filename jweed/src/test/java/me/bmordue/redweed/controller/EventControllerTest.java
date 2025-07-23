@@ -32,7 +32,7 @@ class EventControllerTest {
     }
 
     @MockBean(EventService.class)
-    EventService eventService() {
+    private EventService eventService() {
         return mock(EventService.class);
     }
 }
