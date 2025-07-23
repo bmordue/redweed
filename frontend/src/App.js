@@ -105,7 +105,7 @@ function App() {
             <option value="music">Music (MP3)</option>
           </select>
           <label htmlFor="file">File</label>
-          <input type="file" id="file" onChange={handleFileChange} />
+<input type="file" id="file" onChange={handleFileChange} required />
           <button type="submit">Upload</button>
         </form>
       </article>
