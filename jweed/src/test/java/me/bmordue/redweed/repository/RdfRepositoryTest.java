@@ -3,7 +3,6 @@ package me.bmordue.redweed.repository;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
@@ -29,23 +28,21 @@ class RdfRepositoryTest {
     @Test
     void save() {
         StringReader reader = new StringReader("""
-            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-            @prefix redweed: <http://bmordue.me/redweed/> .
-
-            redweed:test a rdfs:Class .
-            """);
+                @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+                @prefix redweed: <http://bmordue.me/redweed/> .
+                
+                redweed:test a rdfs:Class .
+                """);
 
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, reader, "", Lang.TURTLE);
 
         rdfRepository.save(model);
 
-        dataset.begin(ReadWrite.READ);
-        try {
-            Resource resource = dataset.getDefaultModel().getResource("http://bmordue.me/redweed/test");
-            assertTrue(dataset.getDefaultModel().contains(resource, RDF.type, RDFS.Class));
-        } finally {
-            dataset.end();
-        }
+        dataset.executeRead(() -> {
+            Model defaultModel = dataset.getDefaultModel();
+            Resource resource = defaultModel.getResource("http://bmordue.me/redweed/test");
+            assertTrue(defaultModel.contains(resource, RDF.type, RDFS.Class), "The saved resource should be in the dataset");
+        });
     }
 }

@@ -8,8 +8,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
@@ -28,14 +28,15 @@ class PersonRepositoryTest {
     @BeforeEach
     void setUp() {
         StringReader reader = new StringReader("""
-            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-            @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-            @prefix redweed: <http://bmordue.me/redweed/> .
+                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+                @prefix redweed: <http://bmordue.me/redweed/> .
+                
+                <http://example.org/person/1> rdf:type foaf:Person ;
+                    redweed:id "1" .
+                """);
 
-            <http://example.org/person/1> rdf:type foaf:Person ;
-                redweed:id "1" .
-            """);
-
+        dataset.executeWrite(() -> dataset.getDefaultModel().removeAll());
         Model model = ModelFactory.createDefaultModel();
         RDFDataMgr.read(model, reader, "", Lang.TURTLE);
         personRepository.save(model);
