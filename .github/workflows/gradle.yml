@@ -3,8 +3,12 @@ name: Java CI with Gradle (Groovy)
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'jweed/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'jweed/**'
 
 permissions:
   contents: read
