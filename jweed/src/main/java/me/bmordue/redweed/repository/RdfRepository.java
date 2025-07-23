@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class RdfRepository {
     private static final Logger log = LoggerFactory.getLogger(RdfRepository.class);
 
-    private final Dataset dataset;
+    protected final Dataset dataset;
 
     @Inject
     public RdfRepository(Dataset dataset) {
