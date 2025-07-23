@@ -1,6 +1,7 @@
 package me.bmordue.redweed.controller;
 
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.annotation.MockBean;
@@ -10,6 +11,7 @@ import me.bmordue.redweed.model.dto.IngestKmlResponseDto;
 import me.bmordue.redweed.service.PlaceService;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @MicronautTest

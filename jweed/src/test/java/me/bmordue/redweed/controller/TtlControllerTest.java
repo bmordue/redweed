@@ -1,6 +1,7 @@
 package me.bmordue.redweed.controller;
 
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.annotation.MockBean;
@@ -10,6 +11,7 @@ import me.bmordue.redweed.model.dto.IngestTtlResponseDto;
 import me.bmordue.redweed.service.TtlService;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @MicronautTest
@@ -25,8 +27,8 @@ class TtlControllerTest {
     @Test
     void testIngestTtl() {
         String ttl = "@prefix schema: <https://schema.org/> .\\n" +
-            "<https://www.example.com/books/1> a schema:Book ;\\n" +
-            "  schema:name \\\"The Great Gatsby\\\" .\\n\"";
+                "<https://www.example.com/books/1> a schema:Book ;\\n" +
+                "  schema:name \\\"The Great Gatsby\\\" .\\n\"";
 
         when(ttlService.ingestTtl(ttl)).thenReturn(new IngestTtlResponseDto(""));
 
