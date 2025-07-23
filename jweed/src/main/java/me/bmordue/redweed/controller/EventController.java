@@ -12,8 +12,9 @@ public class EventController {
     private EventService eventService;
 
     @Post
-    public void ingestEvent(String body) {
+    public io.micronaut.http.HttpResponse<String> ingestEvent(String body) {
         eventService.ingestEvent(body);
+        return io.micronaut.http.HttpResponse.ok();
     }
 
 }
