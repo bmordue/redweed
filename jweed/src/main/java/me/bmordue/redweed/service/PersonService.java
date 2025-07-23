@@ -15,8 +15,12 @@ public class PersonService {
 
     private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 
+    private final PersonRepository personRepository;
+
     @Inject
-    private PersonRepository personRepository;
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
 
     public IngestVCardResponseDto ingestVCard(String vCard) {
         Model model;

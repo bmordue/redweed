@@ -21,8 +21,12 @@ public class TtlService {
 
     private static final Logger log = LoggerFactory.getLogger(TtlService.class);
 
+    private final RdfRepository rdfRepository;
+
     @Inject
-    private RdfRepository rdfRepository;
+    public TtlService(RdfRepository rdfRepository) {
+        this.rdfRepository = rdfRepository;
+    }
 
     public IngestTtlResponseDto ingestTtl(String ttl) {
         Model model = ModelFactory.createDefaultModel();

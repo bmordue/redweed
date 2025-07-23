@@ -13,8 +13,12 @@ import org.slf4j.LoggerFactory;
 public class RdfRepository {
     private static final Logger log = LoggerFactory.getLogger(RdfRepository.class);
 
+    private final Dataset dataset;
+
     @Inject
-    private Dataset dataset;
+    public RdfRepository(Dataset dataset) {
+        this.dataset = dataset;
+    }
 
     public void save(Model model) {
         dataset.begin(ReadWrite.WRITE);
