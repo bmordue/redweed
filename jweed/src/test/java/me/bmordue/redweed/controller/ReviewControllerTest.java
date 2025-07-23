@@ -29,7 +29,7 @@ class ReviewControllerTest {
         when(reviewService.ingestHReview(hreview)).thenReturn(new IngestHReviewResponseDto(java.util.Collections.emptyList(), ""));
 
         HttpRequest<String> request = HttpRequest.POST("/reviews", hreview);
-        client.toBlocking().retrieve(request);
+        client.toBlocking().exchange(request, String.class);
 
         verify(reviewService, times(1)).ingestHReview(hreview);
     }
