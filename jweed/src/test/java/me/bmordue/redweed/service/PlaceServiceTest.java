@@ -5,11 +5,12 @@ import me.bmordue.redweed.vocabulary.RedweedVocab;
 import org.apache.jena.rdf.model.Model;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,19 +30,19 @@ class PlaceServiceTest {
     void ingestKml() {
         // Given
         String kml = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <kml xmlns="http://www.opengis.net/kml/2.2">
-              <Document>
-                <Placemark>
-                  <name>Test Placemark</name>
-                  <description>Test Description</description>
-                  <Point>
-                    <coordinates>-122.0822035425683,37.42228990140251,0</coordinates>
-                  </Point>
-                </Placemark>
-              </Document>
-            </kml>
-            """;
+                <?xml version="1.0" encoding="UTF-8"?>
+                <kml xmlns="http://www.opengis.net/kml/2.2">
+                  <Document>
+                    <Placemark>
+                      <name>Test Placemark</name>
+                      <description>Test Description</description>
+                      <Point>
+                        <coordinates>-122.0822035425683,37.42228990140251,0</coordinates>
+                      </Point>
+                    </Placemark>
+                  </Document>
+                </kml>
+                """;
 
         when(redweedVocab.getPlaceNamespace()).thenReturn("http://example.com/places/");
 
@@ -49,6 +50,22 @@ class PlaceServiceTest {
         placeService.ingestKml(kml);
 
         // Then
-        verify(placeRepository).save(any(Model.class));
+        ArgumentCaptor<Model> modelCaptor = ArgumentCaptor.forClass(Model.class);
+        verify(placeRepository).save(modelCaptor.capture());
+
+        Model capturedModel = modelCaptor.getValue();
+        assertNotNull(capturedModel, "Captured model should not be null");
+        assertFalse(capturedModel.isEmpty(), "Captured model should not be empty");
+
+        // Check for placemark-related statements
+        boolean hasPlacemarkData = capturedModel.listStatements().toList().stream()
+                .anyMatch(stmt ->
+                        stmt.getObject().toString().contains("Test Placemark") ||
+                                stmt.getObject().toString().contains("Test Description") ||
+                                stmt.getObject().toString().contains("-122.0822035425683") ||
+                                stmt.getObject().toString().contains("37.42228990140251")
+                );
+
+        assertTrue(hasPlacemarkData, "Model should contain data from the KML placemark (name, description, or coordinates)");
     }
 }
