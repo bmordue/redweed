@@ -53,7 +53,7 @@ class ExplorerControllerTest {
     void testGetGraph() {
         Model model = ModelFactory.createDefaultModel();
         Resource subject = model.createResource("http://example.org/subject");
-        org.apache.jena.rdf.model.Property predicate = model.createProperty("http://example.org/predicate");
+        Property predicate = model.createProperty("http://example.org/predicate");
         Resource object = model.createResource("http://example.org/object");
         model.add(subject, predicate, object);
 
