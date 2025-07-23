@@ -38,7 +38,7 @@ class TtlControllerTest {
     }
 
     @MockBean(TtlService.class)
-    TtlService ttlService() {
+    private TtlService ttlService() {
         return mock(TtlService.class);
     }
 }
