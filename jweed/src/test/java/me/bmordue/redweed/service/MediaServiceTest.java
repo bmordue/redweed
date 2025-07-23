@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,11 +61,10 @@ class MediaServiceTest {
         assertNotNull(capturedModel);
 
         // Verify the model contains exactly one resource
-List<Resource> subjects = capturedModel.listSubjects().toList();
-assertEquals(1, subjects.size(), "Model should contain exactly one subject");
-Resource mediaResource = subjects.get(0);
+        List<Resource> subjects = capturedModel.listSubjects().toList();
+        assertEquals(1, subjects.size(), "Model should contain exactly one subject");
+        Resource mediaResource = subjects.get(0);
 
-        Resource mediaResource = capturedModel.listSubjects().next();
 
         // Verify the resource has the correct type
         Statement typeStatement = capturedModel.getProperty(mediaResource, RDF.type);

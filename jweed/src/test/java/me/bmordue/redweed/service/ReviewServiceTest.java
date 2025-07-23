@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,13 +60,12 @@ class ReviewServiceTest {
         assertTrue(capturedModel.contains(null, RDF.type, reviewType),
                 "Model should contain a resource with rdf:type rev:Review");
 
-// Verify the model contains a single review resource with the correct type
-Resource reviewType = capturedModel.createResource(RedweedVocab.REV_REVIEW);
-List<Resource> reviewResources = capturedModel.listSubjectsWithProperty(RDF.type, reviewType).toList();
-assertEquals(1, reviewResources.size(), "Model should contain exactly one resource with rdf:type rev:Review");
+        // Verify the model contains a single review resource with the correct type
+        List<Resource> reviewResources = capturedModel.listSubjectsWithProperty(RDF.type, reviewType).toList();
+        assertEquals(1, reviewResources.size(), "Model should contain exactly one resource with rdf:type rev:Review");
 
-// Get the review resource
-Resource reviewResource = reviewResources.get(0);
+        // Get the review resource
+        Resource reviewResource = reviewResources.get(0);
         assertTrue(reviewResource.getURI().startsWith("http://example.com/reviews/"),
                 "Review URI should start with the review namespace");
 

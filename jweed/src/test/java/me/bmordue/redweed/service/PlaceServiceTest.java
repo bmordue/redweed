@@ -58,12 +58,13 @@ class PlaceServiceTest {
         assertFalse(capturedModel.isEmpty(), "Captured model should not be empty");
 
         // Check for placemark-related statements
-        boolean hasPlacemarkData = capturedModel.listStatements().hasNext(stmt ->
-                stmt.getObject().toString().contains("Test Placemark") ||
-                        stmt.getObject().toString().contains("Test Description") ||
-                        stmt.getObject().toString().contains("-122.0822035425683") ||
-                        stmt.getObject().toString().contains("37.42228990140251")
-        );
+        boolean hasPlacemarkData = capturedModel.listStatements().toList().stream()
+                .anyMatch(stmt ->
+                        stmt.getObject().toString().contains("Test Placemark") ||
+                                stmt.getObject().toString().contains("Test Description") ||
+                                stmt.getObject().toString().contains("-122.0822035425683") ||
+                                stmt.getObject().toString().contains("37.42228990140251")
+                );
 
         assertTrue(hasPlacemarkData, "Model should contain data from the KML placemark (name, description, or coordinates)");
     }
