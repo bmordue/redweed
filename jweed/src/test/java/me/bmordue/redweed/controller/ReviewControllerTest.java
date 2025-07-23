@@ -35,7 +35,7 @@ class ReviewControllerTest {
     }
 
     @MockBean(ReviewService.class)
-    ReviewService reviewService() {
+    private ReviewService reviewService() {
         return mock(ReviewService.class);
     }
 }
