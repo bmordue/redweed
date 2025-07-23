@@ -19,11 +19,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class ReviewService {
 
-    @Inject
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
+    private final RedweedVocab redweedVocab;
 
     @Inject
-    private RedweedVocab redweedVocab;
+    public ReviewService(ReviewRepository reviewRepository, RedweedVocab redweedVocab) {
+        this.reviewRepository = reviewRepository;
+        this.redweedVocab = redweedVocab;
+    }
 
     public IngestHReviewResponseDto ingestHReview(String html) {
         List<Map<String, String>> reviews = HReviewParser.parse(html);

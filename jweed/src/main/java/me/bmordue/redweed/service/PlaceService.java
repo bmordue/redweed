@@ -26,11 +26,14 @@ public class PlaceService {
 
     private static final Logger log = LoggerFactory.getLogger(PlaceService.class);
 
-    @Inject
-    private PlaceRepository placeRepository;
+    private final PlaceRepository placeRepository;
+    private final RedweedVocab redweedVocab;
 
     @Inject
-    private RedweedVocab redweedVocab;
+    public PlaceService(PlaceRepository placeRepository, RedweedVocab redweedVocab) {
+        this.placeRepository = placeRepository;
+        this.redweedVocab = redweedVocab;
+    }
 
     public IngestKmlResponseDto ingestKml(String kmlString) {
         try {

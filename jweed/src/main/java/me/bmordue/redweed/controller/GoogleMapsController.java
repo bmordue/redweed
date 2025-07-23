@@ -10,8 +10,12 @@ import me.bmordue.redweed.service.PlaceService;
 @Controller("/maps")
 public class GoogleMapsController {
 
+    private final PlaceService placeService;
+
     @Inject
-    private PlaceService placeService;
+    public GoogleMapsController(PlaceService placeService) {
+        this.placeService = placeService;
+    }
 
     @Post("/import")
     public IngestKmlResponseDto importKml(@Body String body) {
