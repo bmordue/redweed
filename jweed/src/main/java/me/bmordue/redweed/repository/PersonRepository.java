@@ -14,7 +14,9 @@ public class PersonRepository extends RdfRepository {
     private static final Logger log = LoggerFactory.getLogger(PersonRepository.class);
 
     @Inject
-    private Dataset dataset;
+    public PersonRepository(Dataset dataset) {
+        super(dataset);
+    }
 
     public Person findByUri(String uri) {
         // Logic to find a person by ID in the dataset

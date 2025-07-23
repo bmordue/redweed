@@ -18,11 +18,14 @@ import java.util.UUID;
 @Singleton
 public class BookService {
 
-    @Inject
-    private RdfRepository rdfRepository;
+    private final RdfRepository rdfRepository;
+    private final BookVocabulary bookVocabulary;
 
     @Inject
-    private BookVocabulary bookVocabulary;
+    public BookService(RdfRepository rdfRepository, BookVocabulary bookVocabulary) {
+        this.rdfRepository = rdfRepository;
+        this.bookVocabulary = bookVocabulary;
+    }
 
     public IngestEpubResponseDto ingestEpub(File file) {
         Map<String, String> metadata = EpubParser.parse(file);

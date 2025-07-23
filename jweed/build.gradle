@@ -135,7 +135,7 @@ jacocoTestCoverageVerification {
 sonar {
     properties {
         property "sonar.projectKey", "bmordue_redweed"
-        property "sonar.organization", "bmordue"
+        property "sonar.organization", "bmordue-github"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.java.source", "21"

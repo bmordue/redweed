@@ -9,8 +9,12 @@ import me.bmordue.redweed.service.PlaceService;
 
 @Controller("/places")
 public class PlaceController {
+    private final PlaceService placeService;
+
     @Inject
-    private PlaceService placeService;
+    public PlaceController(PlaceService placeService) {
+        this.placeService = placeService;
+    }
 
     @Post
     public IngestKmlResponseDto ingestKml(@Body String body) {

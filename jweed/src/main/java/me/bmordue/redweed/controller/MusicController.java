@@ -21,8 +21,12 @@ public class MusicController {
 
     private static final Logger log = LoggerFactory.getLogger(MusicController.class);
 
+    private final MusicService musicService;
+
     @Inject
-    private MusicService musicService;
+    public MusicController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestMp3ResponseDto> upload(CompletedFileUpload file) throws IOException {

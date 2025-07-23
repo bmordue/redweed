@@ -8,8 +8,12 @@ import me.bmordue.redweed.service.EventService;
 @Controller("/events")
 public class EventController {
 
+    private final EventService eventService;
+
     @Inject
-    private EventService eventService;
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @Post
     public void ingestEvent(String body) {

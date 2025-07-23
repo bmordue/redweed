@@ -18,11 +18,14 @@ import java.util.UUID;
 @Singleton
 public class MediaService {
 
-    @Inject
-    private RdfRepository rdfRepository;
+    private final RdfRepository rdfRepository;
+    private final MediaVocabulary mediaVocabulary;
 
     @Inject
-    private MediaVocabulary mediaVocabulary;
+    public MediaService(RdfRepository rdfRepository, MediaVocabulary mediaVocabulary) {
+        this.rdfRepository = rdfRepository;
+        this.mediaVocabulary = mediaVocabulary;
+    }
 
     public IngestMp4ResponseDto ingestMp4(File file) {
         Map<String, Object> metadata = Mp4Parser.parse(file);
