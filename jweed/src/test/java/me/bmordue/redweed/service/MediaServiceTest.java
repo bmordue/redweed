@@ -60,7 +60,9 @@ class MediaServiceTest {
         assertNotNull(capturedModel);
 
         // Verify the model contains exactly one resource
-        assertEquals(1, capturedModel.listSubjects().toList().size());
+List<Resource> subjects = capturedModel.listSubjects().toList();
+assertEquals(1, subjects.size(), "Model should contain exactly one subject");
+Resource mediaResource = subjects.get(0);
 
         Resource mediaResource = capturedModel.listSubjects().next();
 
