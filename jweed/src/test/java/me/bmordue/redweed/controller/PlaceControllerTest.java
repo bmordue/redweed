@@ -29,7 +29,8 @@ class PlaceControllerTest {
         when(placeService.ingestKml(kml)).thenReturn(new IngestKmlResponseDto(java.util.Collections.emptyList(), ""));
 
         HttpRequest<String> request = HttpRequest.POST("/places", kml);
-        client.toBlocking().exchange(request);
+        HttpResponse<IngestKmlResponseDto> response = client.toBlocking().exchange(request, IngestKmlResponseDto.class);
+        assertEquals(io.micronaut.http.HttpStatus.OK, response.getStatus());
 
         verify(placeService, times(1)).ingestKml(kml);
     }
