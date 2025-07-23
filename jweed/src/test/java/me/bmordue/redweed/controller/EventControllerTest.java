@@ -26,7 +26,8 @@ class EventControllerTest {
         String event = "BEGIN:VCALENDAR...";
 
         HttpRequest<String> request = HttpRequest.POST("/events", event);
-        client.toBlocking().exchange(request);
+        HttpResponse<String> response = client.toBlocking().exchange(request, String.class);
+        assertEquals(io.micronaut.http.HttpStatus.OK, response.getStatus());
 
         verify(eventService, times(1)).ingestEvent(event);
     }
