@@ -31,7 +31,8 @@ class TtlControllerTest {
         when(ttlService.ingestTtl(ttl)).thenReturn(new IngestTtlResponseDto(""));
 
         HttpRequest<String> request = HttpRequest.POST("/ttl", ttl);
-        client.toBlocking().exchange(request);
+        HttpResponse<IngestTtlResponseDto> response = client.toBlocking().exchange(request, IngestTtlResponseDto.class);
+        assertEquals(io.micronaut.http.HttpStatus.OK, response.getStatus());
 
         verify(ttlService, times(1)).ingestTtl(ttl);
     }
