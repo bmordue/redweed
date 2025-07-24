@@ -21,8 +21,12 @@ public class Mp4Parser {
             Picture picture = FrameGrab.getFrameFromFile(file, 0);
             BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
             File thumbnailFile = File.createTempFile("thumbnail", ".png");
-            ImageIO.write(bufferedImage, "png", thumbnailFile);
-            metadata.put("thumbnail", thumbnailFile);
+            try {
+                ImageIO.write(bufferedImage, "png", thumbnailFile);
+                metadata.put("thumbnail", thumbnailFile);
+            } finally {
+                thumbnailFile.delete();
+            }
         } catch (IOException | JCodecException e) {
             throw new RuntimeException("Failed to parse MP4 file", e);
         }
