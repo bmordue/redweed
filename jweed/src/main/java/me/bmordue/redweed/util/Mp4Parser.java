@@ -12,9 +12,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Mp4Parser {
 
@@ -32,7 +32,10 @@ public class Mp4Parser {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
             grabber.start();
             Map<String, String> allMetadata = grabber.getMetadata();
-            metadata.put(TITLE, allMetadata.get(TITLE));
+            String title = allMetadata.get(TITLE);
+            if (title != null) {
+                metadata.put(TITLE, title);
+            }
             parseCreationTime(metadata, allMetadata.get(CREATION_TIME));
         } catch (FrameGrabber.Exception e) {
             throw new RuntimeException("Failed to parse MP4 file", e);
@@ -44,15 +47,15 @@ public class Mp4Parser {
         if (creationTime != null) {
             try {
                 Instant instant = Instant.parse(creationTime);
-                metadata.put(CREATION_DATE, Date.from(instant));
+                metadata.put(CREATION_DATE, instant);
             } catch (java.time.format.DateTimeParseException e) {
                 log.warn("Failed to parse creation time as ISO 8601: {}", creationTime, e);
             }
         }
     }
 
-    public static File thumbnailFromFirstFrame(File file) {
-        File thumbnailFile = null;
+    public static Optional<File> thumbnailFromFirstFrame(File file) {
+        Optional<File> thumbnailFile = Optional.empty();
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
 
             grabber.start();
@@ -65,9 +68,8 @@ public class Mp4Parser {
                 BufferedImage bufferedImage = converter.convert(frame);
 
                 if (bufferedImage != null) {
-                    thumbnailFile = File.createTempFile("thumbnail", ".png");
-
-                    ImageIO.write(bufferedImage, "png", thumbnailFile);
+                    thumbnailFile = Optional.of(File.createTempFile("thumbnail", ".png"));
+                    ImageIO.write(bufferedImage, "png", thumbnailFile.get());
                 }
                 converter.close();
             }
