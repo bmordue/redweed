@@ -1,8 +1,6 @@
-# About
-The intent of this document is to provide an end-user view of the capabilities of the redweed data store and API.
-These plain-language stories describe something in the real world that could be modelled using the media types used in the redweed data store.
+# Tutorials
 
-# Stories
+The intent of this document is to provide an end-user view of the capabilities of the redweed data store and API. These plain-language stories describe something in the real world that could be modelled using the media types used in the redweed data store.
 
 ## A memorable meal
 
