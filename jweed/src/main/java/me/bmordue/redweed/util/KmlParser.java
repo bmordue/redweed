@@ -20,10 +20,30 @@ public class KmlParser {
         List<Map<String, String>> placemarks = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            try {
+                factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            } catch (javax.xml.parsers.ParserConfigurationException | UnsupportedOperationException e) {
+                // Log or handle the exception as needed
+                System.err.println("Warning: FEATURE_SECURE_PROCESSING not supported: " + e.getMessage());
+            }
+            try {
+                factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            } catch (javax.xml.parsers.ParserConfigurationException | UnsupportedOperationException e) {
+                // Log or handle the exception as needed
+                System.err.println("Warning: disallow-doctype-decl not supported: " + e.getMessage());
+            }
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            } catch (javax.xml.parsers.ParserConfigurationException | UnsupportedOperationException e) {
+                // Log or handle the exception as needed
+                System.err.println("Warning: external-general-entities not supported: " + e.getMessage());
+            }
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (javax.xml.parsers.ParserConfigurationException | UnsupportedOperationException e) {
+                // Log or handle the exception as needed
+                System.err.println("Warning: external-parameter-entities not supported: " + e.getMessage());
+            }
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(kmlString)));
             NodeList placemarkNodes = doc.getElementsByTagName("Placemark");
