@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ import java.util.Map;
 
 public class Mp4Parser {
 
+    public static final String TITLE = "title";
+    public static final String CREATION_DATE = "creationDate";
+    public static final String CREATION_TIME = "creation_time";
     private static final Logger log = LoggerFactory.getLogger(Mp4Parser.class);
 
     private Mp4Parser() {
@@ -28,24 +32,29 @@ public class Mp4Parser {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
             grabber.start();
             Map<String, String> allMetadata = grabber.getMetadata();
-            metadata.put("title", allMetadata.get("title"));
-            String creationTime = allMetadata.get("creation_time");
-            if (creationTime != null) {
-                // FFmpeg creation_time is in ISO 8601 format, e.g., "2024-07-25T04:43:56.000000Z"
-                Instant instant = Instant.parse(creationTime);
-                metadata.put("creationDate", Date.from(instant));
-            }
+            metadata.put(TITLE, allMetadata.get(TITLE));
+            parseCreationTime(metadata, allMetadata.get(CREATION_TIME));
         } catch (FrameGrabber.Exception e) {
             throw new RuntimeException("Failed to parse MP4 file", e);
         }
         return metadata;
     }
 
+    private static void parseCreationTime(Map<String, Object> metadata, String creationTime) {
+        if (creationTime != null) {
+            try {
+                Instant instant = Instant.parse(creationTime);
+                metadata.put(CREATION_DATE, Date.from(instant));
+            } catch (java.time.format.DateTimeParseException e) {
+                log.warn("Failed to parse creation time as ISO 8601: {}", creationTime, e);
+            }
+        }
+    }
+
     public static File thumbnailFromFirstFrame(File file) {
-        FFmpegFrameGrabber grabber = null;
         File thumbnailFile = null;
-        try {
-            grabber = new FFmpegFrameGrabber(file);
+        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
+
             grabber.start();
 
             // Grab the first frame
@@ -59,21 +68,11 @@ public class Mp4Parser {
                     thumbnailFile = File.createTempFile("thumbnail", ".png");
 
                     ImageIO.write(bufferedImage, "png", thumbnailFile);
-
                 }
                 converter.close();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Failed to parse MP4 file", e);
-        } finally {
-            if (grabber != null) {
-                try {
-                    grabber.stop();
-                    grabber.release();
-                } catch (Exception e) {
-                    log.warn("Error stopping FFmpegFrameGrabber", e);
-                }
-            }
         }
         return thumbnailFile;
     }
