@@ -3,6 +3,8 @@ package me.bmordue.redweed.util;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -11,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Mp4Parser {
+
+    private static final Logger log = LoggerFactory.getLogger(Mp4Parser.class);
 
     public static Map<String, Object> parse(File file) {
         Map<String, Object> metadata = new HashMap<>();
@@ -45,7 +49,7 @@ public class Mp4Parser {
                     grabber.stop();
                     grabber.release();
                 } catch (Exception e) {
-                    // Log but don't throw
+                    log.warn("Error stopping FFmpegFrameGrabber", e);
                 }
             }
         }

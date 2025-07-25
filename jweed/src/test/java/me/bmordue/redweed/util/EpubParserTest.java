@@ -17,10 +17,7 @@ class EpubParserTest {
 
     @Test
     void testParseEpub() throws IOException {
-        // Create a dummy OPF file
-        File opfFile = new File(getClass().getClassLoader().getResource("test.opf").getFile());
-
-        // Create a dummy epub file
+        // Create a test epub file
         File epubFile = File.createTempFile("test", ".epub");
         epubFile.deleteOnExit();
 

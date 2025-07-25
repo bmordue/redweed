@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class Mp4ParserTest extends UsesResourceTest {
 
     String testMp4 = "/14120146_2160_3840_30fps.mp4";
@@ -12,7 +14,7 @@ class Mp4ParserTest extends UsesResourceTest {
     void testParse() {
         File file = getTestResource(testMp4);
         var metadata = Mp4Parser.parse(file);
-        assert (!metadata.isEmpty());
+        assertFalse(metadata.isEmpty());
     }
 
     @Test
@@ -21,7 +23,7 @@ class Mp4ParserTest extends UsesResourceTest {
 
         var metadata = Mp4Parser.parse(file);
 
-        assert (metadata.containsKey("thumbnail"));
-        assert (metadata.get("thumbnail") instanceof File);
+        assertTrue(metadata.containsKey("thumbnail"));
+        assertInstanceOf(File.class, metadata.get("thumbnail"));
     }
 }
