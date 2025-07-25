@@ -24,6 +24,14 @@ class Mp4ParserTest extends UsesResourceTest {
         var metadata = Mp4Parser.parse(file);
 
         assertTrue(metadata.containsKey("thumbnail"));
-        assertInstanceOf(File.class, metadata.get("thumbnail"));
+        Object thumbnailObj = metadata.get("thumbnail");
+        assertInstanceOf(File.class, thumbnailObj);
+        File thumbnailFile = (File) thumbnailObj;
+        try {
+            assertTrue(thumbnailFile.exists(), "Thumbnail file should exist.");
+            assertTrue(thumbnailFile.length() > 0, "Thumbnail file should not be empty.");
+        } finally {
+            thumbnailFile.delete();
+        }
     }
 }
