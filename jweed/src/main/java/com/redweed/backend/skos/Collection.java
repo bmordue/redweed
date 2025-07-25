@@ -26,6 +26,9 @@ private Collection(final Resource s, final Model m) {
     }
 
     public void addName(final String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         addProperty(Redweed.name, name);
     }
 }
