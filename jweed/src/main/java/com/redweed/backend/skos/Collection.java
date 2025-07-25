@@ -19,6 +19,9 @@ private Collection(final Resource s, final Model m) {
     }
 
     public void addMember(final Resource resource) {
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource parameter cannot be null");
+        }
         addProperty(SKOS.member, resource);
     }
 
