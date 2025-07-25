@@ -48,6 +48,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: jweed
+    - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: (!cancelled())
+        with:
+          files: |
+            test-results/test/TEST-me.bmordue.JweedTest.xml
     - name: Generate test coverage report
       run: ./gradlew jacocoTestReport
       working-directory: jweed
