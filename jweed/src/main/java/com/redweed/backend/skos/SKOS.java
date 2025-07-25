@@ -13,7 +13,7 @@ import org.apache.jena.rdf.model.ResourceFactory;
  *
  * @see https://www.w3.org/TR/skos-reference/
  */
-public class SKOS {
+public final class SKOS {
 
     /**
      * The namespace of the vocabulary as a string.
