@@ -44,6 +44,7 @@ dependencies {
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
     implementation 'org.bytedeco:javacv-platform:1.5.10'
+    implementation 'jaxen:jaxen:2.0.0'
 }
 
 
