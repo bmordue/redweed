@@ -10,9 +10,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 
 public class Collection extends ResourceImpl {
-    public Collection(final Resource s, final Model m) {
-        super(s.getURI(), m);
-    }
+private Collection(final Resource s, final Model m) {
+    super(s.getURI(), m);
+}
 
     public static Collection fromResource(final Resource s) {
         return new Collection(s, s.getModel());
