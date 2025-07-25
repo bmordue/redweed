@@ -23,3 +23,10 @@ This document outlines potential new features for the `redweed` project. These f
 9.  **Support for Additional Media Types:** Extend the application to handle videos and audio files, with metadata extraction and search capabilities. This would require adding support for different file types and extending the metadata extraction process to handle video and audio-specific metadata.
 
 10. **Linked Data Integration:** Connect to external Linked Data sources like DBpedia or Wikidata to enrich the existing data with additional information. This could involve adding a mechanism to link local resources to external URIs and to fetch and cache data from external sources.
+
+## Documentation
+
+*   **Deployment Guide:** A guide that explains how to deploy the application to a production environment.
+*   **Configuration Guide:** A guide that explains all of the available configuration options.
+*   **Troubleshooting Guide:** A guide that provides solutions to common problems.
+*   **Developer Guide:** A guide for developers who want to contribute to the project. This would include information about the development workflow, coding standards, and how to run the tests.
