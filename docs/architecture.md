@@ -4,7 +4,7 @@ This document describes the architecture of the Redweed application.
 
 ## Overview
 
-Redweed is a personal information management system that uses an RDF database to store data. The application is built with [Micronaut](https://micronaut.io/) and uses the [Jena TDB2](https://jena.apache.org/documentation/tdb/) database for RDF storage. The application is exposed as a web service with a JSON API.
+Redweed is a personal information management system that uses an RDF database to store data. The application is built with [Micronaut](https://micronaut.io/), which is configured to use the Jetty web server, and uses the [Jena TDB2](https://jena.apache.org/documentation/tdb/) database for RDF storage. The application is exposed as a web service with a JSON API.
 
 This project contains the code for interacting with the redweed data store.
 
