@@ -28,7 +28,7 @@ public class EpubParser {
              ZipArchiveInputStream zip = new ZipArchiveInputStream(fis)) {
 
             ZipArchiveEntry entry;
-            while ((entry = zip.getNextZipEntry()) != null) {
+            while ((entry = zip.getNextEntry()) != null) {
                 if (entry.getName().endsWith(".opf") || entry.getName().contains("content.opf")) {
                     // Parse the OPF file for metadata
                     parseOpfMetadata(zip, metadata);
@@ -90,11 +90,4 @@ public class EpubParser {
         }
     }
 
-    private static String getTagValue(String tag, Element element) {
-        NodeList nodeList = element.getElementsByTagName(tag);
-        if (nodeList.getLength() > 0) {
-            return nodeList.item(0).getTextContent();
-        }
-        return null;
-    }
 }

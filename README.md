@@ -1,5 +1,3 @@
-[![codecov](https://codecov.io/gh/bmordue/redweed/branch/main/graph/badge.svg)](https://codecov.io/gh/bmordue/redweed)
-
 **About**
 
 redweed is an RDF database for personal information management. It c supports importing and querying descriptions of people, places, events, media and other arbitrary types of data.
@@ -47,5 +45,13 @@ Here are some examples of how to use the API with `curl`.
     ```bash
     curl -X POST -F "file=@/path/to/your/photo.jpg" http://localhost:8080/api/photo/upload
     ```
+
+*   **List all contacts:**
+
+    ```bash
+    curl http://localhost:8080/contacts
+    ```
+
+For more information, see the full [documentation](./docs/README.md).
 
 The configuration supports both development (with extra tooling) and production (minimal dependencies in uberjar).
