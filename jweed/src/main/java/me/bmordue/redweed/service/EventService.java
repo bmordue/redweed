@@ -8,14 +8,28 @@ import me.bmordue.redweed.model.dto.IngestICalResponseDto;
 import me.bmordue.redweed.repository.EventRepository;
 import org.apache.jena.rdf.model.Model;
 
+/**
+ * Service for events.
+ */
 public class EventService {
     private final EventRepository eventRepository;
 
+    /**
+     * Constructor.
+     *
+     * @param eventRepository the event repository
+     */
     @Inject
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
+    /**
+     * Ingest an iCal file.
+     *
+     * @param ics the iCal file content
+     * @return the response
+     */
     public IngestICalResponseDto ingestEvent(String ics) {
         Model model;
         try {

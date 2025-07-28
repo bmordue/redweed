@@ -15,18 +15,33 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service for music.
+ */
 @Singleton
 public class MusicService {
 
     private final RdfRepository rdfRepository;
     private final MusicVocabulary musicVocabulary;
 
+    /**
+     * Constructor.
+     *
+     * @param rdfRepository   the RDF repository
+     * @param musicVocabulary the music vocabulary
+     */
     @Inject
     public MusicService(RdfRepository rdfRepository, MusicVocabulary musicVocabulary) {
         this.rdfRepository = rdfRepository;
         this.musicVocabulary = musicVocabulary;
     }
 
+    /**
+     * Ingest an MP3 file.
+     *
+     * @param file the MP3 file
+     * @return the response
+     */
     public IngestMp3ResponseDto ingestMp3(File file) {
         Map<String, String> metadata = Mp3Parser.parse(file);
         Model model = ModelFactory.createDefaultModel();

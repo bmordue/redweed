@@ -4,6 +4,12 @@ import io.micronaut.serde.annotation.Serdeable;
 
 import java.util.Objects;
 
+/**
+ * A data transfer object for a node in a graph.
+ *
+ * @param id    the node ID
+ * @param label the node label
+ */
 @Serdeable
 public record NodeDTO(String id, String label) {
 
