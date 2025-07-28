@@ -1,7 +1,3 @@
-/*
- * (c) Copyright 2022 Redweed, Inc. All rights reserved.
- */
-
 package com.redweed.backend.skos;
 
 import org.apache.jena.rdf.model.Property;
