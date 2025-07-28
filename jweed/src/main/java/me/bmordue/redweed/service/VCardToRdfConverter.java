@@ -12,8 +12,17 @@ import org.apache.jena.vocabulary.VCARD;
 import java.io.StringReader;
 import java.util.UUID;
 
+/**
+ * Converts vCard data to RDF.
+ */
 public final class VCardToRdfConverter {
 
+    /**
+     * Converts a vCard string to an RDF model.
+     *
+     * @param vCardString the vCard string
+     * @return the RDF model
+     */
     public static Model convert(String vCardString) {
         Model model = ModelFactory.createDefaultModel();
         try {

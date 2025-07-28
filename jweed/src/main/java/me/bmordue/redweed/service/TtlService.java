@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 
+/**
+ * Service for TTL files.
+ */
 @Singleton
 public class TtlService {
 
@@ -23,11 +26,22 @@ public class TtlService {
 
     private final RdfRepository rdfRepository;
 
+    /**
+     * Constructor.
+     *
+     * @param rdfRepository the RDF repository
+     */
     @Inject
     public TtlService(RdfRepository rdfRepository) {
         this.rdfRepository = rdfRepository;
     }
 
+    /**
+     * Ingest a TTL file.
+     *
+     * @param ttl the TTL file content
+     * @return the response
+     */
     public IngestTtlResponseDto ingestTtl(String ttl) {
         Model model = ModelFactory.createDefaultModel();
         try {

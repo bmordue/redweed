@@ -15,18 +15,33 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service for books.
+ */
 @Singleton
 public class BookService {
 
     private final RdfRepository rdfRepository;
     private final BookVocabulary bookVocabulary;
 
+    /**
+     * Constructor.
+     *
+     * @param rdfRepository  the RDF repository
+     * @param bookVocabulary the book vocabulary
+     */
     @Inject
     public BookService(RdfRepository rdfRepository, BookVocabulary bookVocabulary) {
         this.rdfRepository = rdfRepository;
         this.bookVocabulary = bookVocabulary;
     }
 
+    /**
+     * Ingest an EPUB file.
+     *
+     * @param file the EPUB file
+     * @return the response
+     */
     public IngestEpubResponseDto ingestEpub(File file) {
         Map<String, String> metadata = EpubParser.parse(file);
         Model model = ModelFactory.createDefaultModel();
