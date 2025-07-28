@@ -15,6 +15,9 @@ Collection(final Resource s, final Model m) {
 }
 
     public static Collection fromResource(final Resource s) {
+        if (s == null) {
+            throw new IllegalArgumentException("Resource parameter cannot be null");
+        }
         return new Collection(s, s.getModel());
     }
 
