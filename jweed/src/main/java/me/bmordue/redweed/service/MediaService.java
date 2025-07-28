@@ -31,9 +31,13 @@ public class MediaService {
         Map<String, Object> metadata = Mp4Parser.parse(file);
         Model model = ModelFactory.createDefaultModel();
         String resourceUri = mediaVocabulary.getResourceNamespace() + UUID.randomUUID();
+
         Resource resource = model.createResource(resourceUri)
-            .addProperty(RDF.type, model.createResource(MediaVocabulary.MA_MEDIA_RESOURCE))
-            .addProperty(model.createProperty(MediaVocabulary.MA_CANONICAL_LOCATION), canonicalUri);
+            .addProperty(RDF.type, model.createResource(MediaVocabulary.MA_MEDIA_RESOURCE));
+
+        if (canonicalUri != null && !canonicalUri.isBlank()) {
+            resource.addProperty(model.createProperty(MediaVocabulary.MA_CANONICAL_LOCATION), canonicalUri);
+        }
 
         if (metadata.get("title") != null) {
             resource.addProperty(model.createProperty(MediaVocabulary.MA_TITLE), metadata.get("title").toString());
