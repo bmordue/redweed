@@ -28,11 +28,12 @@ public class ExplorerController {
     }
 
     /**
-     * Get the graph.
+    /**
+     * Retrieves a portion of the RDF graph for visualization.
      *
-     * @param limit the limit
-     * @param offset the offset
-     * @return the graph
+     * @param limit The maximum number of triples to return.
+     * @param offset The offset from which to start fetching triples.
+     * @return A {@link GraphDTO} containing nodes and edges for the graph explorer.
      */
     @Get
     public GraphDTO getGraph(@io.micronaut.http.annotation.QueryValue(defaultValue = "100") int limit, @io.micronaut.http.annotation.QueryValue(defaultValue = "0") int offset) {
