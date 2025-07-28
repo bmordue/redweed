@@ -1,6 +1,8 @@
 package me.bmordue.redweed.util;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
 
 public class KmlParser {
 
@@ -27,22 +27,21 @@ public class KmlParser {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(kmlString)));
 
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            XPath xpath = xPathfactory.newXPath();
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            XPath xpath = xPathFactory.newXPath();
             XPathExpression placemarkExpr = xpath.compile("//Placemark");
+            XPathExpression nameExpr = xpath.compile("./name");
+            XPathExpression descExpr = xpath.compile("./description");
+            XPathExpression coordinatesExpr = xpath.compile("./Point/coordinates");
             NodeList placemarkNodes = (NodeList) placemarkExpr.evaluate(doc, XPathConstants.NODESET);
 
             for (int i = 0; i < placemarkNodes.getLength(); i++) {
                 Node placemarkNode = placemarkNodes.item(i);
                 Map<String, String> placemark = new HashMap<>();
 
-                XPathExpression nameExpr = xpath.compile("./name");
                 placemark.put("name", (String) nameExpr.evaluate(placemarkNode, XPathConstants.STRING));
-
-                XPathExpression descExpr = xpath.compile("./description");
                 placemark.put("description", (String) descExpr.evaluate(placemarkNode, XPathConstants.STRING));
 
-                XPathExpression coordinatesExpr = xpath.compile("./Point/coordinates");
                 String coordinatesStr = (String) coordinatesExpr.evaluate(placemarkNode, XPathConstants.STRING);
                 if (coordinatesStr != null && !coordinatesStr.trim().isEmpty()) {
                     String[] coordinates = coordinatesStr.trim().split(",");
@@ -53,7 +52,8 @@ public class KmlParser {
                 }
                 placemarks.add(placemark);
             }
-        } catch (Exception e) {
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException |
+                 javax.xml.xpath.XPathExpressionException e) {
             throw new IllegalArgumentException("Failed to parse KML string", e);
         }
         return placemarks;
