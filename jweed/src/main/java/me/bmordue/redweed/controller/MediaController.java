@@ -29,7 +29,7 @@ public class MediaController {
     }
 
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
-    public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file, @Part("canonicalUri") String canonicalUri) {
+    public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file, @Part("canonicalUri") @jakarta.validation.constraints.NotBlank String canonicalUri) {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("upload-", ".mp4");
