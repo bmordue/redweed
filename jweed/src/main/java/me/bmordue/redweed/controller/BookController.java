@@ -15,17 +15,31 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Controller for handling book uploads.
+ */
 @Controller("/books")
 public class BookController {
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
     private final BookService bookService;
 
+    /**
+     * Constructor.
+     *
+     * @param bookService the book service
+     */
     @Inject
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
+    /**
+     * Upload an EPUB file.
+     *
+     * @param file the EPUB file
+     * @return the response
+     */
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestEpubResponseDto> upload(CompletedFileUpload file) {
         File tempFile = null;

@@ -16,18 +16,33 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service for reviews.
+ */
 @Singleton
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final RedweedVocab redweedVocab;
 
+    /**
+     * Constructor.
+     *
+     * @param reviewRepository the review repository
+     * @param redweedVocab     the redweed vocabulary
+     */
     @Inject
     public ReviewService(ReviewRepository reviewRepository, RedweedVocab redweedVocab) {
         this.reviewRepository = reviewRepository;
         this.redweedVocab = redweedVocab;
     }
 
+    /**
+     * Ingest an h-review.
+     *
+     * @param html the HTML containing the h-review
+     * @return the response
+     */
     public IngestHReviewResponseDto ingestHReview(String html) {
         List<Map<String, String>> reviews = HReviewParser.parse(html);
         Model model = ModelFactory.createDefaultModel();

@@ -16,6 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
+/**
+ * Controller for handling music uploads.
+ */
 @Controller("/music")
 public class MusicController {
 
@@ -23,11 +26,23 @@ public class MusicController {
 
     private final MusicService musicService;
 
+    /**
+     * Constructor.
+     *
+     * @param musicService the music service
+     */
     @Inject
     public MusicController(MusicService musicService) {
         this.musicService = musicService;
     }
 
+    /**
+     * Upload an MP3 file.
+     *
+     * @param file the MP3 file
+     * @return the response
+     * @throws IOException if an I/O error occurs
+     */
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestMp3ResponseDto> upload(CompletedFileUpload file) throws IOException {
         File tempFile = null;

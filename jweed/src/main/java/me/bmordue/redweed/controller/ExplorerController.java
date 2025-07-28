@@ -9,16 +9,31 @@ import me.bmordue.redweed.model.dto.NodeDTO;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.RDFNode;
 
+/**
+ * Controller for exploring the graph.
+ */
 @Controller("/api/graph")
 public class ExplorerController {
 
     private final Dataset dataset;
 
+    /**
+     * Constructor.
+     *
+     * @param dataset the dataset
+     */
     @Inject
     public ExplorerController(Dataset dataset) {
         this.dataset = dataset;
     }
 
+    /**
+     * Get the graph.
+     *
+     * @param limit the limit
+     * @param offset the offset
+     * @return the graph
+     */
     @Get
     public GraphDTO getGraph(@io.micronaut.http.annotation.QueryValue(defaultValue = "100") int limit, @io.micronaut.http.annotation.QueryValue(defaultValue = "0") int offset) {
         java.util.Map<String, NodeDTO> nodes = new java.util.HashMap<>();
