@@ -35,10 +35,11 @@ public class BookController {
     }
 
     /**
-     * Upload an EPUB file.
+    /**
+     * Uploads and ingests an EPUB file.
      *
-     * @param file the EPUB file
-     * @return the response
+     * @param file The uploaded EPUB file.
+     * @return An {@link HttpResponse} containing the result of the ingestion process, including the URI of the newly created book resource.
      */
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestEpubResponseDto> upload(CompletedFileUpload file) {
