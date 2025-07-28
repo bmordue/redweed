@@ -34,7 +34,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    /**
+
     /**
      * Uploads and ingests an EPUB file.
      *
