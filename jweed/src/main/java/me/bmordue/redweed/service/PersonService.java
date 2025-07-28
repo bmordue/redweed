@@ -10,6 +10,9 @@ import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Service for people.
+ */
 @Singleton
 public class PersonService {
 
@@ -17,11 +20,22 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
+    /**
+     * Constructor.
+     *
+     * @param personRepository the person repository
+     */
     @Inject
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 
+    /**
+     * Ingest a vCard.
+     *
+     * @param vCard the vCard content
+     * @return the response
+     */
     public IngestVCardResponseDto ingestVCard(String vCard) {
         Model model;
         try {

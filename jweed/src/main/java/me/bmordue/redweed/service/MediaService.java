@@ -15,18 +15,34 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service for media.
+ */
 @Singleton
 public class MediaService {
 
     private final RdfRepository rdfRepository;
     private final MediaVocabulary mediaVocabulary;
 
+    /**
+     * Constructor.
+     *
+     * @param rdfRepository   the RDF repository
+     * @param mediaVocabulary the media vocabulary
+     */
     @Inject
     public MediaService(RdfRepository rdfRepository, MediaVocabulary mediaVocabulary) {
         this.rdfRepository = rdfRepository;
         this.mediaVocabulary = mediaVocabulary;
     }
 
+    /**
+     * Ingest an MP4 file.
+     *
+     * @param file the MP4 file
+     * @param canonicalUri canonical URI for the resource, for example in a cloud storage bucket
+     * @return the response
+     */
     public IngestMp4ResponseDto ingestMp4(File file, String canonicalUri) {
         Map<String, Object> metadata = Mp4Parser.parse(file);
         Model model = ModelFactory.createDefaultModel();

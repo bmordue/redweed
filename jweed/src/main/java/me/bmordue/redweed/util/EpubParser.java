@@ -15,12 +15,21 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A parser for EPUB files.
+ */
 public class EpubParser {
 
     private EpubParser() {
         // Private constructor to prevent instantiation
     }
 
+    /**
+     * Parse an EPUB file and return its metadata.
+     *
+     * @param file the EPUB file
+     * @return a map of metadata
+     */
     public static Map<String, String> parse(File file) {
         Map<String, String> metadata = new HashMap<>();
 

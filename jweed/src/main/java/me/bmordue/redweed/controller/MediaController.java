@@ -16,6 +16,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Controller for handling media uploads.
+ */
 @Controller("/media")
 public class MediaController {
     private static final Logger log = LoggerFactory.getLogger(MediaController.class);
@@ -23,11 +26,22 @@ public class MediaController {
 
     private final MediaService mediaService;
 
+    /**
+     * Constructor.
+     *
+     * @param mediaService the media service
+     */
     @Inject
     public MediaController(MediaService mediaService) {
         this.mediaService = mediaService;
     }
 
+    /**
+     * Upload an MP4 file.
+     *
+     * @param file the MP4 file
+     * @return the response
+     */
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
     public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file, @Part("canonicalUri") String canonicalUri) {
         File tempFile = null;

@@ -9,17 +9,30 @@ import org.apache.jena.shared.JenaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A repository for RDF data.
+ */
 @Singleton
 public class RdfRepository {
     private static final Logger log = LoggerFactory.getLogger(RdfRepository.class);
 
     protected final Dataset dataset;
 
+    /**
+     * Constructor.
+     *
+     * @param dataset the dataset
+     */
     @Inject
     public RdfRepository(Dataset dataset) {
         this.dataset = dataset;
     }
 
+    /**
+     * Save a model to the dataset.
+     *
+     * @param model the model to save
+     */
     public void save(Model model) {
         dataset.begin(ReadWrite.WRITE);
         try {

@@ -43,11 +43,8 @@ dependencies {
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
-    // Replace jcodec with JavaCV for better video processing support
-    implementation("org.bytedeco:javacv-platform:1.5.10")
-    // Alternative: If you prefer to keep jcodec, uncomment these lines
-    // implementation("org.jcodec:jcodec:0.2.6")
-    // implementation("org.jcodec:jcodec-javase:0.2.6")
+    implementation 'org.bytedeco:javacv-platform:1.5.10'
+    implementation 'jaxen:jaxen:2.0.0'
 }
 
 

@@ -2,6 +2,7 @@ package me.bmordue.redweed.util;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,18 +10,54 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Mp4Parser {
 
+    public static final String TITLE = "title";
+    public static final String CREATION_DATE = "creationDate";
+    public static final String CREATION_TIME = "creation_time";
     private static final Logger log = LoggerFactory.getLogger(Mp4Parser.class);
+
+    private Mp4Parser() {
+        // hide public constructor
+    }
 
     public static Map<String, Object> parse(File file) {
         Map<String, Object> metadata = new HashMap<>();
-        FFmpegFrameGrabber grabber = null;
-        try {
-            grabber = new FFmpegFrameGrabber(file);
+        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
+            grabber.start();
+            Map<String, String> allMetadata = grabber.getMetadata();
+            String title = allMetadata.get(TITLE);
+            if (title != null) {
+                metadata.put(TITLE, title);
+            }
+            parseCreationTime(metadata, allMetadata.get(CREATION_TIME));
+        } catch (FrameGrabber.Exception e) {
+            throw new RuntimeException("Failed to parse MP4 file", e);
+        }
+        return metadata;
+    }
+
+    private static void parseCreationTime(Map<String, Object> metadata, String creationTime) {
+        if (creationTime != null) {
+            try {
+                Instant instant = Instant.parse(creationTime);
+                metadata.put(CREATION_DATE, instant);
+            } catch (java.time.format.DateTimeParseException e) {
+                log.warn("Failed to parse creation time as ISO 8601: {}", creationTime, e);
+            }
+        }
+    }
+
+    public static Optional<File> thumbnailFromFirstFrame(File file) {
+        Optional<File> thumbnailFile = Optional.empty();
+        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
+
             grabber.start();
 
             // Grab the first frame
@@ -31,28 +68,14 @@ public class Mp4Parser {
                 BufferedImage bufferedImage = converter.convert(frame);
 
                 if (bufferedImage != null) {
-                    File thumbnailFile = File.createTempFile("thumbnail", ".png");
-                    try {
-                        ImageIO.write(bufferedImage, "png", thumbnailFile);
-                        metadata.put("thumbnail", thumbnailFile);
-                    } finally {
-                        thumbnailFile.delete();
-                    }
+                    thumbnailFile = Optional.of(File.createTempFile("thumbnail", ".png"));
+                    ImageIO.write(bufferedImage, "png", thumbnailFile.get());
                 }
                 converter.close();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Failed to parse MP4 file", e);
-        } finally {
-            if (grabber != null) {
-                try {
-                    grabber.stop();
-                    grabber.release();
-                } catch (Exception e) {
-                    log.warn("Error stopping FFmpegFrameGrabber", e);
-                }
-            }
         }
-        return metadata;
+        return thumbnailFile;
     }
 }
