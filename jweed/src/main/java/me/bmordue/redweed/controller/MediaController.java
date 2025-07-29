@@ -4,6 +4,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Part;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import jakarta.inject.Inject;
 import me.bmordue.redweed.model.dto.IngestMp4ResponseDto;
@@ -42,14 +43,14 @@ public class MediaController {
      * @return the response
      */
     @Post(consumes = MediaType.MULTIPART_FORM_DATA)
-    public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file) {
+    public HttpResponse<IngestMp4ResponseDto> upload(CompletedFileUpload file, @Part("canonicalUri") String canonicalUri) {
         File tempFile = null;
         try {
             tempFile = File.createTempFile("upload-", ".mp4");
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(file.getBytes());
             }
-            IngestMp4ResponseDto responseDto = mediaService.ingestMp4(tempFile);
+            IngestMp4ResponseDto responseDto = mediaService.ingestMp4(tempFile, canonicalUri);
             return HttpResponse.created(responseDto);
         } catch (IOException e) {
             log.error("Error processing MP4 file", e);

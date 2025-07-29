@@ -6,6 +6,7 @@ pkgs.mkShellNoCC {
     jdk21_headless
     gemini-cli
     nodejs_24
+    claude-code
   ];
   
   shellHook = ''
@@ -13,6 +14,7 @@ pkgs.mkShellNoCC {
     export DATA_DIR=$PROJECT_ROOT/data
     export MEDIA_DIR=$PROJECT_ROOT/media
     export PATH=$JENA_HOME/bin:$PATH
+    export NODE_ENV=development
     
     # Create isolated directories
     mkdir -p $DATA_DIR/{tdb2,temp} $MEDIA_DIR
