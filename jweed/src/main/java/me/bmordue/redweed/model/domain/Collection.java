@@ -6,7 +6,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 
-public class Collection extends ResourceImpl {
+public final class Collection extends ResourceImpl {
     Collection(final Resource s, final Model m) {
         super(s.asNode(), (ModelCom) m);
     }
@@ -22,6 +22,6 @@ public class Collection extends ResourceImpl {
         if (resource == null) {
             throw new IllegalArgumentException("Resource parameter cannot be null");
         }
-        addProperty(SKOS.member, resource);
+        addProperty(SKOS.MEMBER, resource);
     }
 }

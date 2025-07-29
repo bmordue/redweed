@@ -35,7 +35,7 @@ public class BookController {
     }
 
 
-     /**
+    /**
      * Uploads and ingests an EPUB file.
      *
      * @param file The uploaded EPUB file.
