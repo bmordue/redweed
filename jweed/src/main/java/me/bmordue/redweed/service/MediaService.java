@@ -15,24 +15,45 @@ import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service for media.
+ */
 @Singleton
 public class MediaService {
 
     private final RdfRepository rdfRepository;
     private final MediaVocabulary mediaVocabulary;
 
+    /**
+     * Constructor.
+     *
+     * @param rdfRepository   the RDF repository
+     * @param mediaVocabulary the media vocabulary
+     */
     @Inject
     public MediaService(RdfRepository rdfRepository, MediaVocabulary mediaVocabulary) {
         this.rdfRepository = rdfRepository;
         this.mediaVocabulary = mediaVocabulary;
     }
 
-    public IngestMp4ResponseDto ingestMp4(File file) {
+    /**
+     * Ingest an MP4 file.
+     *
+     * @param file the MP4 file
+     * @param canonicalUri canonical URI for the resource, for example in a cloud storage bucket
+     * @return the response
+     */
+    public IngestMp4ResponseDto ingestMp4(File file, String canonicalUri) {
         Map<String, Object> metadata = Mp4Parser.parse(file);
         Model model = ModelFactory.createDefaultModel();
         String resourceUri = mediaVocabulary.getResourceNamespace() + UUID.randomUUID();
+
         Resource resource = model.createResource(resourceUri)
-                .addProperty(RDF.type, model.createResource(MediaVocabulary.MA_MEDIA_RESOURCE));
+            .addProperty(RDF.type, model.createResource(MediaVocabulary.MA_MEDIA_RESOURCE));
+
+        if (canonicalUri != null && !canonicalUri.isBlank()) {
+            resource.addProperty(model.createProperty(MediaVocabulary.MA_CANONICAL_LOCATION), canonicalUri);
+        }
 
         if (metadata.get("title") != null) {
             resource.addProperty(model.createProperty(MediaVocabulary.MA_TITLE), metadata.get("title").toString());

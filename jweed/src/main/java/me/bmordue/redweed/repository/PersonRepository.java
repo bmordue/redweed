@@ -8,16 +8,30 @@ import org.apache.jena.rdf.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Repository for people.
+ */
 @Singleton
 public class PersonRepository extends RdfRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PersonRepository.class);
 
+    /**
+     * Constructor.
+     *
+     * @param dataset the dataset
+     */
     @Inject
     public PersonRepository(Dataset dataset) {
         super(dataset);
     }
 
+    /**
+     * Find a person by URI.
+     *
+     * @param uri the URI of the person
+     * @return the person, or null if not found
+     */
     public Person findByUri(String uri) {
         // Logic to find a person by ID in the dataset
         dataset.begin(ReadWrite.READ);

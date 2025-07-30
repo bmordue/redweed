@@ -10,8 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A parser for h-reviews.
+ */
 public class HReviewParser {
 
+    /**
+     * Parse a string of HTML for h-reviews.
+     *
+     * @param html the HTML to parse
+     * @return a list of maps, where each map represents a review
+     */
     public static List<Map<String, String>> parse(String html) {
         List<Map<String, String>> reviews = new ArrayList<>();
         Document doc = Jsoup.parse(html);

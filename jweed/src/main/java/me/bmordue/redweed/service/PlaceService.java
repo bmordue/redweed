@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service for places.
+ */
 @Singleton
 public class PlaceService {
 
@@ -29,12 +32,24 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final RedweedVocab redweedVocab;
 
+    /**
+     * Constructor.
+     *
+     * @param placeRepository the place repository
+     * @param redweedVocab    the redweed vocabulary
+     */
     @Inject
     public PlaceService(PlaceRepository placeRepository, RedweedVocab redweedVocab) {
         this.placeRepository = placeRepository;
         this.redweedVocab = redweedVocab;
     }
 
+    /**
+     * Ingest a KML string.
+     *
+     * @param kmlString the KML string
+     * @return the response
+     */
     public IngestKmlResponseDto ingestKml(String kmlString) {
         try {
             List<Map<String, String>> placemarks = KmlParser.parse(kmlString);

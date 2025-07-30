@@ -51,7 +51,7 @@ class MediaServiceTest {
             mocked.when(() -> Mp4Parser.parse(any(File.class))).thenReturn(metadata);
 
             // When
-            mediaService.ingestMp4(file);
+            mediaService.ingestMp4(file, "test://test.mp4");
         }
 
         // Then

@@ -98,6 +98,16 @@ TODO: complete this section
 
 - vCalendar ICS
 
+## Collections
+
+### Vocabulary
+
+- skos: http://www.w3.org/2004/02/skos/core#
+
+### Imports
+
+- Manually created
+
 ## Tasks
 
 ### Vocabulary
