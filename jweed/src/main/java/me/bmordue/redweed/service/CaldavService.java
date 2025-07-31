@@ -40,7 +40,7 @@ public class CaldavService {
         HttpRequest<?> request = HttpRequest.create("PROPFIND", principalUrl.toString())
                 .header("Depth", "0")
                 .header("Content-Type", "application/xml")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+.header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .body(requestBody);
 
         HttpResponse<String> response = httpClient.toBlocking().exchange(request, String.class);
