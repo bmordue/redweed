@@ -104,6 +104,9 @@ public class CaldavService {
     private String extractAddressbookHomeSetUrl(String xmlResponse) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(xmlResponse)));
             NodeList nodeList = doc.getElementsByTagNameNS("urn:ietf:params:xml:ns:carddav", "addressbook-home-set");
