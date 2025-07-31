@@ -45,8 +45,8 @@ This document outlines features for the `redweed` project, tracking implementati
 
 ### 🔄 **Advanced Photo Search**
 **Status:** In Progress
-**Implementation:** Core SPARQL querying capability exists via `ExplorerController` with pagination support. Basic metadata extraction from media files is implemented.
-**Remaining Work:** Specialized photo search endpoints, date range filtering, location-based search, EXIF data querying
+**Implementation:** Core SPARQL querying capability exists via `ExplorerController` with pagination support. While SPARQL provides a foundation for querying RDF data, it does not yet fully enable photo-specific search functionality. Basic metadata extraction from media files is implemented, but additional work is required to leverage SPARQL for advanced photo search features.
+**Remaining Work:** Development of specialized photo search endpoints to handle queries specific to photos, such as filtering by date range, location-based search, and querying EXIF metadata. These features will build on the existing SPARQL querying capabilities.
 **Location:** `jweed/src/main/java/me/bmordue/redweed/controller/ExplorerController.java`
 
 ## Future Development Priorities
