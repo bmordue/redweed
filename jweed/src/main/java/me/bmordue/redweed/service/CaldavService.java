@@ -106,11 +106,14 @@ public class CaldavService {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(xmlResponse)));
-            return doc.getElementsByTagNameNS("urn:ietf:params:xml:ns:carddav", "addressbook-home-set")
-                    .item(0)
-                    .getChildNodes()
-                    .item(0)
-                    .getTextContent();
+            NodeList nodeList = doc.getElementsByTagNameNS("urn:ietf:params:xml:ns:carddav", "addressbook-home-set");
+            if (nodeList.getLength() > 0 && nodeList.item(0) != null) {
+                Element element = (Element) nodeList.item(0);
+                if (element.getChildNodes().getLength() > 0 && element.getChildNodes().item(0) != null) {
+                    return element.getChildNodes().item(0).getTextContent();
+                }
+            }
+            throw new RuntimeException("Addressbook home set URL not found in response");
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse addressbook home set URL from response", e);
         }
