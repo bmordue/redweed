@@ -13,7 +13,8 @@ import org.apache.jena.vocabulary.RDF;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Optional;
+
+import static org.apache.jena.vocabulary.RDF.Property;
 
 /**
  * Converts iCal data to RDF.
@@ -25,7 +26,7 @@ public final class ICalToRdfConverter {
      *
      * @param ics the iCal data
      * @return the RDF model
-     * @throws IOException if the iCal data cannot be read
+     * @throws IOException     if the iCal data cannot be read
      * @throws ParserException if the iCal data cannot be parsed
      */
     public static Model convert(String ics) throws IOException, ParserException {
@@ -34,26 +35,42 @@ public final class ICalToRdfConverter {
         Calendar calendar = builder.build(new StringReader(ics));
 
         for (Component component : calendar.getComponents()) {
-            Resource resource = model.createResource();
-            if (component.getName().equals(Component.VEVENT)) {
-                resource.addProperty(RDF.type, ICalVocabulary.VEVENT);
-            } else if (component.getName().equals(Component.VTODO)) {
-                resource.addProperty(RDF.type, ICalVocabulary.VTODO);
-            } else if (component.getName().equals(Component.VJOURNAL)) {
-                resource.addProperty(RDF.type, ICalVocabulary.VJOURNAL);
+            final Resource resource;
+            net.fortuna.ical4j.model.Property uidProp = component.getProperty(Property.UID);
+            if (uidProp != null && uidProp.getValue() != null) {
+                resource = model.createResource("urn:ical:" + uidProp.getValue());
+            } else {
+                resource = model.createResource();
+            }
+            switch (component.getName()) {
+                case Component.VEVENT:
+                    resource.addProperty(RDF.type, ICalVocabulary.VEVENT);
+                    break;
+                case Component.VTODO:
+                    resource.addProperty(RDF.type, ICalVocabulary.VTODO);
+                    break;
+                case Component.VJOURNAL:
+                    resource.addProperty(RDF.type, ICalVocabulary.VJOURNAL);
+                    break;
             }
 
             for (Property property : component.getProperties()) {
-                if (property.getName().equals(Property.SUMMARY)) {
-                    resource.addProperty(ICalVocabulary.SUMMARY, property.getValue());
-                } else if (property.getName().equals(Property.DTSTART)) {
-                    resource.addProperty(ICalVocabulary.DTSTART, property.getValue());
-                } else if (property.getName().equals(Property.DTEND)) {
-                    resource.addProperty(ICalVocabulary.DTEND, property.getValue());
-                } else if (property.getName().equals(Property.DESCRIPTION)) {
-                    resource.addProperty(ICalVocabulary.DESCRIPTION, property.getValue());
-                } else if (property.getName().equals(Property.LOCATION)) {
-                    resource.addProperty(ICalVocabulary.LOCATION, property.getValue());
+                switch (property.getName()) {
+                    case Property.SUMMARY:
+                        resource.addProperty(ICalVocabulary.SUMMARY, property.getValue());
+                        break;
+                    case Property.DTSTART:
+                        resource.addProperty(ICalVocabulary.DTSTART, property.getValue());
+                        break;
+                    case Property.DTEND:
+                        resource.addProperty(ICalVocabulary.DTEND, property.getValue());
+                        break;
+                    case Property.DESCRIPTION:
+                        resource.addProperty(ICalVocabulary.DESCRIPTION, property.getValue());
+                        break;
+                    case Property.LOCATION:
+                        resource.addProperty(ICalVocabulary.LOCATION, property.getValue());
+                        break;
                 }
             }
         }
