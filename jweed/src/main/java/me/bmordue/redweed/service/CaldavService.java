@@ -1,5 +1,6 @@
 package me.bmordue.redweed.service;
 
+import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.HttpClient;
@@ -37,7 +38,7 @@ public class CaldavService {
                 </d:propfind>
                 """;
 
-        HttpRequest<?> request = HttpRequest.create("PROPFIND", principalUrl.toString())
+        HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, principalUrl.toString(), "PROPFIND")
                 .header("Depth", "0")
                 .header("Content-Type", "application/xml")
 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
@@ -62,7 +63,7 @@ public class CaldavService {
                 </d:propfind>
                 """;
 
-        HttpRequest<?> request = HttpRequest.create("PROPFIND", addressbookHomeSetUrl.toString())
+        HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, addressbookHomeSetUrl.toString(), "PROPFIND")
                 .header("Depth", "1")
                 .header("Content-Type", "application/xml")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
@@ -93,7 +94,7 @@ public class CaldavService {
                 </c:addressbook-multiget>
                 """.formatted(hrefElements.toString());
 
-        HttpRequest<?> request = HttpRequest.create("REPORT", addressbookUrl.toString())
+        HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, addressbookUrl.toString(), "PROPFIND")
                 .header("Content-Type", "application/xml")
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
                 .body(requestBody);
