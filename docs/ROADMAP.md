@@ -151,7 +151,7 @@ This document outlines features for the `redweed` project, tracking implementati
 **Location:** `docs/architecture.md` (120 lines)
 
 ### 📝 **Configuration Guide** 
-**Status:** Partial  
+**Status:** In Progress
 **Current:** Basic configuration mentioned in how-to guides
 **Needed:** Comprehensive guide explaining all configuration options, environment variables, and deployment settings
 **Priority:** Medium
