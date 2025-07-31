@@ -140,7 +140,10 @@ public class CaldavService {
 
                 if (isAddressbook) {
                     String href = responseElement.getElementsByTagNameNS("DAV:", "href").item(0).getTextContent();
-                    String displayName = responseElement.getElementsByTagNameNS("DAV:", "displayname").item(0).getTextContent();
+                    NodeList displayNameNodes = responseElement.getElementsByTagNameNS("DAV:", "displayname");
+                    String displayName = (displayNameNodes.getLength() > 0 && displayNameNodes.item(0) != null)
+                            ? displayNameNodes.item(0).getTextContent()
+                            : null; // or use a default value like "" if preferred
                     addressbooks.add(new Addressbook(URI.create(href), displayName));
                 }
             }
