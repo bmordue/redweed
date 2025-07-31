@@ -17,7 +17,7 @@ public class VCardImportController {
 
     @Post("/vcard")
     public HttpResponse<?> importVCards(@Body VCardImportRequest request) {
-        if (request.addressbookUrl() == null || request.addressbookUrl().isEmpty()) {
+        if (request.addressbookUrl() == null) {
             return HttpResponse.badRequest("addressbookUrl must not be null or empty");
         }
         if (request.username() == null || request.username().isEmpty()) {
