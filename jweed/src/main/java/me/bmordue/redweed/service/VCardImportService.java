@@ -21,8 +21,13 @@ public class VCardImportService {
     public void importVCards(URI addressbookUrl, String username, String password) {
         List<String> vcardStrings = caldavService.getVCards(addressbookUrl, username, password);
         for (String vcardString : vcardStrings) {
-            Model model = VCardToRdfConverter.convert(vcardString);
-            rdfRepository.save(model);
+            try {
+                Model model = VCardToRdfConverter.convert(vcardString);
+                rdfRepository.save(model);
+            } catch (Exception e) {
+                System.err.println("Failed to convert vCard: " + vcardString);
+                e.printStackTrace();
+            }
         }
     }
 }
