@@ -35,7 +35,7 @@ public class EventService {
         Model model;
         try {
             model = ICalToRdfConverter.convert(ics);
-        } catch (Exception e) {
+        } catch (IOException | ParserException e) {
             throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Could not import event");
         }
 
