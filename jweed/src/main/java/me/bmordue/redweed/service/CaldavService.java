@@ -77,15 +77,21 @@ public class CaldavService {
         }
     }
 
-    public List<String> getVCards(URI addressbookUrl, String username, String password) {
+    public List<String> getVCards(URI addressbookUrl, String username, String password, List<String> vCardUrls) {
+        StringBuilder hrefElements = new StringBuilder();
+        for (String vCardUrl : vCardUrls) {
+            hrefElements.append("<d:href>").append(vCardUrl).append("</d:href>");
+        }
+
         String requestBody = """
                 <c:addressbook-multiget xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:carddav">
                   <d:prop>
                     <d:getetag />
                     <c:address-data />
                   </d:prop>
+                  %s
                 </c:addressbook-multiget>
-                """;
+                """.formatted(hrefElements.toString());
 
         HttpRequest<?> request = HttpRequest.create("REPORT", addressbookUrl.toString())
                 .header("Content-Type", "application/xml")
