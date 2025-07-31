@@ -7,6 +7,7 @@ This document outlines features for the `redweed` project, tracking implementati
 - 🔄 **In Progress** - Feature is partially implemented 
 - ❌ **Not Started** - Feature not yet implemented
 - 📝 **Documentation** - Documentation task
+- 🆕 **New Suggestion** - A new feature idea that has not been prioritized
 
 ## Implemented Features
 
