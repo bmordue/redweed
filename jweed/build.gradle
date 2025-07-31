@@ -12,6 +12,7 @@ group = "me.bmordue"
 repositories {
     mavenCentral()
     maven { url = 'https://jitpack.io' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -45,6 +46,7 @@ dependencies {
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
     implementation 'org.bytedeco:javacv-platform:1.5.10'
     implementation 'jaxen:jaxen:2.0.0'
+    implementation 'org.ical4j:ical4j-connector-dav:2.0.0-alpha6'
 }
 
 
