@@ -1,32 +1,186 @@
 # Project Roadmap
 
-This document outlines potential new features for the `redweed` project. These features are not yet prioritized and are intended for future refinement and planning.
+This document outlines features for the `redweed` project, tracking implementation status and future development priorities.
 
-## Proposed Features
+**Legend:**
+- ✅ **Completed** - Feature is implemented and functional
+- 🔄 **In Progress** - Feature is partially implemented 
+- ❌ **Not Started** - Feature not yet implemented
+- 📝 **Documentation** - Documentation task
 
-1.  **Tagging/Categorization of Photos:** Allow users to add tags or categories to photos. This would involve a new API endpoint to add/remove tags from a photo, and the ability to search for photos by tag.
+## Implemented Features
 
-2.  **User Authentication:** Implement user accounts and authentication to restrict access to certain API endpoints. This would likely involve adding a user model to the database and using a library like Buddy for handling authentication tokens.
+### ✅ **VCard Import/Export** 
+**Status:** Completed  
+**Implementation:** Full vCard import functionality with `/api/vcard/import` endpoint, `VCardToRdfConverter` service, and proper response handling via `IngestVCardResponseDto`. Supports text/vcard and application/json content types.
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/VCardToRdfConverter.java`
 
-3.  **Advanced Photo Search:** Extend the photo search capabilities to allow searching by date range, location (if GPS data is available in EXIF), and other metadata fields.
+### ✅ **Integration with a Frontend Application** 
+**Status:** Completed  
+**Implementation:** React-based frontend application with full API integration. Includes file upload forms for books/media/music and data submission forms for events/persons/places/reviews/TTL. Uses PicoCSS and Tailwind for styling.
+**Location:** `frontend/` directory with React app consuming all backend APIs
+**Endpoints:** Integrated with /books, /media, /music, /events, /persons, /places, /reviews, /ttl
 
-4.  **Album Management:** Introduce the concept of photo albums, allowing users to group photos together. This would require new API endpoints for creating, deleting, and managing albums.
+### ✅ **Support for Additional Media Types** 
+**Status:** Completed  
+**Implementation:** Full support for multiple media types with metadata extraction:
+- **MP3/Audio:** `MusicService`, `MusicController`, `Mp3Parser` with ID3v2 tag extraction
+- **MP4/Video:** `MediaService`, `MediaController` with video metadata processing  
+- **EPUB/Books:** `BookService`, `BookController` with EPUB metadata extraction
+**Vocabularies:** Custom RDF vocabularies defined for music (MusicVocabulary) and other media types
 
-5.  **Integration with a Frontend Application:** Develop a simple frontend application (e.g., using React or Vue.js) that consumes the `redweed` API to provide a user-friendly interface for managing photos.
+## Partially Implemented Features
 
-6.  **VCard Import/Export:** Full support for importing and exporting contacts in vCard format. This would involve enhancing the existing vCard functionality to handle a wider range of vCard properties and to support batch import/export operations.
+### 🔄 **Calendar/Event Management** 
+**Status:** In Progress  
+**Implementation:** Core event management with `EventService` and `EventController` for creating/managing calendar events. Support for linking events to people, places, and media through RDF relationships.
+**Remaining Work:** Enhanced querying by date range, improved frontend integration, iCal import/export functionality
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/EventService.java`
 
-7.  **Calendar/Event Management:** Add support for managing calendar events, which can be linked to people, places, and media. This would include API endpoints for creating, updating, and deleting events, as well as for querying events by date range or other criteria.
+### 🔄 **Geolocation and Mapping** 
+**Status:** In Progress  
+**Implementation:** `GoogleMapsController` exists for mapping functionality. GPS metadata extraction likely available through media metadata processing.
+**Remaining Work:** Complete GPS data extraction from photos, map display integration in frontend, enhanced geolocation APIs
+**Location:** `jweed/src/main/java/me/bmordue/redweed/controller/GoogleMapsController.java`
 
-8.  **Geolocation and Mapping:** Extract GPS data from photos and display them on a map. This would involve adding a new API endpoint to retrieve photos with GPS data, enabling a client application to display them on a map (e.g., using Leaflet or OpenLayers).
+### 🔄 **Advanced Photo Search**
+**Status:** In Progress
+**Implementation:** Core SPARQL querying capability exists via `ExplorerController` with pagination support. Basic metadata extraction from media files is implemented.
+**Remaining Work:** Specialized photo search endpoints, date range filtering, location-based search, EXIF data querying
+**Location:** `jweed/src/main/java/me/bmordue/redweed/controller/ExplorerController.java`
 
-9.  **Support for Additional Media Types:** Extend the application to handle videos and audio files, with metadata extraction and search capabilities. This would require adding support for different file types and extending the metadata extraction process to handle video and audio-specific metadata.
+## Future Development Priorities
 
-10. **Linked Data Integration:** Connect to external Linked Data sources like DBpedia or Wikidata to enrich the existing data with additional information. This could involve adding a mechanism to link local resources to external URIs and to fetch and cache data from external sources.
+### ❌ **User Authentication** 
+**Priority:** High  
+**Description:** Implement user accounts and authentication to restrict access to API endpoints. Essential for multi-user deployments and data privacy.
+**Implementation Approach:** Add user model to RDF store, implement JWT or session-based authentication, integrate with existing controllers
+**Dependencies:** User management UI in frontend, security configuration
 
-## Documentation
+### ❌ **Tagging/Categorization of Photos** 
+**Priority:** High  
+**Description:** Allow users to add tags/categories to photos for improved organization and searchability.
+**Implementation Approach:** 
+- Add tagging vocabulary to RDF model (e.g., SKOS concepts)
+- Create tag management API endpoints (POST/DELETE /photos/{id}/tags)
+- Extend photo search to filter by tags
+- Add tagging UI to frontend
+**Dependencies:** Enhanced photo search functionality
 
-*   **Deployment Guide:** A guide that explains how to deploy the application to a production environment.
-*   **Configuration Guide:** A guide that explains all of the available configuration options.
-*   **Troubleshooting Guide:** A guide that provides solutions to common problems.
-*   **Developer Guide:** A guide for developers who want to contribute to the project. This would include information about the development workflow, coding standards, and how to run the tests.
+### ❌ **Album Management** 
+**Priority:** Medium  
+**Description:** Group photos into collections/albums for better organization. Distinct from music albums already supported.
+**Implementation Approach:**
+- Define album vocabulary using FOAF Collections or similar
+- Create album CRUD API endpoints
+- Implement album-photo relationship management
+- Add album management UI to frontend
+**Dependencies:** Photo tagging system for enhanced album features
+
+### ❌ **Linked Data Integration** 
+**Priority:** Medium  
+**Description:** Connect to external Linked Data sources (DBpedia, Wikidata) to enrich local data.
+**Implementation Approach:**
+- Create external URI resolution service
+- Add caching mechanism for external data
+- Implement data enrichment workflows
+- Add configuration for external data sources
+**Dependencies:** Robust caching strategy, network resilience
+
+## Recently Added Features (Not in Original Roadmap)
+
+### ✅ **Review/Rating System**
+**Implementation:** Complete review management with `ReviewService` and `ReviewController` for creating and managing reviews/ratings of places, media, food, etc.
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/ReviewService.java`
+
+### ✅ **Place Management** 
+**Implementation:** Comprehensive place/location management with `PlaceService` and `PlaceController` for geographic entities and business locations.
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/PlaceService.java`
+
+### ✅ **Direct TTL/RDF Import**
+**Implementation:** Direct RDF Turtle format import via `TtlService` and `TtlController` for advanced users and bulk data import.
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/TtlService.java`
+
+### ✅ **Data Explorer** 
+**Implementation:** SPARQL query interface with pagination via `ExplorerController` for advanced data exploration and debugging.
+**Location:** `jweed/src/main/java/me/bmordue/redweed/controller/ExplorerController.java`
+
+## New Feature Suggestions
+
+### 🆕 **Batch Import/Export Operations**
+**Priority:** Medium  
+**Description:** Support bulk operations for importing multiple files or exporting data collections
+**Implementation Approach:** Create batch processing endpoints, progress tracking, queue management
+
+### 🆕 **Advanced Metadata Search**
+**Priority:** Medium  
+**Description:** Enhanced search across all metadata fields with faceted search capabilities  
+**Implementation Approach:** Extend ExplorerController with specialized search endpoints, facet aggregation
+
+### 🆕 **Data Validation and Quality Assurance**
+**Priority:** Medium  
+**Description:** Validate imported data quality, detect duplicates, ensure RDF consistency
+**Implementation Approach:** Create validation service, duplicate detection algorithms, data quality metrics
+
+### 🆕 **Mobile API Endpoints** 
+**Priority:** Low  
+**Description:** Optimize API responses for mobile applications with reduced payloads and offline support
+**Implementation Approach:** Create mobile-specific endpoints, implement caching strategies, add compression
+
+## Documentation Tasks
+
+### ✅ **Developer Guide** 
+**Status:** Completed  
+**Implementation:** Comprehensive tutorials document with real-world examples and entity modeling
+**Location:** `docs/tutorials.md` (193 lines) - covers development concepts and data modeling
+
+### ✅ **API Documentation** 
+**Status:** Completed  
+**Implementation:** Detailed API endpoint documentation with examples and response formats
+**Location:** `docs/API.md` (170 lines) - covers all major endpoints
+
+### ✅ **Getting Started Guide** 
+**Status:** Completed  
+**Implementation:** Complete setup and installation guide for both backend and frontend
+**Location:** `docs/getting-started.md` - covers prerequisites, installation, and running the application
+
+### ✅ **Architecture Guide**
+**Status:** Completed  
+**Implementation:** System architecture documentation
+**Location:** `docs/architecture.md` (120 lines)
+
+### 📝 **Configuration Guide** 
+**Status:** Partial  
+**Current:** Basic configuration mentioned in how-to guides
+**Needed:** Comprehensive guide explaining all configuration options, environment variables, and deployment settings
+**Priority:** Medium
+
+### 📝 **Deployment Guide** 
+**Status:** Missing  
+**Needed:** Production deployment guide covering:
+- Container deployment (Docker/Kubernetes)
+- Database setup and migration
+- Security considerations
+- Performance tuning
+- Backup and recovery procedures
+**Priority:** High
+
+### 📝 **Troubleshooting Guide** 
+**Status:** Missing  
+**Needed:** Common problems and solutions covering:
+- Build and compilation issues
+- Runtime errors and debugging
+- Performance issues
+- Data import/export problems
+- Frontend-backend connectivity issues
+**Priority:** Medium
+
+### 📝 **Data Model Documentation Enhancement**
+**Status:** Needs Update  
+**Current:** Basic data model exists (`docs/data-model.md`)
+**Needed:** Enhanced documentation covering:
+- Recently added vocabularies (Music, Media, Review)
+- Relationship modeling examples
+- Best practices for data organization
+- RDF vocabulary extension guidelines
+**Priority:** Medium
