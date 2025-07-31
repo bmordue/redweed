@@ -3,11 +3,12 @@ package me.bmordue.redweed.service;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Inject;
-import me.bmordue.redweed.exception.ICalParsingException;
-import net.fortuna.ical4j.data.ParserException;
 import me.bmordue.redweed.model.dto.IngestICalResponseDto;
 import me.bmordue.redweed.repository.EventRepository;
+import net.fortuna.ical4j.data.ParserException;
 import org.apache.jena.rdf.model.Model;
+
+import java.io.IOException;
 
 /**
  * Service for events.
