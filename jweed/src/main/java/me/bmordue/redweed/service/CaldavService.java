@@ -159,7 +159,7 @@ public class CaldavService {
             throw new IllegalArgumentException("URL must start with http:// or https://");
         }
     }
-}
+
 
     public String findAddressbookHomeSetUrl(URI principalUrl, String username, String password) {
         String requestBody = """
