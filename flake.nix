@@ -3,17 +3,20 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs }:
-    let
-      pkgs = nixpkgs.legacyPackages."x86_64-linux";
-    in
-    {
-      devShell."x86_64-linux" = pkgs.mkShellNoCC {
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        devShells.default = pkgs.mkShellNoCC {
         buildInputs = with pkgs; [
           # from root shell.nix
           jdk21_headless
+          jena
           gemini-cli
           nodejs_24
 
@@ -30,6 +33,7 @@
           export PROJECT_ROOT=$(pwd)
           export DATA_DIR=$PROJECT_ROOT/data
           export MEDIA_DIR=$PROJECT_ROOT/media
+          export JENA_HOME=${pkgs.jena}
           export PATH=$JENA_HOME/bin:$PATH
 
           # Create isolated directories
@@ -59,7 +63,7 @@ EOF
           echo "Node version: $(node --version)"
 
           # Environment variables from jweed/shell.nix
-          export JAVA_HOME="${pkgs.jdk21}"
+          export JAVA_HOME="${pkgs.jdk21_headless}"
           export PATH="$JAVA_HOME/bin:$PATH"
           export GRADLE_USER_HOME="$HOME/.gradle"
 
@@ -81,5 +85,5 @@ EOF
           echo "Backup created: $BACKUP_DIR"
         '';
       };
-    };
+    });
 }
