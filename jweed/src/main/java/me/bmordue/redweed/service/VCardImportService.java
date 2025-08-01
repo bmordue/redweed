@@ -3,6 +3,7 @@ package me.bmordue.redweed.service;
 import jakarta.inject.Singleton;
 import me.bmordue.redweed.repository.RdfRepository;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 
 import java.net.URI;
 import java.util.List;
@@ -19,15 +20,12 @@ public class VCardImportService {
     }
 
     public void importVCards(URI addressbookUrl, String username, String password) {
-        List<String> vcardStrings = caldavService.getVCards(addressbookUrl, username, password);
+        List<String> empty = List.of();
+        List<String> vcardStrings = caldavService.getVCards(addressbookUrl, username, password, empty);
+        Model combinedModel = ModelFactory.createDefaultModel();
         for (String vcardString : vcardStrings) {
-            try {
-                Model model = VCardToRdfConverter.convert(vcardString);
-                rdfRepository.save(model);
-            } catch (Exception e) {
-                System.err.println("Failed to convert vCard: " + vcardString);
-                e.printStackTrace();
-            }
+            combinedModel.add(VCardToRdfConverter.convert(vcardString));
         }
+        rdfRepository.save(combinedModel);
     }
 }

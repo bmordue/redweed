@@ -41,7 +41,7 @@ public class CaldavService {
         HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, principalUrl.toString(), "PROPFIND")
                 .header("Depth", "0")
                 .header("Content-Type", "application/xml")
-.header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .body(requestBody);
 
         HttpResponse<String> response = httpClient.toBlocking().exchange(request, String.class);
@@ -114,6 +114,10 @@ public class CaldavService {
             factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
             factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            factory.setXIncludeAware(false);
+            factory.setExpandEntityReferences(false);
+            factory.setNamespaceAware(true);
+
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(xmlResponse)));
             NodeList nodeList = doc.getElementsByTagNameNS("urn:ietf:params:xml:ns:carddav", "addressbook-home-set");
@@ -123,8 +127,8 @@ public class CaldavService {
                     return element.getChildNodes().item(0).getTextContent();
                 }
             }
-            throw new RuntimeException("Addressbook home set URL not found in response");
-        } catch (Exception e) {
+            throw new IllegalStateException("Addressbook home set URL not found in response");
+        } catch (javax.xml.parsers.ParserConfigurationException | org.xml.sax.SAXException | java.io.IOException e) {
             throw new RuntimeException("Failed to parse addressbook home set URL from response", e);
         }
     }
