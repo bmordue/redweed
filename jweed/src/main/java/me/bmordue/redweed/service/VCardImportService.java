@@ -178,4 +178,15 @@ public class VCardImportService {
                     "Failed to list addressbooks: " + e.getMessage());
         }
     }
+
+//     public void importVCards(URI addressbookUrl, String username, String password) {
+//         List<String> empty = List.of();
+//         List<String> vcardStrings = caldavService.getVCards(addressbookUrl, username, password, empty);
+//         Model combinedModel = ModelFactory.createDefaultModel();
+//         for (String vcardString : vcardStrings) {
+//             combinedModel.add(VCardToRdfConverter.convert(vcardString));
+//         }
+//         rdfRepository.save(combinedModel);
+//     }
+
 }
