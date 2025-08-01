@@ -1,7 +1,5 @@
 package me.bmordue.redweed.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -9,6 +7,8 @@ import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import jakarta.inject.Singleton;
 import me.bmordue.redweed.model.Addressbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -32,6 +31,12 @@ public class CaldavService {
 
     private static final Logger log = LoggerFactory.getLogger(CaldavService.class);
 
+    private final HttpClient httpClient;
+
+    public CaldavService(@Client HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
     /**
      * Discovers addressbooks available on the CalDAV server.
      * This is a simplified implementation that returns mock data for testing.
@@ -43,17 +48,17 @@ public class CaldavService {
      */
     public List<Addressbook> discoverAddressbooks(String caldavUrl, String username, String password) {
         log.info("Discovering addressbooks from {}", caldavUrl);
-        
+
         validateCredentials(username, password);
         validateUrl(caldavUrl);
-        
+
         // For testing purposes, return mock addressbooks
         List<Addressbook> addressbooks = new ArrayList<>();
-        addressbooks.add(new Addressbook("Personal", caldavUrl + "/addressbooks/personal/", 
+        addressbooks.add(new Addressbook("Personal", caldavUrl + "/addressbooks/personal/",
                 "Personal contacts", "Personal Addressbook"));
-        addressbooks.add(new Addressbook("Work", caldavUrl + "/addressbooks/work/", 
+        addressbooks.add(new Addressbook("Work", caldavUrl + "/addressbooks/work/",
                 "Work contacts", "Work Addressbook"));
-        
+
         return addressbooks;
     }
 
@@ -68,20 +73,20 @@ public class CaldavService {
      */
     public List<String> fetchVCards(Addressbook addressbook, String username, String password) {
         log.info("Fetching vCards from addressbook: {}", addressbook != null ? addressbook.getName() : "null");
-        
+
         validateCredentials(username, password);
-        
+
         if (addressbook == null) {
             throw new IllegalArgumentException("Addressbook cannot be null");
         }
-        
+
         if (addressbook.getUrl() == null) {
             throw new IllegalArgumentException("Addressbook URL cannot be null");
         }
-        
+
         // For testing purposes, return mock vCard data
         List<String> vcards = new ArrayList<>();
-        
+
         if ("Personal".equals(addressbook.getName())) {
             vcards.add("""
                     BEGIN:VCARD
@@ -113,7 +118,7 @@ public class CaldavService {
                     END:VCARD
                     """);
         }
-        
+
         return vcards;
     }
 
