@@ -1,8 +1,11 @@
 package me.bmordue.redweed.service;
 
+import io.micronaut.http.client.HttpClient;
 import me.bmordue.redweed.model.Addressbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
@@ -13,11 +16,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CaldavServiceTest {
 
+    @Mock
+    private HttpClient httpClient;
+
     private CaldavService caldavService;
 
     @BeforeEach
     void setUp() {
-        caldavService = new CaldavService();
+        MockitoAnnotations.openMocks(this);
+        caldavService = new CaldavService(httpClient);
     }
 
     @Test

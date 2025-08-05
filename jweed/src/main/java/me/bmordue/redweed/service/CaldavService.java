@@ -203,7 +203,7 @@ public class CaldavService {
         HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, addressbookHomeSetUrl.toString(), "PROPFIND")
                 .header("Depth", "1")
                 .header("Content-Type", "application/xml")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .body(requestBody);
 
         HttpResponse<String> response = httpClient.toBlocking().exchange(request, String.class);
@@ -233,7 +233,7 @@ public class CaldavService {
 
         HttpRequest<?> request = HttpRequest.create(HttpMethod.CUSTOM, addressbookUrl.toString(), "PROPFIND")
                 .header("Content-Type", "application/xml")
-                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()))
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                 .body(requestBody);
 
         HttpResponse<String> response = httpClient.toBlocking().exchange(request, String.class);
@@ -295,7 +295,7 @@ public class CaldavService {
                     String displayName = (displayNameNodes.getLength() > 0 && displayNameNodes.item(0) != null)
                             ? displayNameNodes.item(0).getTextContent()
                             : null; // or use a default value like "" if preferred
-                    addressbooks.add(new Addressbook(URI.create(href), displayName));
+                    addressbooks.add(new Addressbook(displayName != null ? displayName : href, href));
                 }
             }
         } catch (Exception e) {
