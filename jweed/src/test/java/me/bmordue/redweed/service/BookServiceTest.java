@@ -58,7 +58,7 @@ class BookServiceTest {
         List<Resource> bookResources = capturedModel.listSubjects().toList();
         assertEquals(1, bookResources.size(), "Model should contain exactly one book resource");
 
-        Resource bookResource = bookResources.getFirst();
+        Resource bookResource = bookResources.get(0);
 
         // Verify the book resource URI starts with the expected namespace
         assertTrue(bookResource.getURI().startsWith("http://example.com/books/"),
