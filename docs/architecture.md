@@ -20,6 +20,7 @@ The application is composed of the following key components:
 *   **Web Server:** The web server is implemented using Jetty. It exposes a JSON API for interacting with the application.
 *   **RDF Database:** The RDF database is implemented using Jena TDB2. It stores all of the application's data.
 *   **vCard Parser:** The vCard parser is responsible for parsing vCard files and converting them to RDF.
+*   **iCal Parser:** The iCal parser processes RFC 5545 compliant iCalendar files, converting events, tasks, and journal entries to RDF using appropriate vocabularies.
 *   **Photo Processor:** The photo processor is responsible for processing photo uploads, extracting EXIF metadata, and storing it as RDF.
 *   **Seed Scripts:** The seed scripts are used to populate the database with sample data.
 
@@ -42,10 +43,11 @@ graph TD
     subgraph "Application Logic"
         E[vCard Parser]
         F[Photo Processor]
+        G[iCal Parser]
     end
 
     subgraph "Database (Jena TDB2)"
-        G[RDF Store]
+        H[RDF Store]
     end
 
     A --> C
@@ -53,9 +55,11 @@ graph TD
     C --> D
     C --> E
     C --> F
-    D --> G
-    E --> G
-    F --> G
+    C --> G
+    D --> H
+    E --> H
+    F --> H
+    G --> H
 ```
 
 ## Planned Improvements
@@ -85,20 +89,22 @@ graph TD
         F[Places Endpoint]
         G[vCard Endpoint]
         H[Photo Endpoint]
+        I[iCal Endpoint]
     end
 
     subgraph "Application Logic"
-        I[Import Parser A]
-        J[Import Parser B...]
+        J[Import Parser A]
+        K[Import Parser B...]
+        L[iCal Parser]
     end
 
     subgraph "Data Access Layer"
-        K[SPARQL Queries]
-        L[Database Connection]
+        M[SPARQL Queries]
+        N[Database Connection]
     end
 
     subgraph "Database (Jena TDB2)"
-        M[RDF Store]
+        O[RDF Store]
     end
 
     A --> C
@@ -108,13 +114,16 @@ graph TD
     C --> F
     C --> G
     C --> H
-    D --> K
-    E --> K
-    F --> K
-    G --> I
-    H --> J
-    G --> L
-    H --> L
-    K --> L
-    L --> M
+    C --> I
+    D --> M
+    E --> M
+    F --> M
+    G --> J
+    H --> K
+    I --> L
+    G --> N
+    H --> N
+    I --> N
+    M --> N
+    N --> O
 ```

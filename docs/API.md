@@ -168,3 +168,103 @@ This document provides a detailed description of the Redweed API endpoints.
           ]
         }
         ```
+
+## iCal Import
+
+### POST /api/ical/import
+
+*   **Description:** Imports iCalendar data (events, tasks, journal entries) into the RDF store.
+*   **Consumes:** `text/calendar`, `application/json`
+*   **Parameters:**
+    *   `body`: The iCalendar data as a string (RFC 5545 format).
+*   **Responses:**
+    *   `201 Created`: iCalendar data imported successfully.
+        ```json
+        {
+          "status": "success",
+          "imported": {
+            "events": 5,
+            "tasks": 3,
+            "journals": 2
+          },
+          "calendar-uri": "redweed:calendar/abc123",
+          "message": "iCalendar data imported successfully"
+        }
+        ```
+    *   `400 Bad Request`: Invalid iCalendar data.
+        ```json
+        {
+          "error": "Invalid iCalendar format",
+          "details": "Missing required PRODID property"
+        }
+        ```
+    *   `422 Unprocessable Entity`: Some components could not be processed.
+        ```json
+        {
+          "status": "partial_success",
+          "imported": {
+            "events": 3,
+            "tasks": 1,
+            "journals": 0
+          },
+          "warnings": [
+            "Invalid timezone in event 'Meeting with John'",
+            "Missing summary in task component"
+          ],
+          "calendar-uri": "redweed:calendar/abc123"
+        }
+        ```
+
+### POST /api/ical/import/file
+
+*   **Description:** Uploads and imports an iCalendar file.
+*   **Consumes:** `multipart/form-data`
+*   **Parameters:**
+    *   `file`: The .ics file to upload and import.
+    *   `calendar-name` (optional): Name for the imported calendar.
+*   **Responses:**
+    *   `201 Created`: iCalendar file imported successfully.
+        ```json
+        {
+          "status": "success",
+          "filename": "mycalendar.ics",
+          "imported": {
+            "events": 12,
+            "tasks": 5,
+            "journals": 1
+          },
+          "calendar-uri": "redweed:calendar/mycalendar"
+        }
+        ```
+    *   `415 Unsupported Media Type`: Invalid file format.
+        ```json
+        {
+          "error": "Unsupported file type. Only .ics files are supported."
+        }
+        ```
+
+### GET /api/ical/export
+
+*   **Description:** Exports calendar data in iCalendar format.
+*   **Parameters:**
+    *   `start_date` (query, optional): Start date for export range (YYYY-MM-DD).
+    *   `end_date` (query, optional): End date for export range (YYYY-MM-DD).
+    *   `calendar` (query, optional): Specific calendar URI to export.
+*   **Produces:** `text/calendar`
+*   **Responses:**
+    *   `200 OK`: iCalendar data exported successfully.
+        ```
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//Redweed//Redweed Calendar Export//EN
+        CALSCALE:GREGORIAN
+        BEGIN:VEVENT
+        UID:event123@redweed.local
+        DTSTART:20240315T100000Z
+        DTEND:20240315T110000Z
+        SUMMARY:Project Meeting
+        DESCRIPTION:Weekly project status meeting
+        LOCATION:Conference Room A
+        END:VEVENT
+        END:VCALENDAR
+        ```

@@ -1,0 +1,50 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp//Recurring Events//EN
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:20240310T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:20241103T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:weekly-standup@example.com
+DTSTART;TZID=America/New_York:20240315T090000
+DTEND;TZID=America/New_York:20240315T093000
+SUMMARY:Weekly Team Standup
+DESCRIPTION:Regular team check-in to discuss progress, blockers, and upcoming work. Each team member shares updates on their current tasks.
+LOCATION:Main Conference Room
+ORGANIZER:CN=Team Lead:MAILTO:lead@example.com
+ATTENDEE:CN=Developer 1:MAILTO:dev1@example.com
+ATTENDEE:CN=Developer 2:MAILTO:dev2@example.com
+ATTENDEE:CN=Designer:MAILTO:designer@example.com
+RRULE:FREQ=WEEKLY;BYDAY=FR;COUNT=12
+CATEGORIES:work,meetings,standup
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:monthly-review@example.com
+DTSTART;TZID=America/New_York:20240329T140000
+DTEND;TZID=America/New_York:20240329T160000
+SUMMARY:Monthly Project Review
+DESCRIPTION:Comprehensive review of project metrics, deliverables, and strategic planning for the next month. Includes stakeholder updates and resource planning.
+LOCATION:Executive Conference Room
+ORGANIZER:CN=Project Manager:MAILTO:pm@example.com
+RRULE:FREQ=MONTHLY;BYMONTHDAY=29;COUNT=6
+CATEGORIES:work,review,planning
+PRIORITY:1
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

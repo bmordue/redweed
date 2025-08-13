@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp//Example Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:basic-event-001@example.com
+DTSTART:20240315T100000Z
+DTEND:20240315T110000Z
+SUMMARY:Project Planning Meeting
+DESCRIPTION:Weekly project planning session to review progress and set priorities for the upcoming week.
+LOCATION:Conference Room A, Building 1
+ORGANIZER:CN=Alice Smith:MAILTO:alice@example.com
+ATTENDEE;CN=Bob Johnson:MAILTO:bob@example.com
+ATTENDEE;CN=Carol Davis:MAILTO:carol@example.com
+CATEGORIES:work,meetings,planning
+PRIORITY:5
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR

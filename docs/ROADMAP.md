@@ -32,11 +32,34 @@ This document outlines features for the `redweed` project, tracking implementati
 
 ## Partially Implemented Features
 
-### 🔄 **Calendar/Event Management** 
-**Status:** In Progress  
-**Implementation:** Core event management with `EventService` and `EventController` for creating/managing calendar events. Support for linking events to people, places, and media through RDF relationships.
-**Remaining Work:** Enhanced querying by date range, improved frontend integration, iCal import/export functionality
-**Location:** `jweed/src/main/java/me/bmordue/redweed/service/EventService.java`
+### 🔄 **Calendar/Event Management (iCal Import/Export)** 
+**Status:** Planning Complete - Ready for Implementation  
+**Implementation:** Core event management with `EventService` and `EventController` for creating/managing calendar events. Support for linking events to people, places, and media through RDF relationships. Comprehensive planning documentation completed with vocabulary mappings, API design, and implementation guidance.
+
+**Completed Planning:**
+- ✅ Data model vocabulary mappings (Event Ontology, W3C Time, SIOC)
+- ✅ API endpoint specifications (`/api/ical/import`, `/api/ical/export`) 
+- ✅ Tutorial examples with real-world calendar scenarios
+- ✅ Architecture integration with iCal parser component
+- ✅ Implementation guidance and testing strategy
+- ✅ Error handling and performance considerations
+
+**Ready for Implementation:**
+- **Phase 1**: Core iCal parsing with ical4j library integration
+- **Phase 2**: VEVENT (calendar events) import with basic properties
+- **Phase 3**: VTODO (tasks) and VJOURNAL (journal entries) support
+- **Phase 4**: Recurrence rules and timezone handling
+- **Phase 5**: Export functionality and bidirectional sync
+- **Phase 6**: Advanced features (attendees, categories, attachments)
+
+**Implementation Estimates:**
+- Phase 1-2: 2-3 weeks (basic events import)
+- Phase 3: 1 week (tasks and journals) 
+- Phase 4: 2 weeks (recurrence and timezones)
+- Phase 5: 1-2 weeks (export functionality)
+- Phase 6: 1 week (advanced features)
+
+**Location:** `jweed/src/main/java/me/bmordue/redweed/service/ICalToRdfConverter.java` (placeholder exists)
 
 ### 🔄 **Geolocation and Mapping** 
 **Status:** In Progress  
