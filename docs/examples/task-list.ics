@@ -1,0 +1,31 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp//Task Manager//EN
+CALSCALE:GREGORIAN
+BEGIN:VTODO
+UID:task-001@example.com
+DTSTART:20240315T090000Z
+DUE:20240320T170000Z
+SUMMARY:Prepare quarterly report
+DESCRIPTION:Compile financial data and create presentation for Q1 results. Include charts and analysis of key metrics.
+PRIORITY:1
+STATUS:IN-PROCESS
+PERCENT-COMPLETE:35
+CATEGORIES:work,reports,finance
+ORGANIZER:CN=David Wilson:MAILTO:david@example.com
+LOCATION:Office - Finance Department
+RELATED-TO:milestone-q1-2024@example.com
+END:VTODO
+BEGIN:VTODO
+UID:task-002@example.com
+DTSTART:20240316T100000Z
+DUE:20240318T120000Z
+SUMMARY:Review design mockups
+DESCRIPTION:Evaluate new website design proposals and provide feedback to the design team.
+PRIORITY:3
+STATUS:NEEDS-ACTION
+PERCENT-COMPLETE:0
+CATEGORIES:work,design,review
+ORGANIZER:CN=Emma Taylor:MAILTO:emma@example.com
+END:VTODO
+END:VCALENDAR

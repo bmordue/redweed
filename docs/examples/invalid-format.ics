@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Test Corp//Invalid Calendar//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:invalid-event-001@example.com
+DTSTART:not-a-valid-date
+DTEND:20240315T110000Z
+SUMMARY:Event with invalid start date
+DESCRIPTION:This event has an invalid DTSTART property to test error handling.
+END:VEVENT
+BEGIN:VEVENT
+UID:missing-required-props@example.com
+DTSTART:20240315T100000Z
+DESCRIPTION:This event is missing the required SUMMARY property.
+END:VEVENT
+BEGIN:VTODO
+UID:invalid-priority@example.com
+SUMMARY:Task with invalid priority
+PRIORITY:invalid-priority-value
+STATUS:UNKNOWN-STATUS
+END:VTODO
+BEGIN:VJOURNAL
+UID:incomplete-journal@example.com
+DESCRIPTION:Journal entry missing required properties like DTSTART.
+END:VJOURNAL
+END:VCALENDAR

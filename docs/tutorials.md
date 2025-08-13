@@ -192,3 +192,100 @@ David wants to learn guitar and decides to take online lessons. He researches di
 
 **Business-to-Transaction:**
 - Music store sells guitar to David
+
+## Managing a busy week with calendar integration
+
+Emma is a freelance designer who uses various calendar applications for different clients. She has a Google Calendar for personal events, Outlook for her main client, and Apple Calendar for another project. She wants to consolidate her scheduling information while maintaining the ability to export updated schedules back to her tools.
+
+On Monday, Emma imports her work calendar containing client meetings, project deadlines, and personal appointments. Tuesday morning, she adds a new project milestone with specific tasks and deliverables. Throughout the week, she logs daily journal entries about her progress and challenges. By Friday, she exports an updated calendar to share with her project manager.
+
+### Entities
+
+**People:**
+- Emma (person/freelancer)
+- Various clients (people)
+- Project manager (person)
+
+**Calendar Components:**
+- Work calendar (calendar collection)
+- Client meetings (events)
+- Project deadlines (events with tasks)
+- Personal appointments (events)
+- Daily standup (recurring event)
+- Project milestone (event with subtasks)
+
+**Tasks:**
+- Design mockups (task)
+- Client presentation (task)
+- Website review (task)
+- Invoice preparation (task)
+
+**Journal Entries:**
+- Daily work log (journal)
+- Challenge documentation (journal)
+- Progress updates (journal)
+
+**Digital Tools:**
+- Google Calendar (external service)
+- Outlook Calendar (external service)
+- Apple Calendar (external service)
+- Project management system (external service)
+
+### Relationships
+
+**Person-to-Calendar:**
+- Emma owns and manages multiple calendars
+- Clients have access to shared project calendars
+
+**Calendar-to-Events:**
+- Work calendar contains client meetings
+- Project calendar contains milestones and deadlines
+- Personal calendar contains appointments
+
+**Events-to-Tasks:**
+- Project milestone contains multiple subtasks
+- Client meeting has preparation tasks
+- Deadline events link to deliverable tasks
+
+**Events-to-People:**
+- Meetings have organizers and attendees
+- Tasks have assignees and reviewers
+- Appointments involve specific participants
+
+**Events-to-Places:**
+- Client meetings occur at office locations
+- Remote meetings specify video conference platforms
+- Personal appointments have location details
+
+**Tasks-to-Journal:**
+- Daily progress updates reference specific tasks
+- Challenge logs relate to problematic tasks
+- Completion notes document task outcomes
+
+**Calendar-to-External-Systems:**
+- Export functionality maintains sync with Google Calendar
+- Import capabilities pull from Outlook
+- Project management integration for task tracking
+
+### Data Flow Examples
+
+**Import Process:**
+1. Emma uploads her work.ics file from Outlook
+2. System extracts VEVENT components for meetings
+3. VTODO components become project tasks
+4. Recurring meetings create multiple event instances
+5. Attendee information links to existing person records
+
+**Daily Workflow:**
+1. Emma logs morning journal entry about daily goals
+2. Adds specific tasks for client project
+3. Updates progress on existing milestone tasks
+4. Links journal entries to completed tasks
+5. Schedules follow-up meetings based on progress
+
+**Export and Sharing:**
+1. Emma queries events for current week
+2. System generates RFC 5545 compliant iCalendar data
+3. Includes only work-related events for client sharing
+4. Maintains privacy for personal appointments
+5. Exports updated task statuses to project management tool

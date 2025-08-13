@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp//Personal Journal//EN
+CALSCALE:GREGORIAN
+BEGIN:VJOURNAL
+UID:journal-001@example.com
+DTSTART:20240315T180000Z
+SUMMARY:Reflections on project progress
+DESCRIPTION:Today was a productive day. The team meeting went well and we made significant progress on the Q1 planning. Alice provided great insights on the resource allocation challenges we've been facing.\n\nI'm feeling more confident about hitting our deadlines, especially with the new workflow process we discussed. The design review with Emma's team also went smoothly - their mockups look promising.\n\nTomorrow I need to focus on the quarterly report and make sure David has all the data he needs. Also should follow up with Carol about the budget approvals.
+CATEGORIES:work,personal,reflection
+RELATED-TO:basic-event-001@example.com
+CONTACT:alice@example.com
+END:VJOURNAL
+BEGIN:VJOURNAL
+UID:journal-002@example.com
+DTSTART:20240316T200000Z
+SUMMARY:Weekend planning thoughts
+DESCRIPTION:Thinking about the upcoming weekend. Want to spend some quality time with family after this busy week at work. Maybe a trip to the local park or museum would be nice.\n\nAlso need to catch up on some reading - the book on project management that Bob recommended looks interesting. Should help with the challenges we're facing at work.
+CATEGORIES:personal,family,planning
+END:VJOURNAL
+END:VCALENDAR
