@@ -67,7 +67,7 @@ public class ICalImportController {
             return HttpResponse.created(response);
             
         } catch (IOException e) {
-            return HttpResponse.serverError();
+            return HttpResponse.serverError(new ErrorResponse("File processing error", e.getMessage()));
         }
     }
 }
