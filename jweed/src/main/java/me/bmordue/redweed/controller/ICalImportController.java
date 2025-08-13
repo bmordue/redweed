@@ -7,6 +7,8 @@ import io.micronaut.http.multipart.CompletedFileUpload;
 import jakarta.inject.Inject;
 import me.bmordue.redweed.model.dto.IngestICalResponseDto;
 import me.bmordue.redweed.service.ICalImportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +19,8 @@ import java.util.List;
  */
 @Controller("/api/ical/import")
 public class ICalImportController {
+
+    private static final Logger log = LoggerFactory.getLogger(ICalImportController.class);
 
     private final ICalImportService iCalImportService;
 
@@ -67,7 +71,8 @@ public class ICalImportController {
             return HttpResponse.created(response);
             
         } catch (IOException e) {
-            return HttpResponse.serverError(new ErrorResponse("File processing error", e.getMessage()));
+            log.error("Error processing iCal file", e);
+            return HttpResponse.serverError();
         }
     }
 }

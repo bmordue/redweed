@@ -10,10 +10,12 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.DC;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -119,46 +121,16 @@ public final class ICalToRdfConverter {
     private static void processDateTimes(Model model, Resource event, VEvent vEvent) {
         DtStart dtStart = vEvent.getStartDate();
         if (dtStart != null && dtStart.getDate() != null) {
-            String startTime = dtStart.getDate().toString();
+            String startTime = dtStart.getDate().toInstant().toString();
             event.addProperty(model.createProperty(TIME_NS + "hasBeginning"), startTime);
             event.addProperty(model.createProperty(ICAL_NS + "dtstart"), startTime);
         }
 
         DtEnd dtEnd = vEvent.getEndDate();
         if (dtEnd != null && dtEnd.getDate() != null) {
-            String startTime = DateTimeFormatter.ISO_INSTANT.format(
-                    Instant.ofEpochMilli(dtStart.getDate().getTime()));
-            event.addProperty(model.createProperty(TIME_NS + "hasBeginning"), startTime);
-            event.addProperty(model.createProperty(ICAL_NS + "dtstart"), startTime);
-        }
-
-        DtEnd dtEnd = vEvent.getEndDate();
-        if (dtEnd != null && dtEnd.getDate() != null) {
-            String endTime = DateTimeFormatter.ISO_INSTANT.format(
-                    Instant.ofEpochMilli(dtEnd.getDate().getTime()));
+            String endTime = dtEnd.getDate().toInstant().toString();
             event.addProperty(model.createProperty(TIME_NS + "hasEnd"), endTime);
-            String startTime = null;
-            java.util.Date startDate = dtStart.getDate();
-            if (startDate != null) {
-                startTime = startDate.toInstant().toString();
-            }
-            if (startTime != null) {
-                event.addProperty(model.createProperty(TIME_NS + "hasBeginning"), startTime);
-                event.addProperty(model.createProperty(ICAL_NS + "dtstart"), startTime);
-            }
-        }
-
-        DtEnd dtEnd = vEvent.getEndDate();
-        if (dtEnd != null && dtEnd.getDate() != null) {
-            String endTime = null;
-            java.util.Date endDate = dtEnd.getDate();
-            if (endDate != null) {
-                endTime = endDate.toInstant().toString();
-            }
-            if (endTime != null) {
-                event.addProperty(model.createProperty(TIME_NS + "hasEnd"), endTime);
-                event.addProperty(model.createProperty(ICAL_NS + "dtend"), endTime);
-            }
+            event.addProperty(model.createProperty(ICAL_NS + "dtend"), endTime);
         }
     }
 
