@@ -137,7 +137,28 @@ public final class ICalToRdfConverter {
             String endTime = DateTimeFormatter.ISO_INSTANT.format(
                     Instant.ofEpochMilli(dtEnd.getDate().getTime()));
             event.addProperty(model.createProperty(TIME_NS + "hasEnd"), endTime);
-            event.addProperty(model.createProperty(ICAL_NS + "dtend"), endTime);
+            String startTime = null;
+            java.util.Date startDate = dtStart.getDate();
+            if (startDate != null) {
+                startTime = startDate.toInstant().toString();
+            }
+            if (startTime != null) {
+                event.addProperty(model.createProperty(TIME_NS + "hasBeginning"), startTime);
+                event.addProperty(model.createProperty(ICAL_NS + "dtstart"), startTime);
+            }
+        }
+
+        DtEnd dtEnd = vEvent.getEndDate();
+        if (dtEnd != null && dtEnd.getDate() != null) {
+            String endTime = null;
+            java.util.Date endDate = dtEnd.getDate();
+            if (endDate != null) {
+                endTime = endDate.toInstant().toString();
+            }
+            if (endTime != null) {
+                event.addProperty(model.createProperty(TIME_NS + "hasEnd"), endTime);
+                event.addProperty(model.createProperty(ICAL_NS + "dtend"), endTime);
+            }
         }
     }
 
