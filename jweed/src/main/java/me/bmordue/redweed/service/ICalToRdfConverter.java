@@ -71,7 +71,7 @@ public final class ICalToRdfConverter {
         Resource event = model.createResource(eventUri);
         
         // Add type as Event
-        event.addProperty(model.createProperty(EVENT_NS + "Event"), "true");
+        event.addProperty(RDF.type, model.createResource(EVENT_NS + "Event"));
         
         // Process basic properties
         processSummary(model, event, vEvent);
