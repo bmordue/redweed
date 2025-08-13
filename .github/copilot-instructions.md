@@ -220,3 +220,39 @@ Always reference these instructions first and fallback to search or bash command
 4. Make incremental changes
 5. Run validation commands before committing
 6. Test actual user scenarios, not just build success
+
+## Document-Driven Development
+
+### Planning and Decision Making
+Following Amazon's document-driven culture, use structured documents for planning and implementation:
+
+#### Strategic Planning
+- **Major Features/Changes:** Start with [6-pager template](../docs/templates/6-pager.md) for comprehensive analysis
+- **Small Improvements:** Use [1-pager template](../docs/templates/1-pager.md) for quick decisions
+- **Customer-Focused Features:** Begin with [PR/FAQ template](../docs/templates/pr-faq.md) to work backwards from customer value
+- **User Experience Design:** Use [Working Backwards Document](../docs/templates/working-backwards.md) for customer journey mapping
+
+#### Technical Implementation  
+- **Architecture Decisions:** Document significant technical choices using [ADR template](../docs/templates/adr.md)
+- **Complex Features:** Create [Design Documents](../docs/templates/design-document.md) for detailed technical specifications
+- **System Operations:** Maintain [Operational Runbooks](../docs/templates/operational-runbook.md) for production systems
+
+#### Continuous Improvement
+- **Incident Response:** Use [Post-Incident Report template](../docs/templates/post-incident-report.md) after any operational issues
+- **Learning Culture:** Focus on improvement rather than blame, document lessons learned
+
+### Document Usage in Development Process
+1. **Before Coding:** Write appropriate planning documents (PR/FAQ, 6-pager, or 1-pager)
+2. **During Design:** Create technical specifications using Design Documents and ADRs
+3. **For Production Systems:** Maintain Operational Runbooks
+4. **After Incidents:** Write Post-Incident Reports for learning and improvement
+5. **Decision Reviews:** Use silent reading at the beginning of meetings to review documents
+
+### Template Selection Guidelines
+- **Scope:** Larger initiatives require more comprehensive documents (6-pager vs 1-pager)
+- **Audience:** Consider stakeholders who need to review and approve
+- **Customer Impact:** Customer-facing changes should include PR/FAQ or Working Backwards documents
+- **Technical Complexity:** Complex implementations need Design Documents and ADRs
+- **Operational Impact:** Production systems require Operational Runbooks
+
+All document templates are available in [docs/templates/](../docs/templates/) with detailed usage guidelines.

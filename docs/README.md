@@ -23,3 +23,8 @@ This is the main documentation for the redweed project.
     *   [iCal Sample Files](./examples/README.md)
 *   **Contributing**
     *   [Roadmap](./ROADMAP.md)
+*   **Document Templates**
+    *   [Overview](./templates/README.md)
+    *   [Strategic Documents](./templates/README.md#strategic-and-planning-documents)
+    *   [Technical Documents](./templates/README.md#technical-documents)
+    *   [Operational Documents](./templates/README.md#operational-documents)
