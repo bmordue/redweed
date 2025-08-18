@@ -10,7 +10,7 @@ DTEND:20240315T110000Z
 SUMMARY:Project Planning Meeting
 DESCRIPTION:Weekly project planning session to review progress and set priorities for the upcoming week.
 LOCATION:Conference Room A, Building 1
-ORGANIZER:CN=Alice Smith:MAILTO:alice@example.com
+ORGANIZER;CN=Alice Smith:MAILTO:alice@example.com
 ATTENDEE;CN=Bob Johnson:MAILTO:bob@example.com
 ATTENDEE;CN=Carol Davis:MAILTO:carol@example.com
 CATEGORIES:work,meetings,planning
